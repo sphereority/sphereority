@@ -95,9 +95,19 @@ public class WeightedPosition implements Constants
     {
       float dx = target.getX() - pos_x;
       float dy = target.getY() - pos_y;
+      float speed = (float)Math.sqrt(dx*dx + dy*dy);
       
-      speed_x += dx*TRACKING_SPEED;
-      speed_y += dy*TRACKING_SPEED;
+      if (speed > 1)
+      {
+        speed_x /= speed;
+        speed_y /= speed;
+      }
+      
+      if (speed > 0.1f)
+      {
+        speed_x += dx*TRACKING_SPEED;
+        speed_y += dy*TRACKING_SPEED;
+      }
     }
     
     // Apply some friction to our motion
