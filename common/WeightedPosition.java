@@ -119,8 +119,8 @@ public class WeightedPosition implements Constants
       return false;
     
     // Actually apply the speed to our position
-    pos_x += speed_x;
-    pos_y += speed_y;
+    pos_x += speed_x*dTime;
+    pos_y += speed_y*dTime;
     
     return true;
   }
