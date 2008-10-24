@@ -74,6 +74,17 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		return player;
 	}
 	
+	public Color getPlayerColor()
+	{
+		return playerColor;
+	}
+	
+	public void setPlayerColor(Color color)
+	{
+		playerColor = color;
+		repaint();
+	}
+	
 	public void addWidget(Widget w)
 	{
 		widgetList.add(w);
@@ -164,7 +175,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				if (iw.getState() == InteractiveWidget.STATE_UNHOVERED)
 				{
 					iw.setState(InteractiveWidget.STATE_HOVERED);
-					repaint(iw.getBounds());
+					repaint(iw.getFixedBounds(width, height));
 				}
 			}
 			else
@@ -172,7 +183,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				if (iw.getState() == InteractiveWidget.STATE_HOVERED)
 				{
 					iw.setState(InteractiveWidget.STATE_UNHOVERED);
-					repaint(iw.getBounds());
+					repaint(iw.getFixedBounds(width, height));
 				}
 			}
 		} // end for (w in widgetList)
@@ -190,7 +201,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				if (iw.getState() != InteractiveWidget.STATE_HOVERED)
 				{
 					iw.setState(InteractiveWidget.STATE_HOVERED);
-					repaint(iw.getBounds());
+					repaint(iw.getFixedBounds(width, height));
 				}
 			}
 			else
@@ -198,7 +209,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				if (iw.getState() != InteractiveWidget.STATE_READY)
 				{
 					iw.setState(InteractiveWidget.STATE_READY);
-					repaint(iw.getBounds());
+					repaint(iw.getFixedBounds(width, height));
 				}
 			}
 		} // end for (Widget)
@@ -234,6 +245,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			if (!(w instanceof InteractiveWidget)) continue;
 			InteractiveWidget iw = (InteractiveWidget) w;
 			if (iw.getState() == InteractiveWidget.STATE_HOVERED) iw.trigger(e.getButton());
+			iw.setState(InteractiveWidget.STATE_READY);
 		}
 	}
 	

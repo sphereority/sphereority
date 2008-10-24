@@ -6,24 +6,31 @@ public class StringLabel extends Widget
 {
 	protected String label;
 	protected float x_align, y_align;
-	protected float font_size;
+	protected float fontSize;
 	
-	StringLabel(int x, int y, int width, int height, String label)
+	public StringLabel(int x, int y, int width, int height, String label)
 	{
-		super(x, y, width, height);
-		this.label = label;
-		x_align = y_align = 0.5f;
-		font_size = -1;
+		this(x, y, width, height, label, 0.5f, 0.5f);
 	}
 	
-	StringLabel(int x, int y, int width, int height, String label, float x_align, float y_align)
+	public StringLabel(int x, int y, int width, int height, String label, Color color)
 	{
-		super(x, y, width, height);
+		this(x, y, width, height, label, 0.5f, 0.5f, color);
+	}
+	
+	public StringLabel(int x, int y, int width, int height, String label, float x_align, float y_align)
+	{
+		this(x, y, width, height, label, x_align, y_align, null);
+	}
+	
+	public StringLabel(int x, int y, int width, int height, String label, float x_align, float y_align, Color color)
+	{
+		super(x, y, width, height, color);
 		this.label = label;
 		this.x_align = x_align;
 		this.y_align = y_align;
 		checkAlignment();
-		font_size = -1;
+		fontSize = -1;
 	}
 	
 	public void setAlignment(float x, float y)
@@ -43,6 +50,16 @@ public class StringLabel extends Widget
 		return y_align;
 	}
 	
+	public float getFontSize()
+	{
+		return fontSize;
+	}
+	
+	public void setFontSize(float size)
+	{
+		fontSize = size;
+	}
+	
 	protected void checkAlignment()
 	{
 		x_align = Math.max(Math.min(x_align, 1), 0);
@@ -58,7 +75,7 @@ public class StringLabel extends Widget
 			g.setColor(color);
 		}
 		
-		GuiUtils.drawCenteredText(g, label, x, y, width, height, x_align, y_align, font_size);
+		GuiUtils.drawCenteredText(g, label, getFixedX(windowWidth), getFixedY(windowHeight), width, height, x_align, y_align, fontSize);
 		
 		if (oldColor != null)
 			g.setColor(oldColor);

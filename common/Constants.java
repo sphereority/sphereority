@@ -31,5 +31,5 @@ public interface Constants
   /**
    * The speed at which a player accelerates due to keypresses
    */
-  public static final float PLAYER_ACCELERATION = 50f;
+  public static final float PLAYER_ACCELERATION = 500f;
 }

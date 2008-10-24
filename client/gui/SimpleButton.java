@@ -5,25 +5,13 @@ import java.util.*;
 
 public class SimpleButton extends InteractiveWidget
 {
-	protected String label;
 	protected Vector<ActionCallback> callbacks;
 	
 	public SimpleButton(int x, int y, int width, int height, String label, Color color)
 	{
-		super(x, y, width, height);
+		super(x, y, width, height, label);
 		setColor(color);
-		this.label = label;
 		callbacks = new Vector<ActionCallback>();
-	}
-	
-	public String getLabel()
-	{
-		return label;
-	}
-	
-	public void setLabel(String label)
-	{
-		this.label = label;
 	}
 	
 	public void trigger(int buttons)
@@ -41,15 +29,15 @@ public class SimpleButton extends InteractiveWidget
 		
 		int px = getFixedX(windowWidth), py = getFixedY(windowHeight);
 		
+		GuiUtils.drawOutlinedBox(g, px, py, width, height);
+		
 		if (cur_state == STATE_HOVERED)
 		{
-			GuiUtils.drawFilledBox(g, px, py, width, height);
+			GuiUtils.drawFilledBox(g, px+2, py+2, width-3, height-3);
 			g.setColor(Color.black);
 		}
-		else
-			GuiUtils.drawOutlinedBox(g, px, py, width, height);
 		
-		GuiUtils.drawCenteredText(g, label, px, py, width, height, 0.5f, 0.25f, -1);
+		GuiUtils.drawCenteredText(g, label, px, py, width, height, 0.5f, 0.25f, fontSize);
 		
 		g.setColor(oldColor);
 	}

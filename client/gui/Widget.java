@@ -12,12 +12,13 @@ public abstract class Widget
 		this(x, y, width, height, null);
 	}
 	
-	public Widget(int x, int y, int width, int height, Color c)
+	public Widget(int x, int y, int width, int height, Color color)
 	{
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.color = color;
 	}
 	
 	public boolean contains(int x, int y)
