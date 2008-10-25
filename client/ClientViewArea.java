@@ -2,6 +2,7 @@ package client;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -18,6 +19,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 {
 	private static final long serialVersionUID = 23498751L;
 	public static int TIMER_TICK = 75;
+	public static int MAP_WIDTH = 16;
+	public static int MAP_HEIGHT = 16;
 	
 	// Drawing-related variables
 	protected boolean antialiasing;
@@ -104,11 +107,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		Rectangle clip = g2.getClipBounds(); // The clipping bounds, so we don't draw stuff over again
 		int offset_x, offset_y;
-		offset_x = getWidth() / 2;
-		offset_y = getHeight() / 2;
+		offset_x = -getWidth() / 2;
+		offset_y = -getHeight() / 2;
 		
 		// Save temporary copies of parameters changed
 		Color oldColor = g2.getColor();
+		AffineTransform oldTransform = g2.getTransform();
 		
 		// Draw the background
 		g2.setColor(getBackground());
@@ -116,44 +120,42 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		if (viewTracker != null)
 		{
-			offset_x -= viewTracker.getX();
-			offset_y -= viewTracker.getY();
+			offset_x += Math.round(viewTracker.getX()*scale);
+			offset_y += Math.round(viewTracker.getY()*scale);
 		}
 		
+		g2.translate(-offset_x, -offset_y);
+		
 		// TEMP: Draw a simple grid:
-		g2.setColor(Color.gray);
-		int t;
-		for (int x = Math.round(getWidth() / scale); x >= 0; x--)
-		{
-			t = Math.round(offset_x + x * scale);
-			g2.drawLine(t, clip.y, t, clip.y + clip.height);
-			t = Math.round(offset_x - x * scale);
-			g2.drawLine(t, clip.y, t, clip.y + clip.height);
-		}
 		g2.setColor(Color.darkGray);
-		for (int y = Math.round(getHeight() / scale); y >= 0; y--)
+		int t;
+		int extents_x = Math.round(MAP_WIDTH * scale);
+		int extents_y = Math.round(MAP_HEIGHT * scale);
+		for (int x = MAP_WIDTH; x >= 0; x--)
 		{
-			t = Math.round(offset_y + y * scale);
-			g2.drawLine(clip.x, t, clip.x + clip.width, t);
-			t = Math.round(offset_y - y * scale);
-			g2.drawLine(clip.x, t, clip.x + clip.width, t);
+			t = Math.round(x * scale);
+			g2.drawLine( t, Math.max(clip.y + offset_y, -extents_y),  t, Math.min(clip.y + clip.height + offset_y, extents_y));
+			g2.drawLine(-t, Math.max(clip.y + offset_y, -extents_y), -t, Math.min(clip.y + clip.height + offset_y, extents_y));
+		}
+		for (int y = MAP_HEIGHT; y >= 0; y--)
+		{
+			t = Math.round(y * scale);
+			g2.drawLine(Math.max(clip.x+offset_x, -extents_x),  t, Math.min(clip.x + clip.width + offset_x, extents_x),  t);
+			g2.drawLine(Math.max(clip.x+offset_x, -extents_x), -t, Math.min(clip.x + clip.width + offset_x, extents_x), -t);
 		}
 		
 		// Draw the player
 		if (player != null)
 		{
-			float x = player.getX();
-			float y = player.getY();
-			
 			g2.setColor(playerColor);
-			g2.fillOval(offset_x - Math.round(scale / 2 - x), offset_y
-					- Math.round(scale / 2 - y), Math.round(scale), Math
-					.round(scale));
+			GuiUtils.drawFilledOctagon(g2, Math.round(player.getX()*scale), Math.round(player.getY()*scale), scale*PLAYER_SIZE);
 		}
 		
-		// Draw the walls
+		// Draw the walls TODO: need map class first
 		
-		int width = getWidth(), height = getHeight();
+		g2.setTransform(oldTransform);
+		
+		final int width = getWidth(), height = getHeight();
 		// Draw the widgets
 		for (Widget w : widgetList)
 			w.draw(g2, width, height);

@@ -16,6 +16,8 @@ public final class GuiUtils
 	public static final int DEFAULT_BEVEL_CORNERS = BEVEL_CORNER_TOP_LEFT | BEVEL_CORNER_BOTTOM_RIGHT;
 	public static final int DEFAULT_BEVEL_AMOUNT = 5;
 	
+	protected static Polygon octagon = null;
+	
 	/**
 	 * Draw text centered on a point
 	 * @param g			The Graphics context to use
@@ -170,8 +172,27 @@ public final class GuiUtils
 		g.fill(p);
 	}
 	
-	public static void drawFilledOctagon(int x, int y, int size)
+	public static void drawFilledOctagon(Graphics2D g, int x, int y, float size)
 	{
+		if (octagon == null)
+		{
+			octagon = new Polygon();
+			octagon.addPoint(-3, -7);	// 1
+			octagon.addPoint(3, -7);	// 2
+			octagon.addPoint(7, -3);	// 3
+			octagon.addPoint(7, 3);		// 4
+			octagon.addPoint(3, 7);		// 5
+			octagon.addPoint(-3, 7);	// 6
+			octagon.addPoint(-7, 3);	// 7
+			octagon.addPoint(-7, -3);	// 8
+		}
 		
+		AffineTransform oldTransform = g.getTransform();
+		g.transform(AffineTransform.getTranslateInstance(x, y));
+		g.transform(AffineTransform.getScaleInstance(size/14, size/14));
+		
+		g.fill(octagon);
+		
+		g.setTransform(oldTransform);
 	}
 }
