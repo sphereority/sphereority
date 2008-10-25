@@ -1,0 +1,23 @@
+    For 64 players on a wired network:
+Total bandwidth:		100Mbps
+Max useable:			50Mbps = 50,000Kbps
+Total per player:		781.25Kbps
+Sending rate per player:	12Kbps
+
+    For 64 players on a wireless network (not counting dropped packets):
+Total bandwidth:		~80Mbps
+Max useable:			24Mbps = 24,000Kbps
+Total per player:		375Kbps
+Sending rate per player:	~6Kpbs
+
+    For 128 players on a wired network:
+Total bandwidth: 		100Mbps
+Max useable:			50Mbps = 50,000Kbps
+Total per player:		390Kps
+Sending rate per player:	3Kbps
+
+    For 128 players on a wireless network (not counting dropped packets):
+Total bandwidth:		~80Mbps
+Max useable:			24Mbps = 24,000Kbps
+Total per player:		187.5Kbps
+Sending rate per player:	1.5Kbps
