@@ -1,0 +1,19 @@
+Server				Client
+Start TCP socket
+				Connect to server
+Accept connection
+				Send login information
+Recieve login information
+Process login
+(assuming successful)
+Create local UDP socket
+Send successful, UDP port
+				Recieve response, port number
+				Create UDP port
+				Connect to remote UDP port
+				Send successful, UDP port
+Recieve remote UDP port
+Connect to remote UDP port
+Send successful
+
+Send all game state information to client
