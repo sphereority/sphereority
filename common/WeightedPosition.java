@@ -103,8 +103,11 @@ public class WeightedPosition implements Constants
 			
 			if (speed > 0.1f)
 			{
-				speed_x += dx * TRACKING_SPEED;
-				speed_y += dy * TRACKING_SPEED;
+        if (speed >= speedOf(speed_x, speed_y))
+        {
+  				speed_x += dx * TRACKING_SPEED;
+  				speed_y += dy * TRACKING_SPEED;
+        }
 			}
 		}
 		
@@ -121,4 +124,9 @@ public class WeightedPosition implements Constants
 		
 		return true;
 	}
+  
+  public static float speedOf(float dx, float dy)
+  {
+    return (float)Math.sqrt(dx*dx + dy*dy);
+  }
 }
