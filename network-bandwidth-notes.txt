@@ -20,4 +20,4 @@ Sending rate per player:	3Kbps
 Total bandwidth:		~80Mbps
 Max useable:			24Mbps = 24,000Kbps
 Total per player:		187.5Kbps
-Sending rate per player:	1.5Kbps
+Sending rate per player:	~1.5Kbps
