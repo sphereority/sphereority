@@ -130,6 +130,12 @@ public class WeightedPosition implements Constants
 		return true;
 	}
 	
+	/**
+	 * Get the total speed of a particular vector 
+	 * @param a		The first part of the vector
+	 * @param b		The second part of the vector
+	 * @return	The total speed of the vector
+	 */
 	public static float speedOf(float a, float b)
 	{
 		return (float)Math.sqrt(a*a + b*b);
