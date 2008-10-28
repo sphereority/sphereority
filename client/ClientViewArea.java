@@ -127,7 +127,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		g2.translate(-offset_x, -offset_y);
 		
 		// TEMP: Draw a simple grid:
-    g2.setColor(Color.lightGray);
+		g2.setColor(Color.lightGray);
 		int t;
 		int extents_x = Math.round(MAP_WIDTH * scale);
 		int extents_y = Math.round(MAP_HEIGHT * scale);
@@ -137,7 +137,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			g2.drawLine( t, Math.max(clip.y + offset_y, -extents_y),  t, Math.min(clip.y + clip.height + offset_y, extents_y));
 			g2.drawLine(-t, Math.max(clip.y + offset_y, -extents_y), -t, Math.min(clip.y + clip.height + offset_y, extents_y));
 		}
-    g2.setColor(Color.gray);
+		g2.setColor(Color.gray);
 		for (int y = MAP_HEIGHT; y >= 0; y--)
 		{
 			t = Math.round(y * scale);
@@ -153,14 +153,14 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		}
 		
 		// Draw the walls TODO: need map class first
-    
-    // Restore the view so the widgets are in the right spot
+		
+		// Restore the view so the widgets are in the right spot
 		g2.setTransform(oldTransform);
 		
-    // TEMP: Mark the center of the window
-    g2.setColor(Color.red);
-    g2.fillOval(getWidth()/2 - 2, getHeight()/2 - 2, 4, 4);
-    
+		// TEMP: Mark the center of the window
+		g2.setColor(Color.red);
+		g2.fillRect(getWidth()/2 - 1, getHeight()/2 - 1, 3, 3);
+		
 		final int width = getWidth(), height = getHeight();
 		// Draw the widgets
 		for (Widget w : widgetList)
