@@ -36,7 +36,7 @@ public class Bomb extends Actor {
     super.act();
     y+=vy;
     x+=vx;
-    if (y < 0 || y > Stage.HEIGHT || x < 0 || x > Stage.WIDTH)
+    if (y < 0 || y > Constants.GAME_WINDOW_HEIGHT || x < 0 || x > Constants.GAME_WINDOW_WIDTH)
       remove();
   }
 

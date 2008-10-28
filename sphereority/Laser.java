@@ -12,7 +12,7 @@ public class Laser extends Actor {
   public void act() {
     super.act();
     y+=BULLET_SPEED;
-    if (y > Stage.PLAY_HEIGHT)
+    if (y > Constants.GAME_WINDOW_PLAY_HEIGHT)
       remove();
   }
 

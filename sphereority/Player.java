@@ -30,12 +30,12 @@ public class Player extends Actor {
     y+=vy;
     if (x < 0 ) 
       x = 0;
-    if (x > Stage.WIDTH - getWidth())
-      x = Stage.WIDTH - getWidth();
+    if (x > Constants.GAME_WINDOW_WIDTH - getWidth())
+      x = Constants.GAME_WINDOW_WIDTH - getWidth();
     if (y < 0 )
       y = 0;
-    if ( y > Stage.PLAY_HEIGHT-getHeight())
-      y = Stage.PLAY_HEIGHT - getHeight();
+    if ( y > Constants.GAME_WINDOW_PLAY_HEIGHT-getHeight())
+      y = Constants.GAME_WINDOW_PLAY_HEIGHT - getHeight();
   }
 
   public int getVx() { return vx; }

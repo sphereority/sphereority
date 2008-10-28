@@ -34,11 +34,11 @@ public class Sphereority extends Canvas implements Stage, KeyListener {
 		
 		JFrame ventana = new JFrame("Sphereority");
 		JPanel panel = (JPanel)ventana.getContentPane();
-		setBounds(0,0,Stage.WIDTH,Stage.HEIGHT);
-		panel.setPreferredSize(new Dimension(Stage.WIDTH,Stage.HEIGHT));
+		setBounds(0,0,Constants.GAME_WINDOW_WIDTH,Constants.GAME_WINDOW_HEIGHT);
+		panel.setPreferredSize(new Dimension(Constants.GAME_WINDOW_WIDTH,Constants.GAME_WINDOW_HEIGHT));
 		panel.setLayout(null);
 		panel.add(this);
-		ventana.setBounds(0,0,Stage.WIDTH,Stage.HEIGHT);
+		ventana.setBounds(0,0,Constants.GAME_WINDOW_WIDTH,Constants.GAME_WINDOW_HEIGHT);
 		ventana.setVisible(true);
 		ventana.addWindowListener( new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -61,9 +61,19 @@ public class Sphereority extends Canvas implements Stage, KeyListener {
 	public void initializeWorld() {
 		// Map setup can go here to perhaps?
     actors = new ArrayList();    
+
+    for (int i = 0; i < 10; i++){
+      Brick b = new Brick(this);
+      b.setX( (int)(Math.random() * Constants.GAME_WINDOW_WIDTH) );
+	    b.setY( i * 20 );
+	    b.setVerticalX( (int)(Math.random() * 20-10) );
+      
+      actors.add(b);
+    }
+
     player = new Player(this);
-    player.setX(Stage.WIDTH / 2);
-    player.setY((Stage.PLAY_HEIGHT) - 2 * player.getHeight());
+    player.setX(Constants.GAME_WINDOW_WIDTH / 2);
+    player.setY((Constants.GAME_WINDOW_PLAY_HEIGHT) - 2 * player.getHeight());
 	}
 	
 	public void addActor(Actor a) {
@@ -146,7 +156,7 @@ public class Sphereority extends Canvas implements Stage, KeyListener {
 		Graphics2D g = (Graphics2D)strategy.getDrawGraphics();
 		g.setColor(Color.white);
 		g.setFont(new Font("Arial",Font.BOLD,20));
-		g.drawString("GAME OVER",Stage.WIDTH/2-50,Stage.HEIGHT/2);
+		g.drawString("GAME OVER",Constants.GAME_WINDOW_WIDTH/2-50,Constants.GAME_WINDOW_HEIGHT/2);
 		strategy.show();
 	}
 	
