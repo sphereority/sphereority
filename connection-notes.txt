@@ -2,6 +2,17 @@ Server				Client
 Start TCP socket
 				Connect to server
 Accept connection
+				Request server details
+Recieve request
+Send results
+				Recieve results
+				Close connection
+
+	The above is done when checking to see how many people
+are on the server and what the server's doing now.
+
+				Connect to server
+Accept connection
 				Send login information
 Recieve login information
 Process login
