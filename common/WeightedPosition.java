@@ -1,5 +1,10 @@
 package common;
 
+/**
+ * This represents a location with possible tracking capabilities
+ * @author dvanhumb
+ *
+ */
 public class WeightedPosition implements Constants
 {
 	protected float pos_x, pos_y;
@@ -93,12 +98,12 @@ public class WeightedPosition implements Constants
 		{
 			float dx = target.getX() - pos_x;
 			float dy = target.getY() - pos_y;
-			float speed = (float) Math.sqrt(dx * dx + dy * dy);
+			float speed = speedOf(dx, dy);
 			
 			if (speed > 1)
 			{
-				speed_x /= speed;
-				speed_y /= speed;
+				dx /= speed;
+				dy /= speed;
 			}
 			
 			if (speed > 0.1f)

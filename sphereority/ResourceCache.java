@@ -1,8 +1,8 @@
 package sphereority;
 
 
-import java.net.URL;
-import java.util.HashMap;
+import java.net.*;
+import java.util.*;
 
 public abstract class ResourceCache {
 	protected HashMap resources;

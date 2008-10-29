@@ -1,5 +1,9 @@
 package sphereority;
 
+/**
+ * Some constants that are useful to have close-at-hand
+ *
+ */
 public interface Constants
 {
   /**

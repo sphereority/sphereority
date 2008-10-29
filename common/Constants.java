@@ -1,5 +1,10 @@
 package common;
 
+/**
+ * These are some constants that are useful to have quickly
+ * @author dvanhumb
+ *
+ */
 public interface Constants
 {
   /**

@@ -172,6 +172,13 @@ public final class GuiUtils
 		g.fill(p);
 	}
 	
+	/**
+	 * Draw a filled octagon at the specified position with the specified size
+	 * @param g		The graphics context to use
+	 * @param x		The x position to draw at
+	 * @param y		The y position to draw at
+	 * @param size	The size of the octagon (width and height)
+	 */
 	public static void drawFilledOctagon(Graphics2D g, int x, int y, float size)
 	{
 		if (octagon == null)
