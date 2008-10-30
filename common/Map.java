@@ -5,11 +5,11 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Map {
-    String name;       //map name
-    String data;       //map raw data
-    int x_size;        //map x size
-    int y_size;        //map y size
-    char[][] mapping;  //two dimensional array for char for mapping
+    String name;       // map name
+    String data;       // map raw data
+    int x_size;        // map x size
+    int y_size;        // map y size
+    char[][] mapping;  // two dimensional array of char for mapping
 
     
     /**
@@ -19,32 +19,18 @@ public class Map {
     public Map() {
         name = "default";
         data = "10 10\r\n++++++++++\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n++++++++++\r\n"; 
-        // parse raw data here
-        Scanner parser = new Scanner(data);
-        String line;
-        x_size = parser.nextInt();
-        y_size = parser.nextInt();
-        mapping = new char[x_size][y_size];
-        if (parser.nextLine().toString().startsWith(" ")) {
-            // do nothing
-        }
-        int y = 0;
-        while (parser.hasNextLine()) {
-            line = parser.nextLine().toString();
-            mapping[y] = line.toCharArray();
-            y++;
-        }
+        parseData();
     }
     
     /**
      * 
-     * @param filename the full name of the file to be read (default filepath is project root directory)
+     * @param mapname the name of the map to be read (default filepath is maps directory)
      */
     public Map(String mapname) {
         name = mapname.toString();
         data = "";
         try {
-            File file = new File(mapname);
+            File file = new File("maps/" + name + ".map"); //will this screw up in windows?
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 data = data + scanner.nextLine() + "\r\n";
@@ -53,7 +39,14 @@ public class Map {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        
+        parseData();
+    }
+    
+    /**
+     * Convenient procedure to parse raw data in constructors.
+     *
+     */
+    private void parseData() {
         // parse raw data here
         Scanner parser = new Scanner(data);
         String line;
@@ -68,7 +61,7 @@ public class Map {
             line = parser.nextLine().toString();
             mapping[y] = line.toCharArray();
             y++;
-        }
+        }        
     }
     
     /**
@@ -105,7 +98,6 @@ public class Map {
     
     /**
      * 
-     * @param map
      * @return string representation of raw Map data
      */
     public String toString() {
