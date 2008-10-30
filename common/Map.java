@@ -5,6 +5,19 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Map {
+	public static final String DEFAULT_MAP = "10 10\n"+
+    "++++++++++\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "++++++++++\n"; 
+
+	
     String name;       // map name
     String data;       // map raw data
     int x_size;        // map x size
@@ -18,7 +31,7 @@ public class Map {
      */
     public Map() {
         name = "default";
-        data = "10 10\r\n++++++++++\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n++++++++++\r\n"; 
+        data = DEFAULT_MAP;
         parseData();
     }
     
@@ -33,7 +46,7 @@ public class Map {
             File file = new File("maps/" + name + ".map"); //will this screw up in windows?
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                data = data + scanner.nextLine() + "\r\n";
+                data = data + scanner.nextLine() + "\n";
             }
             scanner.close();
         } catch (FileNotFoundException e) {
@@ -107,9 +120,14 @@ public class Map {
             for (j =0; j < x_size; j++) {
                 System.out.print(mapping[i][j]);
             }
-            System.out.print("\r\n");
+            System.out.println();
         }
         //System.out.print(mapping[9][10]);
         return "";
+    }
+    
+    public boolean isWall(int x, int y)
+    {
+    	return (mapping[x][y] == '+');
     }
 }
