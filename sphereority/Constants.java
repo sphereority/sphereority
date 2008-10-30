@@ -1,4 +1,4 @@
-package common;
+package sphereority;
 
 public interface Constants
 {
@@ -37,4 +37,19 @@ public interface Constants
    * The size of a player in world units
    */
   public static final float PLAYER_SIZE = 0.5f;
+
+	/*
+		The width of the player window
+	*/
+	public static final int GAME_WINDOW_WIDTH = 640;
+
+	/* 
+		The height of the player window
+	*/
+	public static final int GAME_WINDOW_HEIGHT = 480;
+
+	/*
+		The height of the playable area
+	*/
+	public static final int GAME_WINDOW_PLAY_HEIGHT = 400; 
 }
