@@ -11,6 +11,7 @@ public class SoundEffect implements LineListener
 	protected Object lock;
 	protected volatile boolean playing;
 	protected FloatControl volumeControl;
+	protected FloatControl gainControl;
 	
 	public SoundEffect(File fileName) throws IOException, UnsupportedAudioFileException, LineUnavailableException
 	{
@@ -30,6 +31,28 @@ public class SoundEffect implements LineListener
 		{
 			System.out.println("Warning: No volume control available!");
 			volumeControl = null;
+		}
+		if (soundClip.isControlSupported(FloatControl.Type.MASTER_GAIN))
+			gainControl = (FloatControl)soundClip.getControl(FloatControl.Type.MASTER_GAIN);
+		else
+		{
+			System.out.println("Warning: No gain control available!");
+			gainControl = null;
+		}
+		
+		// Test stuff:
+		{
+			Control[] controlList = soundClip.getControls();
+			String s;
+			for (Control c : controlList)
+			{
+				if (c instanceof FloatControl) s = "float";
+				else if (c instanceof BooleanControl) s = "boolean";
+				else if (c instanceof EnumControl) s = "enum";
+				else if (c instanceof CompoundControl) s = "compound";
+				else s = "unknown";
+				System.out.printf("Control: %s (%s)\n", c.getType().toString(), s);
+			}
 		}
 	}
 	
@@ -91,5 +114,9 @@ public class SoundEffect implements LineListener
 		volume = v;
 		if (volumeControl != null)
 			volumeControl.setValue(volume);
+		else if (gainControl != null)
+		{
+			gainControl.setValue(-15*(1 - v));
+		}
 	}
 }
