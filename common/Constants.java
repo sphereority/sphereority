@@ -46,5 +46,5 @@ public interface Constants
   /**
    * The name of the file that contains the "wall bump" sound
    */
-  public static final String SOUND_BUMP = "sound/wall_bump.wav";
+  public static final String SOUND_BUMP = "sounds/wall_bump.wav";
 }
