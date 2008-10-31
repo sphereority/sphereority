@@ -15,6 +15,8 @@ public class MapTest {
         //System.out.println(map.getData());
         //System.out.println(map.getXSize() + " x " + map.getYSize());
         System.out.println(map.toString());
+        System.out.println(map.isWall(1, 1));
+        System.out.println(map.isWall(9, 9));
 	}
 
 }

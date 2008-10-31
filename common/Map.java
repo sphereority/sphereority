@@ -97,6 +97,19 @@ public class Map {
     }
     
     /**
+     * Note: this will be changed to use a two-dimensional array of boolean instead.
+     * @param   x the x-axis coordinate (origin is top-left corner)
+     * @param   y the y-axis coordinate (origin is top-left corner)
+     * @return  true if there exists a wall on the coordinate; false otherwise.
+     */
+    public boolean isWall(int x, int y) {
+        if (mapping[y][x] == '+')
+            return true;
+        else
+            return false;
+    }
+    
+    /**
      * 
      * @return string representation of raw Map data
      */
