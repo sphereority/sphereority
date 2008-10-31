@@ -3,6 +3,10 @@ package client.audio;
 import java.io.*;
 import javax.sound.sampled.*;
 
+/**
+ * A handy sound-clip wrapper 
+ * @author dvanhumb
+ */
 public class SoundEffect implements LineListener
 {	
 	protected float volume;
@@ -56,6 +60,9 @@ public class SoundEffect implements LineListener
 		}
 	}
 	
+	/**
+	 * Start playing the sound, even if it's playing already
+	 */
 	public void play()
 	{
 		playing = true;
@@ -63,24 +70,43 @@ public class SoundEffect implements LineListener
 		soundClip.start();
 	}
 	
+	/**
+	 * Start playing the sound if it's not playing already
+	 */
+	public void playIfNot()
+	{
+		if (!playing)
+			play();
+	}
+	
+	/**
+	 * Stop the sound playing
+	 */
 	public void stop()
 	{
 		soundClip.stop();
 		playing = false;
 	}
 	
+	/**
+	 * Loop until we tell it to stop
+	 */
 	public void loop()
 	{
 		playing = true;
 		soundClip.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 	
+	/**
+	 * Loop for a certain number of times
+	 * @param numTimes The number of times to loop
+	 */
 	public void loop(int numTimes)
 	{
 		playing = true;
 		soundClip.loop(numTimes);
 	}
-
+	
 	public void update(LineEvent event)
 	{
 		System.out.printf("Event recieved from clip: %s\n", event.getType().toString());
@@ -104,11 +130,20 @@ public class SoundEffect implements LineListener
 		}
 	}
 	
+	/**
+	 * Get the current volume in the range of 0.0 to 1.0
+	 * @return	The current volume
+	 */
 	public float getVolume()
 	{
 		return volume;
 	}
 	
+	/**
+	 * Set the current volume level
+	 * @param v		The desired volume level between 0.0 and 1.0
+	 * Note that if it might not actually change the volume level if the audio clip has no volume or gain controls avaiable
+	 */
 	public void setVolume(float v)
 	{
 		volume = v;

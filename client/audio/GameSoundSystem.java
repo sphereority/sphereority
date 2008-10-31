@@ -18,6 +18,11 @@ public class GameSoundSystem
 		mixer = AudioSystem.getMixer(null);
 	}
 	
+	/**
+	 * Returns a sound effect given the name of the sound file.
+	 * @param fileName	The name of the sound file
+	 * @return		The SoundEffect if the file was loaded successfully, or null if it failed
+	 */
 	public SoundEffect loadSoundEffect(String fileName)
 	{
 		try
