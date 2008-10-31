@@ -1,5 +1,6 @@
 package client;
 
+import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -7,6 +8,8 @@ import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.util.*;
+import java.io.*;
+import java.net.*;
 
 import client.gui.*;
 import common.*;
@@ -25,8 +28,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	// Drawing-related variables
 	protected boolean antialiasing;
-	protected Color playerColor;
 	protected float scale;
+	// Colour-defining variables
+	protected Color playerColor;
 	
 	// Gui-related stuff:
 	protected Vector<Widget> widgetList;
@@ -42,6 +46,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected Timer gameTimer;
 	protected long lastTime;
 	protected boolean[] keysPressed;
+	protected AudioClip soundBump;
 	
 	public ClientViewArea()
 	{
@@ -51,7 +56,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		setMaximumSize(d);
 		
 		setBackground(Color.black);
-		setForeground(Color.gray);
+		setForeground(new Color(0.7f, 0.4f, 0.2f, 0.75f)); // For testing only, until we get collision detection going
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -69,6 +74,15 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
+		
+		try
+		{
+			soundBump = Applet.newAudioClip((new File(SOUND_BUMP)).toURI().toURL());
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void setLocalPlayer(Player p)
@@ -322,6 +336,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			antialiasing = !antialiasing;
 			repaint();
 		}
+		else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
+			soundBump.play();
 		
 		keysPressed[e.getKeyCode()] = true;
 	}
@@ -353,8 +369,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			if (keysPressed[KeyEvent.VK_DOWN])
 				localPlayer.accelerate(0, PLAYER_ACCELERATION);
 			
-			if (localPlayer.animate(dTime)) repaint = true;
-			if (viewTracker.animate(dTime)) repaint = true;
+			if (localPlayer != null && localPlayer.animate(dTime)) repaint = true;
+			if (viewTracker != null && viewTracker.animate(dTime)) repaint = true;
 			
 			if (repaint) repaint();
 			lastTime = thisTime;

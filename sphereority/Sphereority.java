@@ -1,29 +1,19 @@
 package sphereority;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferStrategy;
-import java.awt.Rectangle;
-import java.awt.TexturePaint;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.*;
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class Sphereority extends Canvas implements Stage, KeyListener {
+	private static final long serialVersionUID = 29384L;
 	
 	private BufferStrategy strategy;
 	private long usedTime;
 	
 	private SpriteCache spriteCache;
-	private ArrayList actors; 
+	private ArrayList<Actor> actors; 
 	private Player player;
 	private int ticks;
 	
@@ -60,20 +50,20 @@ public class Sphereority extends Canvas implements Stage, KeyListener {
 	
 	public void initializeWorld() {
 		// Map setup can go here to perhaps?
-    actors = new ArrayList();    
+		actors = new ArrayList<Actor>();    
+		
+		for (int i = 0; i < 10; i++){
+			Brick b = new Brick(this);
+			b.setX( (int)(Math.random() * Constants.GAME_WINDOW_WIDTH) );
+			b.setY( i * 20 );
+			b.setVerticalX( (int)(Math.random() * 20-10) );
+			
+			actors.add(b);
+		}
 
-    for (int i = 0; i < 10; i++){
-      Brick b = new Brick(this);
-      b.setX( (int)(Math.random() * Constants.GAME_WINDOW_WIDTH) );
-	    b.setY( i * 20 );
-	    b.setVerticalX( (int)(Math.random() * 20-10) );
-      
-      actors.add(b);
-    }
-
-    player = new Player(this);
-    player.setX(Constants.GAME_WINDOW_WIDTH / 2);
-    player.setY((Constants.GAME_WINDOW_PLAY_HEIGHT) - 2 * player.getHeight());
+		player = new Player(this);
+		player.setX(Constants.GAME_WINDOW_WIDTH / 2);
+		player.setY((Constants.GAME_WINDOW_PLAY_HEIGHT) - 2 * player.getHeight());
 	}
 	
 	public void addActor(Actor a) {

@@ -42,4 +42,9 @@ public interface Constants
    * The size of a player in world units
    */
   public static final float PLAYER_SIZE = 0.5f;
+  
+  /**
+   * The name of the file that contains the "wall bump" sound
+   */
+  public static final String SOUND_BUMP = "sound/wall_bump.wav";
 }
