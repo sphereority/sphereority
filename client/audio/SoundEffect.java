@@ -43,21 +43,6 @@ public class SoundEffect implements LineListener
 			System.out.println("Warning: No gain control available!");
 			gainControl = null;
 		}
-		
-		// Test stuff:
-		{
-			Control[] controlList = soundClip.getControls();
-			String s;
-			for (Control c : controlList)
-			{
-				if (c instanceof FloatControl) s = "float";
-				else if (c instanceof BooleanControl) s = "boolean";
-				else if (c instanceof EnumControl) s = "enum";
-				else if (c instanceof CompoundControl) s = "compound";
-				else s = "unknown";
-				System.out.printf("Control: %s (%s)\n", c.getType().toString(), s);
-			}
-		}
 	}
 	
 	/**
@@ -109,10 +94,10 @@ public class SoundEffect implements LineListener
 	
 	public void update(LineEvent event)
 	{
-		System.out.printf("Event recieved from clip: %s\n", event.getType().toString());
+		//System.out.printf("Event recieved from clip: %s\n", event.getType().toString());
 		if (event.getType().equals(LineEvent.Type.STOP))
 		{
-			System.out.println("Stopped.");
+			//System.out.println("Stopped.");
 			playing = false;
 			lock.notifyAll();
 		}

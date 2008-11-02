@@ -36,12 +36,12 @@ public class GameSoundSystem
 		}
 		catch (UnsupportedAudioFileException e)
 		{
-			e.printStackTrace();
+			System.err.printf("File '%s' is an unsupported type!\n", fileName);
 			return null;
 		}
 		catch (LineUnavailableException e)
 		{
-			e.printStackTrace();
+			System.err.printf("Can't find an audio line to play the sound on!\n");
 			return null;
 		}
 	}
