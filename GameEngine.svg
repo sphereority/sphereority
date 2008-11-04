@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by diasvg.py -->
+<svg width="31.250cm" height="35.300cm" viewBox="0.950 0.950 32.200 36.250"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="9.000" y="3.000" width="12.050" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="9.000" y="3.000" width="12.050" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="15.025" y="4.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+Actor</text>
+<rect x="9.000" y="4.400" width="12.050" height="4.200" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="9.000" y="4.400" width="12.050" height="4.200" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="9.150" y="5.300"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++position: Position</text>
+<text x="9.150" y="6.100"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++velocity: Position</text>
+<text x="9.150" y="6.900"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++alive: boolean = true</text>
+<text x="9.150" y="7.700"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++team: int</text>
+<text x="9.150" y="8.500"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++state: int</text>
+<rect x="9.000" y="8.600" width="12.050" height="3.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="9.000" y="8.600" width="12.050" height="3.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="9.150" y="9.243"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++animate(in dTime:float): boolean</text>
+<text x="9.150" y="10.043"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++draw(g:Graphics2D,scale:float)</text>
+<text x="9.150" y="10.843"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++getTeam(): int</text>
+<text x="9.150" y="11.643"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++getState(): int</text>
+<rect x="2.000" y="17.000" width="11.000" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="2.000" y="17.000" width="11.000" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="7.500" y="18.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+WeightedPosition</text>
+<rect x="2.000" y="18.400" width="11.000" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="2.000" y="18.400" width="11.000" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="2.150" y="19.300"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++weight: float = 1</text>
+<rect x="2.000" y="19.400" width="11.000" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="2.000" y="19.400" width="11.000" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="2.150" y="20.043"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++animate(dTime:float): boolean</text>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="15.025,12.912 15.025,15.000 7.500,15.000 7.500,17.000 "/>
+<polygon fill="#FFFFFF" stroke="none" stroke-width="0.100" points="15.425,12.912 15.025,12.112 14.625,12.912 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="15.425,12.912 15.025,12.112 14.625,12.912 "/>
+<rect x="21.000" y="16.000" width="11.000" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="21.000" y="16.000" width="11.000" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="26.500" y="17.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+Projectile</text>
+<rect x="21.000" y="17.400" width="11.000" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="21.000" y="17.400" width="11.000" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="21.150" y="18.300"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++projectileType: int</text>
+<rect x="21.000" y="18.400" width="11.000" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="21.000" y="18.400" width="11.000" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="21.150" y="19.043"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++animate(dTime:float): boolean</text>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="15.025,12.912 15.025,15.000 26.500,15.000 26.500,15.960 "/>
+<polygon fill="#FFFFFF" stroke="none" stroke-width="0.100" points="15.425,12.912 15.025,12.112 14.625,12.912 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="15.425,12.912 15.025,12.112 14.625,12.912 "/>
+<rect x="2.000" y="24.000" width="7.150" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="2.000" y="24.000" width="7.150" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="5.575" y="25.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+Player</text>
+<rect x="2.000" y="25.400" width="7.150" height="0.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="2.000" y="25.400" width="7.150" height="0.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<rect x="2.000" y="25.800" width="7.150" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="2.000" y="25.800" width="7.150" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="2.150" y="26.442"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++animate(): boolean</text>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="7.500,21.312 7.500,22.200 5.575,22.200 5.575,24.000 "/>
+<polygon fill="#FFFFFF" stroke="none" stroke-width="0.100" points="7.900,21.312 7.500,20.512 7.100,21.312 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="7.900,21.312 7.500,20.512 7.100,21.312 "/>
+<rect x="1.000" y="32.000" width="5.228" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="1.000" y="32.000" width="5.228" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="3.614" y="33.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+LocalPlayer</text>
+<rect x="1.000" y="33.400" width="5.228" height="0.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="1.000" y="33.400" width="5.228" height="0.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<rect x="1.000" y="33.800" width="5.228" height="0.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="1.000" y="33.800" width="5.228" height="0.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="5.575,27.762 5.575,29.400 3.614,29.400 3.614,31.950 "/>
+<polygon fill="#FFFFFF" stroke="none" stroke-width="0.100" points="5.975,27.762 5.575,26.962 5.175,27.762 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="5.975,27.762 5.575,26.962 5.175,27.762 "/>
+<rect x="7.000" y="32.000" width="16.950" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="7.000" y="32.000" width="16.950" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="15.475" y="33.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+RemotePlayer</text>
+<rect x="7.000" y="33.400" width="16.950" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="7.000" y="33.400" width="16.950" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="7.150" y="34.300"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++lastKnownData: PositionPacket[]</text>
+<rect x="7.000" y="34.400" width="16.950" height="1.800" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="7.000" y="34.400" width="16.950" height="1.800" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="7.150" y="35.042"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++addPositionPacket(packet:PositionPacket): void</text>
+<text x="7.150" y="35.842"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++animate(dTime:float): boolean</text>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="5.575,27.762 5.575,29.425 15.475,29.425 15.475,32.000 "/>
+<polygon fill="#FFFFFF" stroke="none" stroke-width="0.100" points="5.975,27.762 5.575,26.962 5.175,27.762 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="5.975,27.762 5.575,26.962 5.175,27.762 "/>
+<rect x="25.000" y="9.000" width="7.150" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="25.000" y="9.000" width="7.150" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="28.575" y="10.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+GameEngine</text>
+<rect x="25.000" y="10.400" width="7.150" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="25.000" y="10.400" width="7.150" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="25.150" y="11.300"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++actorList: Actor[]</text>
+<rect x="25.000" y="11.400" width="7.150" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="25.000" y="11.400" width="7.150" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="25.150" y="12.043"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++tick(): void</text>
+<polyline fill="none" stroke="#000000" stroke-width="0.100" stroke-dasharray="0.40,0.40" points="24.950,10.700 23.025,10.700 23.025,7.500 21.436,7.500 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="22.068,7.250 21.268,7.500 22.068,7.750 "/>
+<rect x="25.000" y="1.000" width="6.800" height="1.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="25.000" y="1.000" width="6.800" height="1.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="28.400" y="2.000"  fill="#000000" text-anchor="middle" font-size="1.00" font-family="sans" font-style="normal" font-weight="700">
+GameViewArea</text>
+<rect x="25.000" y="2.400" width="6.800" height="0.400" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="25.000" y="2.400" width="6.800" height="0.400" fill="none" stroke="#000000" stroke-width="0.100" />
+<rect x="25.000" y="2.800" width="6.800" height="1.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="25.000" y="2.800" width="6.800" height="1.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="25.150" y="3.442"  fill="#000000" text-anchor="start" font-size="0.80" font-family="monospace" font-style="normal" font-weight="400">
++redisplay(): void</text>
+<polyline fill="none" stroke="#000000" stroke-width="0.100" stroke-dasharray="0.40,0.40" points="24.950,2.400 23.025,2.400 23.025,7.500 21.436,7.500 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="22.068,7.250 21.268,7.500 22.068,7.750 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100" stroke-dasharray="0.40,0.40" points="28.575,8.950 28.575,6.400 28.400,6.400 28.400,4.186 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="28.650,4.818 28.400,4.018 28.150,4.818 "/>
+</svg>
