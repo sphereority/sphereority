@@ -1,5 +1,10 @@
 package sphereority;
 
+/**
+ * Some constants that are useful to have close-at-hand
+ * @author dvanhumb
+ *
+ */
 public interface Constants
 {
   /**
@@ -52,4 +57,9 @@ public interface Constants
 		The height of the playable area
 	*/
 	public static final int GAME_WINDOW_PLAY_HEIGHT = 400; 
+	  
+	  /**
+	   * The name of the file that contains the "wall bump" sound
+	   */
+	  public static final String SOUND_BUMP = "sounds/wall_bump.wav";
 }

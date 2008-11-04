@@ -1,6 +1,11 @@
 package common;
 
-public interface Constants
+/**
+ * These are some constants that are useful to have quickly
+ * @author dvanhumb
+ *
+ */
+public interface Constants extends sphereority.Constants
 {
   /**
    * The fastest an object can move in units per second
@@ -16,7 +21,7 @@ public interface Constants
    * The speed at which objects track each other
    * (this affects the "slow parent" of objects)
    */
-  public static final float TRACKING_SPEED = 1f;
+  public static final float TRACKING_SPEED = 1.5f;
   
   /**
    * The amount of speed you have after bumping into a wall
@@ -37,4 +42,9 @@ public interface Constants
    * The size of a player in world units
    */
   public static final float PLAYER_SIZE = 0.5f;
+  
+  /**
+   * The name of the file that contains the "wall bump" sound
+   */
+  public static final String SOUND_BUMP = "sounds/wall_bump.wav";
 }

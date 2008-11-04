@@ -17,7 +17,8 @@ public class ClientTest implements ActionCallback
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		cva = new ClientViewArea();
-		cva.setPlayer(new Player());
+		cva.setLocalPlayer(new Player(0.5f, 0.5f));
+		cva.setMap(new Map());
 		window.getContentPane().add(cva, BorderLayout.CENTER);
 		window.addKeyListener(cva);
 		

@@ -1,4 +1,4 @@
-package sphereority.common.messages;
+package common.messages;
 
 /**
  *  Abstracts the basic properties of a header within the project.

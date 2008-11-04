@@ -34,7 +34,7 @@ public class Player extends Actor {
       x = Constants.GAME_WINDOW_WIDTH - getWidth();
     if (y < 0 )
       y = 0;
-    if ( y > Constants.GAME_WINDOW_PLAY_HEIGHT-getHeight())
+    if ( y > Constants.GAME_WINDOW_PLAY_HEIGHT - getHeight())
       y = Constants.GAME_WINDOW_PLAY_HEIGHT - getHeight();
   }
 
@@ -107,7 +107,11 @@ public class Player extends Actor {
     if (shields > MAX_SHIELDS) shields = MAX_SHIELDS;
   }
   
-  public void collision(Actor a) {} 
+  public void collision(Actor a) {
+		if (a instanceof Brick) {
+			remove();
+		}		
+	} 
 
   public int getClusterBombs() {  return clusterBombs;  }
   public void setClusterBombs(int i) {  clusterBombs = i; }

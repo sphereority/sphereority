@@ -1,4 +1,4 @@
-package sphereority.common.messages;
+package common.messages;
 
 /**
  * Interface - Packetizable

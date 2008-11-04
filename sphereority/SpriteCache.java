@@ -8,9 +8,9 @@ package sphereority;
  * 
  */
 
-import java.awt.image.BufferedImage;
-import java.net.URL;
-import javax.imageio.ImageIO;
+import java.awt.image.*;
+import java.net.*;
+import javax.imageio.*;
 
 public class SpriteCache extends ResourceCache{
 	
