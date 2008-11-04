@@ -1,6 +1,5 @@
 package client;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -8,9 +7,8 @@ import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.util.*;
-import java.io.*;
-import java.net.*;
 
+import client.audio.*;
 import client.gui.*;
 import common.*;
 import common.Map;
@@ -46,7 +44,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected Timer gameTimer;
 	protected long lastTime;
 	protected boolean[] keysPressed;
-	protected AudioClip soundBump;
+	protected SoundEffect soundBump;
+	protected GameSoundSystem gameSoundSystem;
 	
 	public ClientViewArea()
 	{
@@ -76,14 +75,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
 		
-		try
-		{
-			soundBump = Applet.newAudioClip((new File(SOUND_BUMP)).toURI().toURL());
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
+		gameSoundSystem = new GameSoundSystem();
+		soundBump = gameSoundSystem.loadSoundEffect(SOUND_BUMP);
 	}
 	
 	public void setLocalPlayer(Player p)
