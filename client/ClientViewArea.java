@@ -56,7 +56,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		setMaximumSize(d);
 		
 		setBackground(Color.black);
-		setForeground(new Color(0.7f, 0.4f, 0.2f, 0.75f)); // For testing only, until we get collision detection going
+		//setForeground(new Color(0.7f, 0.4f, 0.2f, 0.75f)); // For testing only, until we get collision detection going
+		setForeground(Color.gray);
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);

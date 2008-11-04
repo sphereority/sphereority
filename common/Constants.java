@@ -5,7 +5,7 @@ package common;
  * @author dvanhumb
  *
  */
-public interface Constants
+public interface Constants extends sphereority.Constants
 {
   /**
    * The fastest an object can move in units per second
