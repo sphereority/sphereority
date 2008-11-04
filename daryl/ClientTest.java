@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import common.*;
-import client.ClientViewArea;
+import client.*;
 import client.gui.*;
 
 public class ClientTest implements ActionCallback
@@ -17,7 +17,9 @@ public class ClientTest implements ActionCallback
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		cva = new ClientViewArea();
-		cva.setLocalPlayer(new Player(0.5f, 0.5f));
+		Player player = new LocalPlayer();
+		player.setPosition(0.5f, 0.5f);
+		cva.setLocalPlayer(player);
 		cva.setMap(new Map());
 		window.getContentPane().add(cva, BorderLayout.CENTER);
 		window.addKeyListener(cva);
