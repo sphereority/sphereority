@@ -1,13 +1,12 @@
 package common.messages;
 
 /**
-
- *  MessageAnalyzer
-
+ *
+ *  MessageAnalyzer - Helper class used in figuring out
+ *                    the meaning of messages.
+ *                    This includes changing from messages
+ *                    to their byte representations.
  *  @author Raphael Lagman 
-
- *.
-
  */
 public abstract class MessageAnalyzer {
 	
@@ -89,15 +88,18 @@ public abstract class MessageAnalyzer {
     
     /**
      *  Creates a message from an array of bytes.
-     *  
+     *  @param message The message that is received
+     *  @return The message that was sent.  Must be cast in order to work
+     *          with it.
      */
     public static Packetizable getMessage(byte[] message) {
         Packetizable createdMessage;
-
+        
+        // Figure out what message type we have
 		switch (message[MESSAGE_TYPE]) {
 			case PLAYER_MOTION:
 				createdMessage = new PlayerMotionMessage();
-				break;
+                break;
 			case MAP_CHANGE:
 				createdMessage = new MapChangeMessage();
 				break;
@@ -116,6 +118,20 @@ public abstract class MessageAnalyzer {
 			default:
 				createdMessage = null;
 		}
+
+        /* Read the packet data if a message was read */
+        if (createdMessage != null)
+            createdMessage.readPacketData(message);
+				
 		return createdMessage;
+    }
+
+    /**
+     *  Creates an array of bytes from a message.
+     *  @param message The message that is received
+     *  @return The message to be sent.
+     */
+    public static byte[] getMessage(Packetizable message) {
+        return message.createPacketData();
     }
 }
