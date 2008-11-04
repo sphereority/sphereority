@@ -1,4 +1,4 @@
-package	sphereority;
+package	common;
 
 /**
  * This class describes projectile in the game

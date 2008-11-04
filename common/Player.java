@@ -1,18 +1,22 @@
-package	sphereority;
+package	common;
 
 /**
- * This class describes the template for a game player
+ * This (presently) represents a player
+ * @author dvanhumb
  * @author smaboshe
  *
  */
-public abstract class Player {
+public abstract class Player extends WeightedPosition {
 	// INSTANCE METHODS
 	
 	
 	// CONSTRUCTORS
+	public Player()
+	{
+		super();
+	}
 	
-	
-	
+		
 	
 	// GETTERS
 	
@@ -24,26 +28,4 @@ public abstract class Player {
 	// OPERATIONS
 	
 	
-}
-
-
-
-package common;
-
-/**
- * This (presently) represents a player
- * @author dvanhumb
- *
- */
-public class Player extends WeightedPosition
-{	
-	public Player()
-	{
-		super();
-	}
-	
-	public Player(float x, float y)
-	{
-		super(x, y);
-	}
 }

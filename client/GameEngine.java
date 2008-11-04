@@ -1,4 +1,4 @@
-package	sphereority;
+package	client;
 
 /**
  * This class describes the game loop for this game

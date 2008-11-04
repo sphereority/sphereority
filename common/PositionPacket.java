@@ -1,4 +1,4 @@
-package	sphereority;
+package	common;
 
 /**
  * This class describes a position set to or received from the network

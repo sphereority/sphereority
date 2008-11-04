@@ -1,4 +1,4 @@
-package	sphereority;
+package	common;
 
 /**
  * This class describes a human player who has local access to the keyboard and mouse

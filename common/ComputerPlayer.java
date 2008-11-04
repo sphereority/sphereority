@@ -1,4 +1,4 @@
-package	sphereority;
+package	common;
 
 /**
  * This class describes an artificial game player (a "bot")

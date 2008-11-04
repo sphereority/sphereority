@@ -1,4 +1,4 @@
-package	sphereority;
+package	common;
 
 /**
  * This class describes a player who is playing the game via the network
