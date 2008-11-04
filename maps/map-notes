@@ -1,0 +1,21 @@
+This document outlines the format of map files.  
+Please note: one based indexing to represent each map unit.  For example, number of wall units surrounding the top of map should equal the number of x units declared.
+
+Format of game maps are as follows:
+
+(number of x units) (number of y units)
+(map data with x number of columns and y number of rows)
+
+Example map below:
+
+20 10
+++++++++++++++++++++
++                  +
++ ++         +     +
++ +        +++     +
++ +          +   + +
++ +    +         + +
++      +++       + +
++      +        ++ +
++                  +
+++++++++++++++++++++
