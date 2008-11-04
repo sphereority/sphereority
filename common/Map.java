@@ -115,12 +115,12 @@ public class Map {
      * @param   y the y-axis coordinate (origin is top-left corner)
      * @return  true if there exists a wall on the coordinate; false otherwise.
      */
-    public boolean isWall(int x, int y) {
+    /*public boolean isWall(int x, int y) {
         if (mapping[y][x] == '+')
             return true;
         else
             return false;
-    }
+    }*/
     
     /**
      * 
