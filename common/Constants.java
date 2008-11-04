@@ -42,9 +42,25 @@ public interface Constants extends sphereority.Constants
    * The size of a player in world units
    */
   public static final float PLAYER_SIZE = 0.5f;
+
+	/**
+	 * The width of the player window
+	 */
+	public static final int GAME_WINDOW_WIDTH = 640;
+
+	/**
+	 * The height of the player window
+	 */
+	public static final int GAME_WINDOW_HEIGHT = 480;
+
+
+	/**
+	 * The name of the folder that contains game resources
+	 */	
+	public static final String RESOURCES_FOLDER = "resources/";
   
-  /**
-   * The name of the file that contains the "wall bump" sound
-   */
-  public static final String SOUND_BUMP = "sounds/wall_bump.wav";
+	/**
+	 * The name of the file that contains the "wall bump" sound
+	 */	
+	public static final String SOUND_BUMP = RESOURCES_FOLDER + "wall_bump.wav";
 }

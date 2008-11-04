@@ -1,19 +1,31 @@
-package common;
+package	common;
 
 /**
  * This (presently) represents a player
  * @author dvanhumb
+ * @author smaboshe
  *
  */
-public class Player extends WeightedPosition
-{	
+public abstract class Player extends WeightedPosition {
+	// INSTANCE METHODS
+	
+	
+	// CONSTRUCTORS
 	public Player()
 	{
 		super();
 	}
 	
-	public Player(float x, float y)
-	{
-		super(x, y);
-	}
+		
+	
+	// GETTERS
+	
+	
+	
+	// SETTERS
+	
+	
+	// OPERATIONS
+	
+	
 }
