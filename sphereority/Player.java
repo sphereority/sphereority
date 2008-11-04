@@ -6,4 +6,22 @@ package	sphereority;
  *
  */
 public abstract class Player {
+	// INSTANCE METHODS
+	
+	
+	// CONSTRUCTORS
+	
+	
+	
+	
+	// GETTERS
+	
+	
+	
+	// SETTERS
+	
+	
+	// OPERATIONS
+	
+	
 }

@@ -5,6 +5,6 @@ package	sphereority;
  * @author smaboshe
  *
  */
-public class GameViewArea {
+public class GameViewArea implements Constants {
 	
 }

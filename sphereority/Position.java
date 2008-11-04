@@ -8,8 +8,8 @@ package	sphereority;
  */
 public class Position implements Constants {
 	// INSTANCE VARIABLES
-	private float x;
-	private float y;
+	protected float x;
+	protected float y;
 
 	
 	

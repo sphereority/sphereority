@@ -6,5 +6,26 @@ package	sphereority;
  *
  */
 public class GameEngine {
+	// INSTANCE METHODS
+	private boolean gameEnded;
+	private int ticks;
+
+
+	// CONSTRUCTORS
+	public GameEngine() {
+		this.gameEnded = false;
+	}
 	
+	// GETTERS	
+	public boolean hasEnded() {
+		return this.gameEnded;
+	}
+	
+	// SETTERS
+	
+	
+	// OPERATIONS	
+	public void end() {
+		gameEnded = true;
+	}
 }
