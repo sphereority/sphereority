@@ -57,9 +57,14 @@ public interface Constants
 		The height of the playable area
 	*/
 	public static final int GAME_WINDOW_PLAY_HEIGHT = 400; 
+	
+	/**
+	 * The name of the folder that contains game resources
+	 */	
+	public static final String RESOURCES_FOLDER = "resources/";
 	  
-	  /**
-	   * The name of the file that contains the "wall bump" sound
-	   */
-	  public static final String SOUND_BUMP = "sounds/wall_bump.wav";
+  /**
+   * The name of the file that contains the "wall bump" sound
+   */	
+	public static final String SOUND_BUMP = RESOURCES_FOLDER + "wall_bump.wav";
 }
