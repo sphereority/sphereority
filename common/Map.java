@@ -170,9 +170,4 @@ public class Map {
         }        
         
     }
-    
-    public boolean isWall(int x, int y)
-    {
-    	return (mapping[x][y] == '+');
-    }
 }
