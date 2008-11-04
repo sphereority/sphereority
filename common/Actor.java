@@ -1,12 +1,11 @@
 package	common;
-import common.Constants;
 
 /**
  * This class describes an abstract class for an Actor in this game
  * @author smaboshe
  *
  */
-public abstract class Actor {
+public abstract class Actor implements Constants {
 	// INSTANCE VARIABLES
 	protected Position position;
 	protected Position velocity;
