@@ -1,9 +1,11 @@
 package	sphereority;
 
 
-/*
- Describes a two-dimensional postion on a coordinate plane.
-*/
+/**
+ * Describes a two-dimensional postion on a coordinate plane.
+ * @author smaboshe
+ *
+ */
 public class Position implements Constants {
 	// INSTANCE VARIABLES
 	private float x;
