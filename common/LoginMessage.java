@@ -5,11 +5,12 @@ import java.nio.ByteBuffer;
 
 public class LoginMessage {
     // Constants
-    public static final String CHARSET_NAME = "UTF-8";
-    public static final String NAME_HEADER = "NAME=";
-    public static final String PASS_HEADER = "PASS=";
-    public static final String PORT_HEADER = "PORT=";
-    public static final String SEPERATOR = "~";
+    private static final String CHARSET_NAME = "UTF-8";
+    private static final String NAME_HEADER = "NAME=";
+    private static final String PASS_HEADER = "PASS=";
+    private static final String PORT_HEADER = "PORT=";
+    private static final String FAIL_REASON_HEADER  = "REASON=";
+    private static final String SEPERATOR = "~";
 
     // get the whole message as a string
     public static String getMessageString(byte [] messagedata){
@@ -70,5 +71,23 @@ public class LoginMessage {
 	int end = message.indexOf(SEPERATOR,start);
 	
 	return Integer.parseInt(message.substring(start,end));
+    }
+    /*
+    *  LOGIN FAILURE
+    */
+    public static boolean isLoginFailureMessage(byte [] messagedata){
+	String message = getMessageString(messagedata);
+	return message.startsWith("FAILURE" + SEPERATOR);
+    }
+    public static byte [] getLoginFailreMessage(String reason){
+	Charset charset = Charset.forName(CHARSET_NAME);
+	String message = new String("FAILURE" + SEPERATOR + FAIL_REASON_HEADER + reason + SEPERATOR);
+	return charset.encode(message).array();
+    }
+    public static String getFailureReason(byte [] messagedata){
+	String message = getMessageString(messagedata);
+	int start = message.indexOf(FAIL_REASON_HEADER) + FAIL_REASON_HEADER.length();
+	int end = message.indexOf(SEPERATOR,start);
+	return message.substring(start,end);
     }
 }
