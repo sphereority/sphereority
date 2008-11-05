@@ -32,9 +32,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected Vector<Widget> widgetList;
 	
 	// Game-related stuff:
-	protected Player localPlayer;
+	protected LocalPlayer localPlayer;
 	protected WeightedPosition viewTracker;
-	protected Vector<Player> playerList;
+	protected Vector<Actor> actorList;
 	protected Map map;
 	protected int mapWidth, mapHeight;
 	
@@ -69,6 +69,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		keysPressed = new boolean[1024];
 		antialiasing = false;
 		
+		actorList = new Vector<Actor>();
+		
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
 		
@@ -76,8 +78,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		soundBump = gameSoundSystem.loadSoundEffect(SOUND_BUMP);
 	}
 	
-	public void setLocalPlayer(Player p)
+	public void setLocalPlayer(LocalPlayer p)
 	{
+		if (!actorList.contains(p))
+			actorList.add(p);
 		localPlayer = p;
 		if (viewTracker == null)
 			viewTracker = new WeightedPosition(localPlayer.getX(), localPlayer.getY());
@@ -85,7 +89,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		repaint();
 	}
 	
-	public Player getLocalPlayer()
+	public LocalPlayer getLocalPlayer()
 	{
 		return localPlayer;
 	}
@@ -161,12 +165,16 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		g2.translate(offset_x, offset_y);
 		
+		// Draw all actors:
+		for (Actor a : actorList)
+			a.draw(g2, scale);
+		
 		// Draw the player
-		if (localPlayer != null)
+		/*if (localPlayer != null)
 		{
 			g2.setColor(playerColor);
 			GuiUtils.drawFilledOctagon(g2, Math.round(localPlayer.getX()*scale), Math.round(localPlayer.getY()*scale), scale*PLAYER_SIZE);
-		}
+		}*/
 		
 		// Draw the walls
 		if (map != null)
@@ -297,14 +305,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void keyPressed(KeyEvent e)
 	{
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
-		else if (e.getKeyCode() == KeyEvent.VK_WINDOWS)
-		{
-			if (playerColor == Color.green)
-				playerColor = Color.orange;
-			else
-				playerColor = Color.green;
-			repaint();
-		}
 		else if (e.getKeyCode() == KeyEvent.VK_INSERT)
 		{
 			antialiasing = !antialiasing;

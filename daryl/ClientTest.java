@@ -16,8 +16,10 @@ public class ClientTest implements ActionCallback
 		JFrame window = new JFrame("Sphereority client test");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		InputListener listener = new InputListener();
+		
 		cva = new ClientViewArea();
-		Player player = new LocalPlayer();
+		LocalPlayer player = new LocalPlayer(listener);
 		player.setPosition(0.5f, 0.5f);
 		cva.setLocalPlayer(player);
 		cva.setMap(new Map());
@@ -37,6 +39,10 @@ public class ClientTest implements ActionCallback
 		sb.addCallback(ct);
 		sb.setFontSize(9);
 		cva.addWidget(sb);
+		
+		window.addKeyListener(listener);
+		window.addMouseListener(listener);
+		window.addMouseMotionListener(listener);
 		
 		window.pack();
 		window.setLocationRelativeTo(null);

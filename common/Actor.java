@@ -1,5 +1,7 @@
 package	common;
 
+import java.awt.Graphics2D;
+
 /**
  * This class describes an abstract class for an Actor in this game
  * @author smaboshe
@@ -16,24 +18,31 @@ public abstract class Actor implements Constants {
 	
 	
 	// CONSTRUCTORS
-	
+	public Actor()
+	{
+		position = new Position();
+		velocity = new Position();
+		alive = true;
+		team = 0;
+		state = 0;
+	}
 	
 	// GETTERS
-	protected Position getPosition() { return this.position; }
-	protected Position getVelocity() { return this.velocity; }
-	protected int getState() { return this.state; }
-	protected int getTeam() { return this.team; }
+	public Position getPosition() { return position; }
+	public Position getVelocity() { return velocity; }
+	public int getState() { return state; }
+	public int getTeam() { return team; }
 	
 
 	// SETTERS
-	protected abstract int setState();
-	protected abstract int setTeam();
-	protected void setState(int newState) { this.state = newState; }
-	protected void setTeam(int newTeam) { this.team = newTeam; }
+	//protected abstract int setState();
+	//protected abstract int setTeam();
+	public void setState(int newState) { state = newState; }
+	public void setTeam(int newTeam) { team = newTeam; }
 	
 	
 	// OPERATIONS
-	protected abstract void animate();
-	protected abstract void draw();
-	protected boolean isAlive() { return this.alive == true; }
+	public abstract boolean animate(float dTime);
+	public abstract void draw(Graphics2D g, float scale);
+	public boolean isAlive() { return alive; }
 }
