@@ -30,6 +30,7 @@ public class LoginMessage {
 	return messagestring.startsWith("LOGIN" + SEPERATOR);
     }
     public static byte[] getLoginMessage(String username, String passwd){
+	System.out.println("LoginMessage.getLoginMessage");
 	Charset charset = Charset.forName(CHARSET_NAME);
 	String message = new String("LOGIN" + SEPERATOR + "NAME=" + username + SEPERATOR +  "PASS=" + passwd + SEPERATOR);
 	return charset.encode(message).array();
