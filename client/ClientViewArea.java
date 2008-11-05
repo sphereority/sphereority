@@ -5,13 +5,11 @@ import java.awt.event.*;
 import java.awt.geom.*;
 
 import javax.swing.*;
-import javax.swing.Timer;
-import java.util.*;
+import java.util.Vector;
 
 import client.audio.*;
 import client.gui.*;
 import common.*;
-import common.Map;
 
 /**
  * This class manages displaying the current play area
@@ -49,14 +47,13 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	public ClientViewArea()
 	{
-		Dimension d = new Dimension(640, 480);
+		Dimension d = new Dimension(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
 		setMinimumSize(d);
 		setPreferredSize(d);
 		setMaximumSize(d);
 		
 		setBackground(Color.black);
-		//setForeground(new Color(0.7f, 0.4f, 0.2f, 0.75f)); // For testing only, until we get collision detection going
-		setForeground(Color.gray);
+		setForeground(new Color(0.8f, 0.4f, 0.2f));
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -164,23 +161,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		g2.translate(offset_x, offset_y);
 		
-		// TEMP: Draw a simple grid:
-		g2.setColor(Color.lightGray);
-		int t;
-		int levelWidth = Math.round(mapWidth*scale);
-		int levelHeight = Math.round(mapHeight*scale);
-		for (int x = mapWidth; x >= 0; x--)
-		{
-			t = Math.round(x * scale);
-			g2.drawLine(t, 0, t, levelHeight);
-		}
-		g2.setColor(Color.gray);
-		for (int y = mapHeight; y >= 0; y--)
-		{
-			t = Math.round(y * scale);
-			g2.drawLine(0, t, levelWidth, t);
-		}
-		
 		// Draw the player
 		if (localPlayer != null)
 		{
@@ -207,7 +187,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				for (int y=top; y <= bottom; y++)
 				{
 					if (map.isWall(x, y))
-						g2.fillRect(Math.round(x*scale)+2, Math.round(y*scale)+2, Math.round(scale)-3, Math.round(scale)-3);
+						g2.fillRect(Math.round(x*scale), Math.round(y*scale), Math.round(scale), Math.round(scale));
 				}
 		} // end draw map
 		
