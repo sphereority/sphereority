@@ -33,6 +33,12 @@ public class Position implements Constants {
 	/* Get the Y coordinate */
 	public float getY() { return this.y; }
 	
+	/**
+	 * Find the length of this vector
+	 * @return	The real length of this vector
+	 */
+	public float getMagnitude() { return (float)Math.sqrt(x*x + y*y); }
+	
 	// SETTERS
 	
 	/* Set the X coordinate */

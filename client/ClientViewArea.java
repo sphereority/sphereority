@@ -334,16 +334,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			float dTime = 0.001f * (thisTime - lastTime);
 			boolean repaint = false;
 			
-			if (keysPressed[KeyEvent.VK_LEFT])
-				localPlayer.accelerate(-PLAYER_ACCELERATION, 0);
-			if (keysPressed[KeyEvent.VK_RIGHT])
-				localPlayer.accelerate(PLAYER_ACCELERATION, 0);
-			if (keysPressed[KeyEvent.VK_UP])
-				localPlayer.accelerate(0, -PLAYER_ACCELERATION);
-			if (keysPressed[KeyEvent.VK_DOWN])
-				localPlayer.accelerate(0, PLAYER_ACCELERATION);
+			for (Actor a : actorList)
+				if (a.animate(dTime))
+					repaint = true;
 			
-			if (localPlayer != null && localPlayer.animate(dTime)) repaint = true;
 			if (viewTracker != null && viewTracker.animate(dTime)) repaint = true;
 			
 			if (repaint) repaint();

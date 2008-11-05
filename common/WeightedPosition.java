@@ -45,31 +45,31 @@ public class WeightedPosition extends Actor implements Constants
 	
 	public float getSpeedX()
 	{
-		return 0;//speed_x;
+		return velocity.x;
 	}
 	
 	public float getSpeedY()
 	{
-		return 0;//speed_y;
+		return velocity.y;
 	}
 	
 	public void accelerate(float x, float y)
 	{
-		//speed_x += x;
-		//speed_y += y;
+		velocity.x += x;
+		velocity.y += y;
 		checkSpeed();
 	}
 	
 	protected float checkSpeed()
 	{
-		//float speed = (float) Math.sqrt(speed_x * speed_x + speed_y * speed_y);
-		/*if (speed > MAXIMUM_SPEED)
+		float speed = velocity.getMagnitude();
+		if (speed > MAXIMUM_SPEED)
 		{
-			speed_x = MAXIMUM_SPEED * speed_x / speed;
-			speed_y = MAXIMUM_SPEED * speed_y / speed;
+			velocity.x = MAXIMUM_SPEED * velocity.x / speed;
+			velocity.y = MAXIMUM_SPEED * velocity.y / speed;
 			return MAXIMUM_SPEED;
-		}*/
-		return 0;//speed;
+		}
+		return speed;
 	}
 	
 	/* ******************************************** *
@@ -91,12 +91,11 @@ public class WeightedPosition extends Actor implements Constants
 	 */
 	public boolean animate(float dTime)
 	{
-		/*
 		// If we're tracking something/someone
 		if (target != null)
 		{
 			float dx = target.getX() - position.x;
-			float dy = target.getY() - pos_y;
+			float dy = target.getY() - position.y;
 			float speed = speedOf(dx, dy);
 			
 			if (speed > 1)
@@ -107,31 +106,31 @@ public class WeightedPosition extends Actor implements Constants
 			
 			if (speed > 0.1f)
 			{
-				if (speedOf(speed_x, speed_y) < speed)
+				if (velocity.getMagnitude() < speed)
 				{
-					//speed_x += dx * TRACKING_SPEED;
-					//speed_y += dy * TRACKING_SPEED;
+					velocity.x += dx * TRACKING_SPEED;
+					velocity.y += dy * TRACKING_SPEED;
 				}
 				else
 				{
-					//speed_x -= dx * TRACKING_SPEED;
-					//speed_y -= dy * TRACKING_SPEED;
+					velocity.x -= dx * TRACKING_SPEED;
+					velocity.y -= dy * TRACKING_SPEED;
 				}
 			}
 		}
 		
 		// Apply some friction to our motion
-		//speed_x *= FRICTION_COEFFICIENT;
-		//speed_y *= FRICTION_COEFFICIENT;
+		velocity.x *= FRICTION_COEFFICIENT;
+		velocity.y *= FRICTION_COEFFICIENT;
 		
 		// Check our speed to see if it's too fast
 		if (checkSpeed() < 0.01f) return false;
 		
 		// Actually apply the speed to our position
-		//position.x += speed_x * dTime;
-		//position.y += speed_y * dTime;
-		*/
-		return false;
+		position.x += velocity.x * dTime;
+		position.y += velocity.y * dTime;
+		
+		return true;
 	}
 	
 	
@@ -141,7 +140,7 @@ public class WeightedPosition extends Actor implements Constants
 		 * We don't actually draw anything here, as this still doesn't have
 		 * a graphical representation, but still needs this method so as to
 		 * be a non-abstract class.
-		 */ 
+		 */
 	}
 	
 	/**

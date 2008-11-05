@@ -178,9 +178,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		keysPressed[code] = false;
 		numKeysPressed --;
 	}
-
-	public void keyTyped(KeyEvent e)
-	{
-		
-	}
+	
+	// Don't need this one
+	public void keyTyped(KeyEvent e) { }
 }

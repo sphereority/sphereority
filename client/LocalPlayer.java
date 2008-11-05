@@ -23,6 +23,15 @@ public class LocalPlayer extends Player {
 	
 	public boolean animate(float dTime)
 	{
-		return false;
+		if (inputDevice.isLeftKeyPressed())
+			accelerate(-PLAYER_ACCELERATION, 0);
+		if (inputDevice.isRightKeyPressed())
+			accelerate(PLAYER_ACCELERATION, 0);
+		if (inputDevice.isUpKeyPressed())
+			accelerate(0, -PLAYER_ACCELERATION);
+		if (inputDevice.isDownKeyPressed())
+			accelerate(0, PLAYER_ACCELERATION);
+		
+		return super.animate(dTime);
 	}
 }
