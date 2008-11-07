@@ -9,42 +9,15 @@ import javax.swing.Timer;
  * @author smaboshe
  *
  */
-public class GameEngine implements ActionListener {
-	// INSTANCE METHODS
-	private boolean gameEnded;
-	private long lastTickTime;
-	private Timer timer;
+public class GameEngine {
+	public boolean gameOver;
 
-
-	// CONSTRUCTORS
 	public GameEngine() {
-		this.gameEnded = false;
-		timer = new Timer(10, this);
-		timer.start();
-		lastTickTime = System.currentTimeMillis();
+		
 	}
 	
-	// GETTERS	
-	public boolean hasEnded() {
-		return this.gameEnded;
-	}
-	
-	// SETTERS
-	
-	
-	// OPERATIONS	
-	public void end() {
-		gameEnded = true;
-		timer.stop();
-	}
-	
-	public void actionPerformed(ActionEvent e)
-	{
-		long thisTime = System.currentTimeMillis();
-		float dTime = 0.001f*(thisTime - lastTickTime);
-		
-		
-		
-		lastTickTime = thisTime;
+	public void play() {
+		String title = "Game Engine Test";
+		System.out.println(title);
 	}
 }
