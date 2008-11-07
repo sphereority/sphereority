@@ -2,6 +2,13 @@ package common;
 
 import java.awt.Graphics2D;
 
+/*
+ * TODO: I'm in the process of splitting the speed stuff into two parts:
+ * The velocity is the direction we want to go in
+ * The velocity is the velocity we have now
+ * Each step we try to move in the direction of our velocity
+ */
+
 /**
  * This represents a location with possible tracking capabilities
  * @author dvanhumb
@@ -9,8 +16,6 @@ import java.awt.Graphics2D;
  */
 public class WeightedPosition extends Actor implements Constants
 {
-	protected WeightedPosition target;
-	
 	public WeightedPosition()
 	{
 		this(0, 0);
@@ -21,43 +26,12 @@ public class WeightedPosition extends Actor implements Constants
 		setPosition(x, y);
 	}
 	
-	public float getX()
-	{
-		return position.x;
-	}
-	
-	public float getY()
-	{
-		return position.y;
-	}
-	
-	public void setPosition(float x, float y)
-	{
-		position.x = x;
-		position.y = y;
-	}
-	
-	public void moveBy(float x, float y)
-	{
-		position.x += x;
-		position.y += y;
-	}
-	
-	public float getSpeedX()
-	{
-		return velocity.x;
-	}
-	
-	public float getSpeedY()
-	{
-		return velocity.y;
-	}
 	
 	public void accelerate(float x, float y)
 	{
 		velocity.x += x;
 		velocity.y += y;
-		checkSpeed();
+		velocity.checkLength();
 	}
 	
 	protected float checkSpeed()
@@ -72,53 +46,11 @@ public class WeightedPosition extends Actor implements Constants
 		return speed;
 	}
 	
-	/* ******************************************** *
-	 * This section is about tracking other objects *
-	 * This may be helpful for AI stuff             *
-	 * ******************************************** */
-	public void setTarget(WeightedPosition target)
-	{
-		this.target = target;
-	}
-	
-	public WeightedPosition getTarget()
-	{
-		return target;
-	}
-	
 	/**
 	 * This method handles moving the object around
 	 */
 	public boolean animate(float dTime)
 	{
-		// If we're tracking something/someone
-		if (target != null)
-		{
-			float dx = target.getX() - position.x;
-			float dy = target.getY() - position.y;
-			float speed = speedOf(dx, dy);
-			
-			if (speed > 1)
-			{
-				dx /= speed;
-				dy /= speed;
-			}
-			
-			if (speed > 0.1f)
-			{
-				if (velocity.getMagnitude() < speed)
-				{
-					velocity.x += dx * TRACKING_SPEED;
-					velocity.y += dy * TRACKING_SPEED;
-				}
-				else
-				{
-					velocity.x -= dx * TRACKING_SPEED;
-					velocity.y -= dy * TRACKING_SPEED;
-				}
-			}
-		}
-		
 		// Apply some friction to our motion
 		velocity.x *= FRICTION_COEFFICIENT;
 		velocity.y *= FRICTION_COEFFICIENT;
@@ -127,8 +59,9 @@ public class WeightedPosition extends Actor implements Constants
 		if (checkSpeed() < 0.01f) return false;
 		
 		// Actually apply the speed to our position
-		position.x += velocity.x * dTime;
-		position.y += velocity.y * dTime;
+		position.move(velocity, dTime);
+		//position.x += velocity.x * dTime;
+		//position.y += velocity.y * dTime;
 		
 		return true;
 	}

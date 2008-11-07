@@ -33,7 +33,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	// Game-related stuff:
 	protected LocalPlayer localPlayer;
-	protected WeightedPosition viewTracker;
+	protected TrackingObject viewTracker;
 	protected Vector<Actor> actorList;
 	protected Map map;
 	protected int mapWidth, mapHeight;
@@ -84,7 +84,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			actorList.add(p);
 		localPlayer = p;
 		if (viewTracker == null)
-			viewTracker = new WeightedPosition(localPlayer.getX(), localPlayer.getY());
+			viewTracker = new TrackingObject(localPlayer.getPosition());
 		viewTracker.setTarget(localPlayer);
 		repaint();
 	}
@@ -159,8 +159,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		if (viewTracker != null)
 		{
-			offset_x -= Math.round(viewTracker.getX()*scale);
-			offset_y -= Math.round(viewTracker.getY()*scale);
+			offset_x -= Math.round(viewTracker.getPosition().getX()*scale);
+			offset_y -= Math.round(viewTracker.getPosition().getY()*scale);
 		}
 		
 		g2.translate(offset_x, offset_y);
@@ -168,13 +168,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		// Draw all actors:
 		for (Actor a : actorList)
 			a.draw(g2, scale);
-		
-		// Draw the player
-		/*if (localPlayer != null)
-		{
-			g2.setColor(playerColor);
-			GuiUtils.drawFilledOctagon(g2, Math.round(localPlayer.getX()*scale), Math.round(localPlayer.getY()*scale), scale*PLAYER_SIZE);
-		}*/
 		
 		// Draw the walls
 		if (map != null)
@@ -338,7 +331,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				if (a.animate(dTime))
 					repaint = true;
 			
-			if (viewTracker != null && viewTracker.animate(dTime)) repaint = true;
+			if (viewTracker != null && viewTracker.animate(dTime))
+				repaint = true;
 			
 			if (repaint) repaint();
 			lastTime = thisTime;
