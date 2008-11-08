@@ -1,50 +1,37 @@
 package	client;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.Timer;
+import common.Map;
 
 /**
  * This class describes the game loop for this game
  * @author smaboshe
  *
  */
-public class GameEngine implements ActionListener {
-	// INSTANCE METHODS
-	private boolean gameEnded;
-	private long lastTickTime;
-	private Timer timer;
-
+public class GameEngine {
+	public boolean gameOver;
+	public Map gameMap;
 
 	// CONSTRUCTORS
-	public GameEngine() {
-		this.gameEnded = false;
-		timer = new Timer(10, this);
-		timer.start();
-		lastTickTime = System.currentTimeMillis();
+	public GameEngine(Map m) {
+		this.gameOver = false;
+		this.gameMap = m;
 	}
 	
-	// GETTERS	
-	public boolean hasEnded() {
-		return this.gameEnded;
+	// GETTERS
+	public Map getMap() {
+		return this.gameMap;
 	}
+
 	
 	// SETTERS
-	
-	
-	// OPERATIONS	
-	public void end() {
-		gameEnded = true;
-		timer.stop();
+	public void setMap(Map m) {
+		this.gameMap = m;
 	}
 	
-	public void actionPerformed(ActionEvent e)
-	{
-		long thisTime = System.currentTimeMillis();
-		float dTime = 0.001f*(thisTime - lastTickTime);
-		
-		
-		
-		lastTickTime = thisTime;
+	
+	// OPERATIONS
+	public void play() {
+		String title = "Game Engine Test";
+		System.out.println(title);
 	}
 }
