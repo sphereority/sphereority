@@ -18,9 +18,15 @@ public class GameEngine {
 	}
 	
 	// GETTERS
+	public Map getMap() {
+		return this.gameMap;
+	}
 
 	
 	// SETTERS
+	public void setMap(Map m) {
+		this.gameMap = m;
+	}
 	
 	
 	// OPERATIONS
