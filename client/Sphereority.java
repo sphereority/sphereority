@@ -5,9 +5,12 @@ package	client;
  * @author smaboshe
  *
  */
+
+import common.Map;
+
 public class Sphereority {
 	public static void main(String[] args) {
-		GameEngine game = new GameEngine();
+		GameEngine game = new GameEngine(new Map());
 		game.play();
 	}
 }

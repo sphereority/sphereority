@@ -1,8 +1,6 @@
 package	client;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.Timer;
+import common.Map;
 
 /**
  * This class describes the game loop for this game
@@ -11,11 +9,21 @@ import javax.swing.Timer;
  */
 public class GameEngine {
 	public boolean gameOver;
+	public Map gameMap;
 
-	public GameEngine() {
-		
+	// CONSTRUCTORS
+	public GameEngine(Map m) {
+		this.gameOver = false;
+		this.gameMap = m;
 	}
 	
+	// GETTERS
+
+	
+	// SETTERS
+	
+	
+	// OPERATIONS
 	public void play() {
 		String title = "Game Engine Test";
 		System.out.println(title);
