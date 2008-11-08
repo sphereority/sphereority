@@ -124,6 +124,7 @@ public class WeightedPosition extends Actor implements Constants
 		velocity.y *= FRICTION_COEFFICIENT;
 		
 		// Check our speed to see if it's too fast
+		// And if we aren't actually moving, say so
 		if (checkSpeed() < 0.01f) return false;
 		
 		// Actually apply the speed to our position
