@@ -10,7 +10,7 @@ public class Position implements Constants {
 	// INSTANCE VARIABLES
 	protected float x;
 	protected float y;
-
+	
 	
 	
 	// CONSTRUCTORS
@@ -23,6 +23,12 @@ public class Position implements Constants {
 	public Position(float xLocation, float yLocation) {
 		this.x = xLocation;
 		this.y = yLocation;
+	}
+	
+	public Position(Position p)
+	{
+		x = p.x;
+		y = p.y;
 	}
 	
 	// GETTERS
@@ -38,6 +44,11 @@ public class Position implements Constants {
 	 * @return	The real length of this vector
 	 */
 	public float getMagnitude() { return (float)Math.sqrt(x*x + y*y); }
+	
+	public Position subtract(Position p)
+	{
+		return new Position(x - p.x, y - p.y);
+	}
 	
 	// SETTERS
 	
@@ -62,8 +73,8 @@ public class Position implements Constants {
 	
 	/* Move this position by a constant amount in both the X and Y directions */
 	public void move(Position p, float amount) {
-		this.x = this.x * amount;
-		this.y = this.y * amount;
+		this.x += p.x * amount;
+		this.y += p.y * amount;
 	}
 
 	/* Rebound a Position against a "wall" in the X direction */
@@ -74,5 +85,33 @@ public class Position implements Constants {
 	/* Rebound a Position against a "wall" in the Y direction */
 	public void bounceY() {
 		this.y = this.y * -(WALL_REBOUND);
+	}
+	
+	/**
+	 * Only used when this represents a velocity or acceleration vector.
+	 */
+	public void checkLength()
+	{
+		float length = getMagnitude();
+		if (length > MAXIMUM_SPEED)
+		{
+			x = MAXIMUM_SPEED * x / length;
+			y = MAXIMUM_SPEED * y / length;
+		}
+	}
+	
+	public void scale(float s)
+	{
+		x *= s;
+		y *= s;
+	}
+	
+	public void setDirection(Position p)
+	{
+		float mySize = getMagnitude();
+		float pSize = p.getMagnitude();
+		
+		x = mySize * p.x / pSize;
+		y = mySize * p.y / pSize;
 	}
 }

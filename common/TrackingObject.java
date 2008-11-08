@@ -5,6 +5,70 @@ package	common;
  * @author smaboshe
  *
  */
-public class TrackingObject {
+public class TrackingObject extends WeightedPosition
+{
+	protected Actor target;
 	
+	public TrackingObject()
+	{
+		this(0, 0);
+	}
+	
+	public TrackingObject(float x, float y)
+	{
+		super();
+		setPosition(x, y);
+	}
+	
+	public TrackingObject(Position p)
+	{
+		position = new Position(p);
+	}
+
+	public void setTarget(Actor target)
+	{
+		this.target = target;
+	}
+	
+	public Actor getTarget()
+	{
+		return target;
+	}
+	
+	public boolean animate(float dTime)
+	{
+		// If we're tracking something/someone
+		if (target != null)
+		{
+			Position delta = target.position.subtract(position);
+			
+			if (delta.getMagnitude() < 0.05f)
+			{
+				velocity.x = velocity.y = 0;
+				position.x = target.getX();
+				position.y = target.getY();
+				
+				return false;
+			}
+			
+			velocity.scale(1 - ((1 - FRICTION_COEFFICIENT) * dTime));
+			
+			if (delta.getMagnitude() > velocity.getMagnitude())
+				velocity.move(delta, TRACKING_SPEED * dTime / delta.getMagnitude());
+			else
+				velocity.move(delta, -TRACKING_SPEED * dTime / delta.getMagnitude());
+			
+			if (velocity.getMagnitude() > 0.1f)
+				velocity.setDirection(delta);
+		} // end if we have a target
+		
+		velocity.checkLength();
+		
+		if (velocity.getMagnitude() < 0.01f)
+			return false;
+		
+		position.move(velocity, dTime);
+		
+		return true;
+	}
 }
