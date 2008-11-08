@@ -1,6 +1,7 @@
 package	client;
 
 import common.Map;
+import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 /**
@@ -13,6 +14,7 @@ public class GameEngine {
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
 	public LocalPlayer localPlayer;
+	public InputListener localInputListener;
 
 
 	// CONSTRUCTORS
@@ -20,11 +22,18 @@ public class GameEngine {
 		this.gameOver = false;
 		this.gameMap = m;
 		this.gameViewArea = new ClientViewArea();
+		
+		this.gameViewArea.setMap(this.gameMap);
+		
+		this.localInputListener = new InputListener();
+		this.localPlayer = new LocalPlayer(this.localInputListener);
+		this.localPlayer.setPosition(0.5f, 0.5f);
+		this.gameViewArea.setLocalPlayer(this.localPlayer);
 	}
 	
 	
 	// GETTERS
-	public Player getLocalPlayer() {
+	public LocalPlayer getLocalPlayer() {
 		return this.localPlayer;
 	}
 	
@@ -34,7 +43,7 @@ public class GameEngine {
 
 	
 	// SETTERS
-	public void setLocalPlayer(Player p) {
+	public void setLocalPlayer(LocalPlayer p) {
 		this.localPlayer = p;
 	}
 	
@@ -53,12 +62,26 @@ public class GameEngine {
 	}
 	
 	public void play() {
+		initialize();
+	}
+	
+	public void initialize() {
 		String title = "Game Engine Test";
 		System.out.println(title);
 		
 		// Set up game window
 		JFrame window = new JFrame(title);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
+		window.addKeyListener(this.gameViewArea);
+
+		window.addKeyListener(this.localInputListener);
+		window.addMouseListener(this.localInputListener);
+		window.addMouseMotionListener(this.localInputListener);
+		
+		window.pack();
+		window.setLocationRelativeTo(null);
 		window.setVisible(true);
 	}
 }
