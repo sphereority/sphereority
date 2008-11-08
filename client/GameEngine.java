@@ -1,6 +1,8 @@
 package	client;
 
 import common.Map;
+import common.Stone;
+import common.Position;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
@@ -72,7 +74,13 @@ public class GameEngine {
 		// Set up game window
 		JFrame window = new JFrame(title);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
+		// TEMP: Set up temporary stones to test collision detection
+		for (int i = 0; i < 20; i = i + 1) {
+			Stone s = new Stone(new Position(this.localPlayer.getX() + 70, this.localPlayer.getY() + (i * 25)));
+			this.gameViewArea.actorList.add(s);
+		}
+				
 		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
 		window.addKeyListener(this.gameViewArea);
 

@@ -163,7 +163,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			offset_y -= Math.round(viewTracker.getY()*scale);
 		}
 		
-		g2.translate(offset_x, offset_y);
+		g2.translate(offset_x, offset_y);		
 		
 		// Draw all actors:
 		for (Actor a : actorList)
