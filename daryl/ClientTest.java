@@ -40,9 +40,7 @@ public class ClientTest implements ActionCallback
 		sb.setFontSize(9);
 		cva.addWidget(sb);
 		
-		window.addKeyListener(listener);
-		window.addMouseListener(listener);
-		window.addMouseMotionListener(listener);
+		listener.attachListeners(window);
 		
 		window.pack();
 		window.setLocationRelativeTo(null);

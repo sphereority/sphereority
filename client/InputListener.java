@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Component;
 import java.awt.event.*;
 
 /**
@@ -118,6 +119,17 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	public void setKeyUp(int keyUp)
 	{
 		this.keyUp = keyUp;
+	}
+	
+	/**
+	 * This method attaches all required event listeners to the specified component 
+	 * @param c		The component to attach listeners to
+	 */
+	public void attachListeners(Component c)
+	{
+		c.addMouseListener(this);
+		c.addMouseMotionListener(this);
+		c.addKeyListener(this);
 	}
 
 	/* *********************************************** *
