@@ -128,4 +128,9 @@ public interface Constants
 	 * Maximum health for an actor
 	 */
 	public static final int MAXIMUM_ACTOR_HEALTH = 2000;
+	
+	/**
+	 * 
+	 */
+	public static final float BULLET_SPEED = 20;
 }
