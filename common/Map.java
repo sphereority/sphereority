@@ -44,7 +44,7 @@ public class Map {
         name = mapname.toString();
         data = "";
         try {
-            File file = new File("maps/" + name + ".map"); //will this screw up in windows?
+            File file = new File("maps" + File.separator + name + ".map");
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 data = data + scanner.nextLine() + "\n";
