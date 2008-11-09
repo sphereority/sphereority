@@ -86,12 +86,12 @@ public interface Constants
 	/**
 	 * The width of a stone
 	 */
-	public static final int STONE_WIDTH = 20;
+	public static final int STONE_WIDTH = 50;
 
 	/**
 	 * The height of a stone
 	 */
-	public static final int STONE_HEIGHT = 20;
+	public static final int STONE_HEIGHT = 50;
 
 
 	/**

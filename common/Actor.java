@@ -79,5 +79,5 @@ public abstract class Actor implements Constants {
 
 	public Rectangle getBounds() { return new Rectangle((int) this.position.getX(), (int) this.position.getY(), this.width, this.height); }
 
-	public void collision(Actor a) {}
+	public abstract void collision(Actor a);
 }

@@ -27,4 +27,8 @@ public class Stone extends Actor {
 	}
 	
 	public boolean animate(float scale) {	return true; }
+
+	public void collision(Actor a) {
+		
+	}
 }

@@ -1,10 +1,13 @@
 package	client;
 
 import common.Map;
+import common.Actor;
 import common.Stone;
 import common.Position;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
+import java.awt.Rectangle;
+import java.util.Vector;
 
 /**
  * This class describes the game loop for this game
@@ -65,6 +68,8 @@ public class GameEngine {
 	
 	public void play() {
 		initialize();
+		checkCollisions();
+		updateWorld();
 	}
 	
 	public void initialize() {
@@ -77,7 +82,7 @@ public class GameEngine {
 		
 		// TEMP: Set up temporary stones to test collision detection
 		for (int i = 0; i < 20; i = i + 1) {
-			Stone s = new Stone(new Position(this.localPlayer.getX() + 70, this.localPlayer.getY() + (i * 25)));
+			Stone s = new Stone(new Position(this.localPlayer.getX() + 70, this.localPlayer.getY() + (i * 100)));
 			this.gameViewArea.actorList.add(s);
 		}
 				
@@ -91,5 +96,36 @@ public class GameEngine {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
+	}
+	
+	public void checkCollisions()
+	{
+		// Environment, Player and projectile collision code goes here
+		Rectangle playerBounds = this.localPlayer.getBounds();
+		Vector actors = this.gameViewArea.actorList;
+		for (int i = 0; i < actors.size(); i = i + 1)
+		{
+			Actor actor1 = (Actor)actors.get(i);
+			Rectangle bound1 = actor1.getBounds();
+			if (bound1.intersects(playerBounds))
+			{
+				this.localPlayer.collision(actor1);
+				actor1.collision(this.localPlayer);
+			}
+			for (int j = i + 1; j < actors.size(); j = j + 1)
+			{
+				Actor actor2 = (Actor)actors.get(j);
+				Rectangle bound2 = actor2.getBounds();
+				if (bound1.intersects(bound2))
+				{
+					actor1.collision(actor2);
+					actor2.collision(actor1);
+				}
+			}
+		}
+	}
+	
+	public void updateWorld() {
+		
 	}
 }

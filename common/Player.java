@@ -15,8 +15,7 @@ public abstract class Player extends WeightedPosition {
 	
 	
 	// CONSTRUCTORS
-	public Player()
-	{
+	public Player() {
 		super();
 	}
 	
@@ -30,8 +29,7 @@ public abstract class Player extends WeightedPosition {
 	
 	
 	// OPERATIONS
-	public void draw(Graphics2D g, float scale)
-	{
+	public void draw(Graphics2D g, float scale) {
 		if (team == TEAM_A)
 			g.setColor(TEAM_A_COLOR);
 		else if (team == TEAM_B)
@@ -41,4 +39,10 @@ public abstract class Player extends WeightedPosition {
 		
 		GuiUtils.drawFilledOctagon(g, Math.round(position.getX()*scale), Math.round(position.getY()*scale), scale*PLAYER_SIZE);
 	}
+
+  public void collision(Actor a) {
+		if (a instanceof Stone) {
+			System.out.println("You hit a stone!");
+		}		
+	} 
 }
