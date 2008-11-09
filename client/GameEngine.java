@@ -68,8 +68,11 @@ public class GameEngine {
 	
 	public void play() {
 		initialize();
-		checkCollisions();
-		updateWorld();
+		
+		while (!isGameOver()) {
+			checkCollisions();
+			updateWorld();
+		}
 	}
 	
 	public void initialize() {
@@ -98,26 +101,21 @@ public class GameEngine {
 		window.setVisible(true);
 	}
 	
-	public void checkCollisions()
-	{
+	public void checkCollisions() {
 		// Environment, Player and projectile collision code goes here
 		Rectangle playerBounds = this.localPlayer.getBounds();
 		Vector actors = this.gameViewArea.actorList;
-		for (int i = 0; i < actors.size(); i = i + 1)
-		{
+		for (int i = 0; i < actors.size(); i = i + 1) {
 			Actor actor1 = (Actor)actors.get(i);
 			Rectangle bound1 = actor1.getBounds();
-			if (bound1.intersects(playerBounds))
-			{
+			if (bound1.intersects(playerBounds)) {
 				this.localPlayer.collision(actor1);
 				actor1.collision(this.localPlayer);
 			}
-			for (int j = i + 1; j < actors.size(); j = j + 1)
-			{
+			for (int j = i + 1; j < actors.size(); j = j + 1) {
 				Actor actor2 = (Actor)actors.get(j);
 				Rectangle bound2 = actor2.getBounds();
-				if (bound1.intersects(bound2))
-				{
+				if (bound1.intersects(bound2)) {
 					actor1.collision(actor2);
 					actor2.collision(actor1);
 				}
