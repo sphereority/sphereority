@@ -1,7 +1,7 @@
 package	common;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class describes an abstract class for an Actor in this game
@@ -19,9 +19,9 @@ public abstract class Actor implements Constants {
 
 	protected int health;
 	
-	protected int height; // Actor height in pixels
+	protected float height; // Actor height in world units
 	protected int weight;
-	protected int width; // Actor width in pixels
+	protected float width; // Actor width in world units
 
 	// CONSTRUCTORS
 	public Actor() {
@@ -62,9 +62,9 @@ public abstract class Actor implements Constants {
 	public float getX() { return position.x; }
 	public float getY() { return position.y; }
 	
-	public int getHeight() { return height; }
+	public float getHeight() { return height; }
 	public int getWeight() { return weight; }
-	public int getWidth() { return width; }
+	public float getWidth() { return width; }
 	
 
 	// SETTERS
@@ -93,7 +93,7 @@ public abstract class Actor implements Constants {
 	public void kill() { this.alive = false; }
 	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }
 
-	public Rectangle getBounds() { return new Rectangle((int) this.position.getX(), (int) this.position.getY(), this.width, this.height); }
+	public Rectangle2D getBounds() { return new Rectangle2D.Float(position.getX(), position.getY(), width, height); }
 
 	public abstract void collision(Actor a);
 }

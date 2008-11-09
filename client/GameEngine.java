@@ -6,7 +6,7 @@ import common.Stone;
 import common.Position;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 /**
@@ -103,18 +103,18 @@ public class GameEngine {
 	
 	public void checkCollisions() {
 		// Environment, Player and projectile collision code goes here
-		Rectangle playerBounds = this.localPlayer.getBounds();
+		Rectangle2D playerBounds = this.localPlayer.getBounds();
 		Vector actors = this.gameViewArea.actorList;
 		for (int i = 0; i < actors.size(); i = i + 1) {
 			Actor actor1 = (Actor)actors.get(i);
-			Rectangle bound1 = actor1.getBounds();
+			Rectangle2D bound1 = actor1.getBounds();
 			if (bound1.intersects(playerBounds)) {
 				this.localPlayer.collision(actor1);
 				actor1.collision(this.localPlayer);
 			}
 			for (int j = i + 1; j < actors.size(); j = j + 1) {
 				Actor actor2 = (Actor)actors.get(j);
-				Rectangle bound2 = actor2.getBounds();
+				Rectangle2D bound2 = actor2.getBounds();
 				if (bound1.intersects(bound2)) {
 					actor1.collision(actor2);
 					actor2.collision(actor1);
