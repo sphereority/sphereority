@@ -2,3 +2,11 @@ Sphereority: Superiority over Spheres
 =====================================
 
 Open-source top-down shooter based on Babo Violent 2.
+
+
+To Compile:
+$ javac client/Sphereority.java
+
+To Run:
+$ java client/Sphereority
+
