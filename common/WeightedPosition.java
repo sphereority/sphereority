@@ -87,4 +87,6 @@ public class WeightedPosition extends Actor implements Constants
 	{
 		return (float)Math.sqrt(a*a + b*b);
 	}
+	
+	public void collision(Actor a) {}
 }

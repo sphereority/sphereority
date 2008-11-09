@@ -79,6 +79,22 @@ public interface Constants
 	public static final Color TEAM_A_COLOR = Color.cyan;
 
 	/**
+	 * The colour of a stone
+	 */
+	public static final Color STONE_COLOR = Color.gray;
+
+	/**
+	 * The width of a stone
+	 */
+	public static final int STONE_WIDTH = 50;
+
+	/**
+	 * The height of a stone
+	 */
+	public static final int STONE_HEIGHT = 50;
+
+
+	/**
 	 * The team ID of the second team (Orbs)
 	 */
 	public static final int TEAM_B = 0x12;
@@ -97,4 +113,24 @@ public interface Constants
 	 * The colour for a player with no team 
 	 */
 	public static final Color TEAMLESS_COLOR = Color.magenta;
+
+	/**
+	 * Default health for an actor
+	 */
+	public static final int DEFAULT_ACTOR_HEALTH = 1000;
+
+	/**
+	 * Mininum health for an actor (below this an actor dies)
+	 */
+	public static final int MINIMUM_ACTOR_HEALTH = 1;
+
+	/**
+	 * Maximum health for an actor
+	 */
+	public static final int MAXIMUM_ACTOR_HEALTH = 2000;
+	
+	/**
+	 * 
+	 */
+	public static final float BULLET_SPEED = 20;
 }
