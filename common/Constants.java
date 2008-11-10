@@ -115,6 +115,23 @@ public interface Constants
 	public static final Color TEAMLESS_COLOR = Color.magenta;
 
 	/**
+	 * Default height of an actor in world units
+	 */
+	public static final float DEFAULT_ACTOR_HEIGHT = 1.0f;
+
+	/**
+	 * Default weight of an actor in world units
+	 */
+	public static final float DEFAULT_ACTOR_WIDTH = 1.0f;
+
+
+	/**
+	 * Default weight of an actor in world units
+	 */
+	public static final float DEFAULT_ACTOR_WEIGHT = 1.0f;
+
+
+	/**
 	 * Default health for an actor
 	 */
 	public static final int DEFAULT_ACTOR_HEALTH = 1000;

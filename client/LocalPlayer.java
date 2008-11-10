@@ -34,4 +34,10 @@ public class LocalPlayer extends Player {
 		
 		return super.animate(dTime);
 	}
+	
+	public void collision(Actor a) {
+		if (a instanceof Stone) {
+			System.out.println("You hit a " + a.getClass().getName());
+		}		
+	} 
 }
