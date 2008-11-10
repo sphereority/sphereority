@@ -52,8 +52,7 @@ public class WeightedPosition extends Actor implements Constants
 	public boolean animate(float dTime)
 	{
 		// Apply some friction to our motion
-		velocity.x *= FRICTION_COEFFICIENT;
-		velocity.y *= FRICTION_COEFFICIENT;
+		velocity.scale(1 - ((1 - FRICTION_COEFFICIENT)*dTime));
 		
 		// Check our speed to see if it's too fast
 		// And if we aren't actually moving, say so
@@ -61,8 +60,6 @@ public class WeightedPosition extends Actor implements Constants
 		
 		// Actually apply the speed to our position
 		position.move(velocity, dTime);
-		//position.x += velocity.x * dTime;
-		//position.y += velocity.y * dTime;
 		
 		return true;
 	}
@@ -71,9 +68,9 @@ public class WeightedPosition extends Actor implements Constants
 	public void draw(Graphics2D g, float scale)
 	{
 		/*
-		 * We don't actually draw anything here, as this still doesn't have
-		 * a graphical representation, but still needs this method so as to
-		 * be a non-abstract class.
+		 * We don't actually draw anything here, as this doesn't have
+		 * a graphical representation, but still needs this method so
+		 * as to be a non-abstract class.
 		 */
 	}
 	

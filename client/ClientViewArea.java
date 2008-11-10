@@ -15,7 +15,7 @@ import common.*;
  * This class manages displaying the current play area
  * @author dvanhumb
  */
-public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, ActionListener, Constants
+public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants//, ActionListener
 {
 	private static final long serialVersionUID = 23498751L;
 	public static int TIMER_TICK = 75;
@@ -39,7 +39,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected int mapWidth, mapHeight;
 	
 	// Temporary testing stuff:
-	protected Timer gameTimer;
+	//protected Timer gameTimer;
 	protected long lastTime;
 	protected boolean[] keysPressed;
 	protected SoundEffect soundBump;
@@ -62,8 +62,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		playerColor = Color.green;
 		scale = 50;
 		
-		gameTimer = new Timer(TIMER_TICK, this);
-		gameTimer.start();
+		//gameTimer = new Timer(TIMER_TICK, this);
+		//gameTimer.start();
 		lastTime = System.currentTimeMillis();
 		
 		keysPressed = new boolean[1024];
@@ -84,8 +84,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			actorList.add(p);
 		localPlayer = p;
 		if (viewTracker == null)
+		{
 			viewTracker = new TrackingObject(localPlayer.getPosition());
+		}
 		viewTracker.setTarget(localPlayer);
+		if (!actorList.contains(viewTracker))
+			actorList.add(viewTracker);
 		repaint();
 	}
 	
@@ -319,9 +323,19 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 	}
 	
+	public void setActorList(Vector<Actor> list)
+	{
+		actorList = list;
+	}
+	
+	public Vector<Actor> getActorList()
+	{
+		return actorList;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource().equals(gameTimer))
+		//if (e.getSource().equals(gameTimer))
 		{
 			long thisTime = System.currentTimeMillis();
 			float dTime = 0.001f * (thisTime - lastTime);

@@ -45,9 +45,12 @@ public class SimpleButton extends InteractiveWidget
 		}
 		
 		g.draw(outline);
+		g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 127));
 		
+		g.fill(outline);
 		if (cur_state == STATE_HOVERED)
 		{
+			g.setColor(color);
 			g.fill(fill);
 			g.setColor(Color.black);
 		}

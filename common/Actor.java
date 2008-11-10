@@ -93,7 +93,12 @@ public abstract class Actor implements Constants {
 	public void kill() { this.alive = false; }
 	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }
 
-	public Rectangle2D getBounds() { return new Rectangle2D.Float(position.getX(), position.getY(), width, height); }
+	public Rectangle2D getBounds()
+	{
+		return new Rectangle2D.Float(position.getX() - 0.5f*width,
+				position.getY() - 0.5f*height,
+				width, height);
+	}
 
 	public abstract void collision(Actor a);
 }

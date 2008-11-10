@@ -16,7 +16,7 @@ public interface Constants
 	/**
 	 * The amount of friction we have to slow motion down
 	 */
-	public static final float FRICTION_COEFFICIENT = 1 - 0.2f;
+	public static final float FRICTION_COEFFICIENT = 1 - 0.4f;
 
 	/**
 	 * The speed at which objects track each other (this affects the "slow parent" of objects)
@@ -36,7 +36,7 @@ public interface Constants
 	/**
 	 * The speed at which a player accelerates due to keypresses
 	 */
-	public static final float PLAYER_ACCELERATION = 1f;
+	public static final float PLAYER_ACCELERATION = 0.01f;
 
 	/**
 	 * The size of a player in world units
