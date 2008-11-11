@@ -68,27 +68,48 @@ public class LocalPlayer extends Player {
 		{
 			bump_count = 2;
 			
-			Position difference = position.subtract(a.getPosition());
-			if (difference.getX() > 0.01f)
+			//Position difference = position.subtract(a.getPosition());
+			Position difference = a.getPosition().subtract(position);
+			
+			if (difference.getX() > difference.getY())
 			{
-				if (velocity.getX() > 0.01f)
+				// Add check to make sure we're actually going towards the stone not away from it
+				if ((difference.getX() > 0.01f && velocity.getX() > 0.01f) ||
+						(difference.getX() < -0.01f && velocity.getX() < -0.01f))
+				{
 					velocity.bounceX();
+				}
 			}
-			else if (difference.getX() < -0.01f)
+			else if (difference.getY() > difference.getX())
 			{
-				if (velocity.getX() < -0.01f)
-					velocity.bounceX();
-			}
-			if (difference.getY() > 0.01f)
-			{
-				if (velocity.getY() > 0.01f)
+				// Add check to make sure we're actually going towards the stone not away from it
+				if ((difference.getY() > 0.01f && velocity.getY() > 0.01f) ||
+						(difference.getY() < -0.01f && velocity.getY() < -0.01f))
+				{
 					velocity.bounceY();
+				}
 			}
-			else
-			{
-				if (velocity.getY() < -0.01f)
-					velocity.bounceY();
-			}
+			
+//			if (difference.getX() > 0.01f)
+//			{
+//				if (velocity.getX() > 0.01f)
+//					velocity.bounceX();
+//			}
+//			else if (difference.getX() < -0.01f)
+//			{
+//				if (velocity.getX() < -0.01f)
+//					velocity.bounceX();
+//			}
+//			if (difference.getY() > 0.01f)
+//			{
+//				if (velocity.getY() > 0.01f)
+//					velocity.bounceY();
+//			}
+//			else
+//			{
+//				if (velocity.getY() < -0.01f)
+//					velocity.bounceY();
+//			}
 		}
 	}
 }
