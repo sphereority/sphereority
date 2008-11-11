@@ -37,7 +37,7 @@ public class LocalPlayer extends Player {
 	
 	public void collision(Actor a) {
 		if (a instanceof Stone) {
-			System.out.println("You hit a " + a.getClass().getName());
+			System.out.println("You hit a " + a.getClass().getName() + " at " + System.currentTimeMillis());
 		}		
 	} 
 }
