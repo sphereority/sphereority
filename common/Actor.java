@@ -33,9 +33,9 @@ public abstract class Actor implements Constants {
 		
 		health = DEFAULT_ACTOR_HEALTH;
 		
-		height = 0;
 		weight = 0;
-		width = 0;
+		height = 1;
+		width = 1;
 	}
 
 	public Actor(Position initialPosition, int initialHeight, int initialWidth) {
@@ -82,9 +82,9 @@ public abstract class Actor implements Constants {
 		position.y += y;
 	}
 	
-	public void setHeight(int h) { height = h; }
+	public void setHeight(float h) { height = h; }
 	public void setWeight(int w) { weight = w; }
-	public void setWidth(int w) { width = w; }
+	public void setWidth(float w) { width = w; }
 
 	
 	// OPERATIONS

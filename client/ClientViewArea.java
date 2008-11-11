@@ -326,6 +326,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void setActorList(Vector<Actor> list)
 	{
 		actorList = list;
+		
+		if (!actorList.contains(viewTracker))
+			actorList.add(viewTracker);
 	}
 	
 	public Vector<Actor> getActorList()
@@ -338,7 +341,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		//if (e.getSource().equals(gameTimer))
 		{
 			long thisTime = System.currentTimeMillis();
-			float dTime = 0.001f * (thisTime - lastTime);
+			float dTime = 0.01f * (thisTime - lastTime);
 			boolean repaint = false;
 			
 			for (Actor a : actorList)

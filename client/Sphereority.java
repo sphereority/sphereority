@@ -6,7 +6,7 @@ package	client;
  *
  */
 
-import common.Map;
+import common.*;
 
 public class Sphereority {
 	public static void main(String[] args) {

@@ -1,9 +1,6 @@
 package	client;
 
-import common.Map;
-import common.Actor;
-import common.Stone;
-import common.Position;
+import common.*;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import java.awt.geom.Rectangle2D;
@@ -79,7 +76,9 @@ public class GameEngine {
 			checkCollisions();
 			updateWorld();
 			
-			Thread.yield();
+			//Thread.yield();
+			try { Thread.sleep(10); }
+			catch (InterruptedException er) { }
 		}
 	}
 	
@@ -95,7 +94,7 @@ public class GameEngine {
 		
 		// TEMP: Set up temporary stones to test collision detection
 		for (int i = 0; i < 10; i = i + 1) {
-			Stone s = new Stone(new Position(3, i * 3));
+			Stone s = new Stone(new Position(3.5f, i * 3 + 0.5f));
 			//gameViewArea.actorList.add(s);
 			actorList.add(s);
 		}
@@ -121,6 +120,8 @@ public class GameEngine {
 		//Vector actorList = this.gameViewArea.actorList;
 		for (int i = 0; i < actorList.size(); i = i + 1) {
 			Actor actor1 = actorList.get(i);
+			if (actor1 instanceof TrackingObject) continue;
+			
 			Rectangle2D bound1 = actor1.getBounds();
 			if (bound1.intersects(playerBounds)) {
 				this.localPlayer.collision(actor1);
@@ -128,6 +129,8 @@ public class GameEngine {
 			}
 			for (int j = i + 1; j < actorList.size(); j = j + 1) {
 				Actor actor2 = actorList.get(j);
+				if (actor2 instanceof TrackingObject) continue;
+				
 				Rectangle2D bound2 = actor2.getBounds();
 				if (bound1.intersects(bound2)) {
 					actor1.collision(actor2);
