@@ -114,4 +114,9 @@ public class Position implements Constants {
 		x = mySize * p.x / pSize;
 		y = mySize * p.y / pSize;
 	}
+	
+	public String toString() {
+		String s = "(" + this.x + ", " + this.y + ")";
+		return s;
+	}
 }

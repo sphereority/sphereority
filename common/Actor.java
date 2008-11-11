@@ -105,7 +105,7 @@ public abstract class Actor implements Constants {
 	public abstract void collision(Actor a);
 	
 	public String toString() {
-		String s = this.getClass().getName() + ": (" + this.getX() + ", " + this.getY() + "), width: " + this.width + " height: " + this.height;
+		String s = this.getClass().getName() + ": Position: " + position + ", Velocity: " + velocity + ", width: " + this.width + " height: " + this.height;
 		return s;
 	}
 }

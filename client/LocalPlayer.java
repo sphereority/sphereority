@@ -38,6 +38,15 @@ public class LocalPlayer extends Player {
 	public void collision(Actor a) {
 		if (a instanceof Stone) {
 			System.out.println("You hit a " + a.getClass().getName() + " at " + System.currentTimeMillis());
+			System.out.println(this);
+			this.position.bounceX();
+
+			// Stop the player
+			this.accelerate(0, 0);
+
+			// Set the player in the opposite new direction
+			this.velocity.setX(-(this.velocity.getX()));
+			this.velocity.setY(-(this.velocity.getY()));
 		}		
 	} 
 }

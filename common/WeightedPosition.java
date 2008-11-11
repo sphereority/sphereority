@@ -85,5 +85,10 @@ public class WeightedPosition extends Actor implements Constants
 		return (float)Math.sqrt(a*a + b*b);
 	}
 	
-	public void collision(Actor a) {}
+	public void collision(Actor a) {
+		/*
+		 * We don't need an implementation, but still need the method so
+		 * as to be a non-abstract class.
+		 */		
+	}
 }
