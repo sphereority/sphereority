@@ -26,7 +26,7 @@ public interface Constants
 	/**
 	 * The amount of speed you have after bumping into a wall
 	 */
-	public static final float WALL_REBOUND = 0.75f;
+	public static final float STONE_REBOUND = 0.75f;
 
 	/**
 	 * The amount of speed you have after bumping into another player
@@ -113,6 +113,23 @@ public interface Constants
 	 * The colour for a player with no team 
 	 */
 	public static final Color TEAMLESS_COLOR = Color.magenta;
+
+	/**
+	 * Default height of an actor in world units
+	 */
+	public static final float DEFAULT_ACTOR_HEIGHT = 0.5f;
+
+	/**
+	 * Default weight of an actor in world units
+	 */
+	public static final float DEFAULT_ACTOR_WIDTH = 0.5f;
+
+
+	/**
+	 * Default weight of an actor in world units
+	 */
+	public static final float DEFAULT_ACTOR_WEIGHT = 0.25f;
+
 
 	/**
 	 * Default health for an actor

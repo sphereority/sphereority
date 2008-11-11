@@ -60,6 +60,10 @@ public class LocalPlayer extends Player {
 	{
 		super.collision(a);
 		
+		if (a instanceof Stone) {
+			System.out.println("You hit a " + a.getClass().getName() + " at " + System.currentTimeMillis());
+		}
+		
 		if (a instanceof Stone)
 		{
 			bump_count = 2;

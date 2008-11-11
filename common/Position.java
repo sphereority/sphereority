@@ -79,12 +79,12 @@ public class Position implements Constants {
 
 	/* Rebound a Position against a "wall" in the X direction */
 	public void bounceX() {
-		this.x = this.x * -(WALL_REBOUND);
+		this.x = this.x * -(STONE_REBOUND);
 	}
 
 	/* Rebound a Position against a "wall" in the Y direction */
 	public void bounceY() {
-		this.y = this.y * -(WALL_REBOUND);
+		this.y = this.y * -(STONE_REBOUND);
 	}
 	
 	/**

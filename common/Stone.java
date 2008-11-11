@@ -31,6 +31,6 @@ public class Stone extends Actor {
 	public boolean animate(float scale) {	return false; }
 
 	public void collision(Actor a) {
-		//System.out.printf("A %s bumped into a stone\n", a.getClass().getName());
+		//System.out.println("A " + a.getClass().getName() + " bumped into a " + this.getClass().getName());
 	}
 }

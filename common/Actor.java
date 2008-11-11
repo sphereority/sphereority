@@ -20,8 +20,9 @@ public abstract class Actor implements Constants {
 	protected int health;
 	
 	protected float height; // Actor height in world units
-	protected int weight;
 	protected float width; // Actor width in world units
+
+	protected float weight; // In case we want to have weight affecting our actors
 
 	// CONSTRUCTORS
 	public Actor() {
@@ -33,9 +34,15 @@ public abstract class Actor implements Constants {
 		
 		health = DEFAULT_ACTOR_HEALTH;
 		
-		weight = 0;
-		height = 1;
-		width = 1;
+		/* Old values:
+		 * height = 1;
+		 * width = 1;
+		 */
+		
+		height = DEFAULT_ACTOR_HEIGHT;
+		width = DEFAULT_ACTOR_WIDTH;
+
+		weight = DEFAULT_ACTOR_WEIGHT;
 	}
 
 	public Actor(Position initialPosition, int initialHeight, int initialWidth) {
@@ -44,9 +51,10 @@ public abstract class Actor implements Constants {
 		alive = true;
 		team = 0;
 		state = 0;
+
+		weight = DEFAULT_ACTOR_WEIGHT;
 		
 		height = initialHeight;
-		weight = 0;
 		width = initialWidth;
 	}
 
@@ -63,7 +71,7 @@ public abstract class Actor implements Constants {
 	public float getY() { return position.y; }
 	
 	public float getHeight() { return height; }
-	public int getWeight() { return weight; }
+	public float getWeight() { return weight; }
 	public float getWidth() { return width; }
 	
 
@@ -83,9 +91,9 @@ public abstract class Actor implements Constants {
 	}
 	
 	public void setHeight(float h) { height = h; }
-	public void setWeight(int w) { weight = w; }
 	public void setWidth(float w) { width = w; }
 
+	public void setWeight(float w) { weight = w; }
 	
 	// OPERATIONS
 	public abstract boolean animate(float dTime);
@@ -93,12 +101,16 @@ public abstract class Actor implements Constants {
 	public void kill() { this.alive = false; }
 	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }
 
-	public Rectangle2D getBounds()
-	{
-		return new Rectangle2D.Float(position.getX() - 0.5f*width,
-				position.getY() - 0.5f*height,
-				width, height);
+
+	public Rectangle2D getBounds()	{
+		// Since the Actors origin is in the middle of the actor we'll have to wiggle the coordinates to generate the correct bounding box
+		return new Rectangle2D.Float(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height);
 	}
 
 	public abstract void collision(Actor a);
+	
+	public String toString() {
+		String s = this.getClass().getName() + ": (" + this.getX() + ", " + this.getY() + "), width: " + this.width + " height: " + this.height;
+		return s;
+	}
 }
