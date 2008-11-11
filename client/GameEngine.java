@@ -1,6 +1,7 @@
 package	client;
 
 import common.*;
+import client.audio.*;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import java.awt.geom.Rectangle2D;
@@ -11,7 +12,7 @@ import java.util.Vector;
  * @author smaboshe
  *
  */
-public class GameEngine {
+public class GameEngine implements Constants {
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -20,6 +21,8 @@ public class GameEngine {
 	
 	public Vector<Actor> actorList;
 	public long lastTime;
+	public GameSoundSystem soundSystem;
+	public SoundEffect soundBump;
 
 
 	// CONSTRUCTORS
@@ -37,6 +40,10 @@ public class GameEngine {
 		
 		actorList = new Vector<Actor>();
 		actorList.add(localPlayer);
+		
+		// Sound engine stuff:
+		soundSystem = new GameSoundSystem();
+		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
 	}
 	
 	
@@ -154,5 +161,37 @@ public class GameEngine {
 		lastTime = thisTime;
 		if (repaint)
 			gameViewArea.repaint();
+	}
+	
+	/* ********************************************* *
+	 * These method(s) are for playing sound effects *
+	 * ********************************************* */
+	/**
+	 * Plays a bump sound effect at the specified volume. If the sound is already playing at a lower volume, it is stopped and restarted at the louder volume, otherwise nothing happens.
+	 * @param volume	The volume at which to play.
+	 */
+	public void playBump(float volume)
+	{
+		playSound(volume, soundBump);
+	}
+	
+	/**
+	 * A slightly more generic sound playing method so we don't have to duplicate code all over the place.
+	 * This actually handles playing or not playing the sound.
+	 * @param volume
+	 * @param sound
+	 */
+	private void playSound(float volume, SoundEffect sound)
+	{
+		if (sound.isPlaying())
+		{
+			if (sound.getVolume() < volume)
+				sound.stop();
+			else
+				return;
+		}
+		
+		sound.setVolume(volume);
+		sound.play();
 	}
 }

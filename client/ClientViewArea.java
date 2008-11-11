@@ -7,7 +7,6 @@ import java.awt.geom.*;
 import javax.swing.*;
 import java.util.Vector;
 
-import client.audio.*;
 import client.gui.*;
 import common.*;
 
@@ -42,8 +41,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	//protected Timer gameTimer;
 	protected long lastTime;
 	protected boolean[] keysPressed;
-	protected SoundEffect soundBump;
-	protected GameSoundSystem gameSoundSystem;
 	
 	public ClientViewArea()
 	{
@@ -73,9 +70,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
-		
-		gameSoundSystem = new GameSoundSystem();
-		soundBump = gameSoundSystem.loadSoundEffect(SOUND_BUMP);
 	}
 	
 	public void setLocalPlayer(LocalPlayer p)
@@ -307,8 +301,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			antialiasing = !antialiasing;
 			repaint();
 		}
-		else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
-			soundBump.play();
 		
 		keysPressed[e.getKeyCode()] = true;
 	}

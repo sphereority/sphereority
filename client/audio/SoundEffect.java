@@ -91,6 +91,15 @@ public class SoundEffect implements LineListener
 		soundClip.loop(numTimes);
 	}
 	
+	/**
+	 * Returns true if this sound effect is currently being played
+	 * @return	Whether the sound is being played or not
+	 */
+	public boolean isPlaying()
+	{
+		return playing;
+	}
+	
 	public void update(LineEvent event)
 	{
 		if (event.getType().equals(LineEvent.Type.STOP))
