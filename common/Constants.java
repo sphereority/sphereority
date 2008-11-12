@@ -8,6 +8,11 @@ package common;
 public interface Constants
 {
   /**
+   * Default port for TCP network listener
+   */
+  public static final int DEFAULT_PORT = 44000;
+
+  /**
    * The fastest an object can move in units per second
    */
   public static final float MAXIMUM_SPEED = 25;

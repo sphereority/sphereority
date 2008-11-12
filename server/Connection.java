@@ -39,23 +39,26 @@ class Connection extends Thread {
 
     private Socket		sock;
     private SocketChannel	sockchannel;
+    private ObjectInputStream	oistream;
 
     private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
 
-    Connection(SocketChannel sc){
+    Connection(SocketChannel sc, ObjectInputStream ois){
 	sockchannel = sc;
+	oistream = ois;
     }
     public void run(){
 	System.out.println("Connection.run()");
 	try {
 	    /*
 	     * Setup
-	     *     first we create a udp socket
+	     *     first create a udp socket
 	     */
 	    // create a udp socket
 	    dsockchannel = DatagramChannel.open();
 	    dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
+
 	    // send login success mesage + udp port number
 	    int localport = dsockchannel.socket().getLocalPort();
 	    byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
@@ -63,18 +66,23 @@ class Connection extends Thread {
 	    ostream.writeObject(bytes);
 
 	    // get response to success message
-	    ObjectInputStream istream = new ObjectInputStream(sockchannel.socket().getInputStream());
-	    Object obj = istream.readObject();
+	    Object obj = oistream.readObject();
 	    int numBytes = Array.getLength(obj);
 	    bytes = new byte[numBytes];
 	    for (int i=0; i<numBytes; i++)
 		bytes[i] = Array.getByte(obj,i);
 	    String message = LoginMessage.getMessageString(bytes);
 	    System.out.println(message);
-	    
 
-	    //dsockchannel.connect(new InetSocketAddress("localhost",0));
-	    
+            // connect udp socket to client
+            if (!LoginMessage.isLoginSuccessMessage(bytes)){
+                System.out.println("Client could not connect");
+            }
+            else {
+                int udp_remoteport = LoginMessage.getPort(bytes);
+                dsockchannel.socket().connect(new InetSocketAddress(sockchannel.socket().getInetAddress(),udp_remoteport));
+            }
+                
 	    // the selector is how we poll the sockets
 	    selector = Selector.open();
 	    // add the tcp socket to the selector
@@ -82,8 +90,7 @@ class Connection extends Thread {
 	    readwritesockkey = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
 
 	    dsockchannel.configureBlocking(false);
-	    //System.out.println("Remote Port: " + Integer.toString(remoteport));
-	    
+	    readwritesockkey = dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
 	    
 	    /*
             byte[] buf = new byte[256];
@@ -98,6 +105,7 @@ class Connection extends Thread {
 	    */
 	    
 	    dsockchannel.close();
+            sockchannel.close();
 	}
 	catch (Exception e){
 	    System.out.println("Connection.java: Damn! ");
@@ -105,10 +113,13 @@ class Connection extends Thread {
 	    System.exit(1);
 	}
     }
+    /*
     public static void main (String [] args) throws Exception{
 	SocketChannel ch = SocketChannel.open();
-	Connection c = new Connection(ch);
+	ObjectInputStream ois = new ObjectInputStream();
+	Connection c = new Connection(ch,ois);
 	c.start();
     }
+    */
 }
 	

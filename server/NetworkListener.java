@@ -11,8 +11,8 @@ import java.nio.channels.*;
 import java.util.*;
 
 class NetworkListener {
-    // port number for server
-    public static final int PORT = 44000;
+    // use DEFAULT_PORT defined in common.Constants
+    public static final int PORT = Constants.DEFAULT_PORT;
 
     // socket to listen on and address for it
     private ServerSocketChannel channel;
@@ -42,15 +42,13 @@ class NetworkListener {
 	while (next <= numConnections){
 	    System.out.println("NetworkListener: Listening on port " + Integer.toString(PORT));
 	    SocketChannel connchannel = channel.accept();
-	    if (login(connchannel)) {
-	        connections[next] = new Connection(connchannel);
-	        connections[next].start();
+	    if (login(connchannel,next)) {
 	        ++next;
 	    }
 	}
 	channel.socket().close();
     }
-    private boolean login(SocketChannel connchannel){
+    private boolean login(SocketChannel connchannel, int next){
 	boolean log = false;
 	try {
 	    istream = new ObjectInputStream(connchannel.socket().getInputStream());
@@ -74,6 +72,8 @@ class NetworkListener {
 		    log = true;
 		}
 	    }
+	    connections[next] = new Connection(connchannel,istream);
+	    connections[next].start();
 	}
 	catch (Exception e){
 	    System.out.println("Networklistener.java: DAMN! ");
