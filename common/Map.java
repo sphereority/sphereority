@@ -6,6 +6,19 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Map {
+	public static final String DEFAULT_MAP = "10 10\n"+
+    "++++++++++\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "+        +\n" +
+    "++++++++++\n"; 
+
+	
     String name;       // map name
     String data;       // map raw data **pending for deletion (waste of space)**
     int y_size;        // map y size
@@ -20,7 +33,7 @@ public class Map {
      */
     public Map() {
         name = "default";
-        data = "10 10\r\n++++++++++\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n+        +\r\n++++++++++\r\n"; 
+        data = DEFAULT_MAP;
         parseData();
     }
     
@@ -32,10 +45,10 @@ public class Map {
         name = mapname.toString();
         data = "";
         try {
-            File file = new File("maps/" + name + ".map"); //will this screw up in windows?
+            File file = new File("maps" + File.separator + name + ".map");
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                data = data + scanner.nextLine() + "\r\n";
+                data = data + scanner.nextLine() + "\n";
             }
             scanner.close();
         } catch (FileNotFoundException e) {
@@ -161,7 +174,7 @@ public class Map {
             for (x =0; x < x_size; x++) {
                 System.out.print(mapping[y][x]);
             }
-            System.out.print("\r\n");
+            System.out.println();
         }
         
         // print boolean array

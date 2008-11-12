@@ -5,8 +5,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 
 import javax.swing.*;
-import javax.swing.Timer;
-import java.util.*;
+import java.util.Vector;
 
 import client.gui.*;
 import common.*;
@@ -15,7 +14,7 @@ import common.*;
  * This class manages displaying the current play area
  * @author dvanhumb
  */
-public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, ActionListener, Constants
+public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants//, ActionListener
 {
 	private static final long serialVersionUID = 23498751L;
 	public static int TIMER_TICK = 75;
@@ -24,29 +23,34 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	// Drawing-related variables
 	protected boolean antialiasing;
-	protected Color playerColor;
 	protected float scale;
+	// Colour-defining variables
+	protected Color playerColor;
 	
-	// Game-related variables
+	// Gui-related stuff:
 	protected Vector<Widget> widgetList;
-	protected Player player;
-	protected WeightedPosition viewTracker;
-	//protected Map map;
+	
+	// Game-related stuff:
+	protected LocalPlayer localPlayer;
+	protected TrackingObject viewTracker;
+	protected Vector<Actor> actorList;
+	protected Map map;
+	protected int mapWidth, mapHeight;
 	
 	// Temporary testing stuff:
-	protected Timer gameTimer;
+	//protected Timer gameTimer;
 	protected long lastTime;
 	protected boolean[] keysPressed;
 	
 	public ClientViewArea()
 	{
-		Dimension d = new Dimension(640, 480);
+		Dimension d = new Dimension(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
 		setMinimumSize(d);
 		setPreferredSize(d);
 		setMaximumSize(d);
 		
 		setBackground(Color.black);
-		setForeground(Color.white);
+		setForeground(new Color(0.8f, 0.4f, 0.2f));
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -55,26 +59,37 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		playerColor = Color.green;
 		scale = 50;
 		
-		gameTimer = new Timer(TIMER_TICK, this);
-		gameTimer.start();
+		//gameTimer = new Timer(TIMER_TICK, this);
+		//gameTimer.start();
 		lastTime = System.currentTimeMillis();
 		
 		keysPressed = new boolean[1024];
 		antialiasing = false;
+		
+		actorList = new Vector<Actor>();
+		
+		mapWidth = MAP_WIDTH;
+		mapHeight = MAP_HEIGHT;
 	}
 	
-	public void setPlayer(Player p)
+	public void setLocalPlayer(LocalPlayer p)
 	{
-		player = p;
+		if (!actorList.contains(p))
+			actorList.add(p);
+		localPlayer = p;
 		if (viewTracker == null)
-			viewTracker = new WeightedPosition(player.getX(), player.getY());
-		viewTracker.setTarget(player);
+		{
+			viewTracker = new TrackingObject(localPlayer.getPosition());
+		}
+		viewTracker.setTarget(localPlayer);
+		if (!actorList.contains(viewTracker))
+			actorList.add(viewTracker);
 		repaint();
 	}
 	
-	public Player getPlayer()
+	public LocalPlayer getLocalPlayer()
 	{
-		return player;
+		return localPlayer;
 	}
 	
 	public Color getPlayerColor()
@@ -86,6 +101,28 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	{
 		playerColor = color;
 		repaint();
+	}
+	
+	public void setMap(Map m)
+	{
+		map = m;
+		if (this.isVisible())
+			repaint();
+		if (map != null)
+		{
+			mapWidth = map.getXSize();
+			mapHeight = map.getYSize();
+		}
+		else
+		{
+			mapWidth = MAP_WIDTH;
+			mapHeight = MAP_HEIGHT;
+		}
+	}
+	
+	public Map getMap()
+	{
+		return map;
 	}
 	
 	public void addWidget(Widget w)
@@ -106,9 +143,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		else
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		Rectangle clip = g2.getClipBounds(); // The clipping bounds, so we don't draw stuff over again
-		int offset_x, offset_y;
-		offset_x = -getWidth() / 2;
-		offset_y = -getHeight() / 2;
+		int offset_x=0, offset_y=0;
+		offset_x = getWidth() / 2;
+		offset_y = getHeight() / 2;
 		
 		// Save temporary copies of parameters changed
 		Color oldColor = g2.getColor();
@@ -120,39 +157,38 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		if (viewTracker != null)
 		{
-			offset_x += Math.round(viewTracker.getX()*scale);
-			offset_y += Math.round(viewTracker.getY()*scale);
+			offset_x -= Math.round(viewTracker.getPosition().getX()*scale);
+			offset_y -= Math.round(viewTracker.getPosition().getY()*scale);
 		}
 		
-		g2.translate(-offset_x, -offset_y);
+		g2.translate(offset_x, offset_y);		
 		
-		// TEMP: Draw a simple grid:
-		g2.setColor(Color.lightGray);
-		int t;
-		int extents_x = Math.round(MAP_WIDTH * scale);
-		int extents_y = Math.round(MAP_HEIGHT * scale);
-		for (int x = MAP_WIDTH; x >= 0; x--)
+		// Draw all actors:
+		for (Actor a : actorList)
+			a.draw(g2, scale);
+		
+		// Draw the walls
+		if (map != null)
 		{
-			t = Math.round(x * scale);
-			g2.drawLine( t, Math.max(clip.y + offset_y, -extents_y),  t, Math.min(clip.y + clip.height + offset_y, extents_y));
-			g2.drawLine(-t, Math.max(clip.y + offset_y, -extents_y), -t, Math.min(clip.y + clip.height + offset_y, extents_y));
-		}
-		g2.setColor(Color.gray);
-		for (int y = MAP_HEIGHT; y >= 0; y--)
-		{
-			t = Math.round(y * scale);
-			g2.drawLine(Math.max(clip.x+offset_x, -extents_x),  t, Math.min(clip.x + clip.width + offset_x, extents_x),  t);
-			g2.drawLine(Math.max(clip.x+offset_x, -extents_x), -t, Math.min(clip.x + clip.width + offset_x, extents_x), -t);
-		}
-		
-		// Draw the player
-		if (player != null)
-		{
-			g2.setColor(playerColor);
-			GuiUtils.drawFilledOctagon(g2, Math.round(player.getX()*scale), Math.round(player.getY()*scale), scale*PLAYER_SIZE);
-		}
-		
-		// Draw the walls TODO: need map class first
+			int left, right, top, bottom;
+			left = Math.round((clip.x - offset_x) / scale - 0.5f);
+			right = Math.round((clip.x + clip.width - offset_x) / scale);
+			top = Math.round((clip.y - offset_y) / scale - 0.5f);
+			bottom = Math.round((clip.y + clip.height - offset_y) / scale);
+			
+			left = Math.max(0, Math.min(map.getXSize()-1, left));
+			right = Math.max(0, Math.min(map.getXSize()-1, right));
+			top = Math.max(0, Math.min(map.getYSize()-1, top));
+			bottom = Math.max(0, Math.min(map.getYSize()-1, bottom));
+			
+			g2.setColor(getForeground());
+			for (int x=left; x <= right; x++)
+				for (int y=top; y <= bottom; y++)
+				{
+					if (map.isWall(x, y))
+						g2.fillRect(Math.round(x*scale), Math.round(y*scale), Math.round(scale), Math.round(scale));
+				}
+		} // end draw map
 		
 		// Restore the view so the widgets are in the right spot
 		g2.setTransform(oldTransform);
@@ -260,14 +296,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void keyPressed(KeyEvent e)
 	{
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
-		else if (e.getKeyCode() == KeyEvent.VK_WINDOWS)
-		{
-			if (playerColor == Color.green)
-				playerColor = Color.orange;
-			else
-				playerColor = Color.green;
-			repaint();
-		}
 		else if (e.getKeyCode() == KeyEvent.VK_INSERT)
 		{
 			antialiasing = !antialiasing;
@@ -287,25 +315,33 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 	}
 	
+	public void setActorList(Vector<Actor> list)
+	{
+		actorList = list;
+		
+		if (!actorList.contains(viewTracker))
+			actorList.add(viewTracker);
+	}
+	
+	public Vector<Actor> getActorList()
+	{
+		return actorList;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource().equals(gameTimer))
+		//if (e.getSource().equals(gameTimer))
 		{
 			long thisTime = System.currentTimeMillis();
-			float dTime = 0.001f * (thisTime - lastTime);
+			float dTime = 0.01f * (thisTime - lastTime);
 			boolean repaint = false;
 			
-			if (keysPressed[KeyEvent.VK_LEFT])
-				player.accelerate(-PLAYER_ACCELERATION, 0);
-			if (keysPressed[KeyEvent.VK_RIGHT])
-				player.accelerate(PLAYER_ACCELERATION, 0);
-			if (keysPressed[KeyEvent.VK_UP])
-				player.accelerate(0, -PLAYER_ACCELERATION);
-			if (keysPressed[KeyEvent.VK_DOWN])
-				player.accelerate(0, PLAYER_ACCELERATION);
+			for (Actor a : actorList)
+				if (a.animate(dTime))
+					repaint = true;
 			
-			if (player.animate(dTime)) repaint = true;
-			if (viewTracker.animate(dTime)) repaint = true;
+			if (viewTracker != null && viewTracker.animate(dTime))
+				repaint = true;
 			
 			if (repaint) repaint();
 			lastTime = thisTime;
