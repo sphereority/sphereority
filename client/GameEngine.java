@@ -84,7 +84,7 @@ public class GameEngine implements Constants {
 			updateWorld();
 			
 			//Thread.yield();
-			try { Thread.sleep(10); }
+			try { Thread.sleep(20); }
 			catch (InterruptedException er) { }
 		}
 	}
