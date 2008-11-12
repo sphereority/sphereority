@@ -132,7 +132,7 @@ public class Map {
      * 
      * @return vector of SpawnPoint objects
      */
-    public Vector getSpawnPoints() {
+    public Vector<SpawnPoint> getSpawnPoints() {
         return spawnPoints;
     }
        

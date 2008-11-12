@@ -81,7 +81,8 @@ public interface Constants
 	/**
 	 * The colour of a stone
 	 */
-	public static final Color STONE_COLOR = Color.gray;
+	//public static final Color STONE_COLOR = Color.gray;
+	public static final Color STONE_COLOR = new Color(0.8f, 0.4f, 0.2f);
 
 	/**
 	 * The width of a stone
@@ -147,7 +148,7 @@ public interface Constants
 	public static final int MAXIMUM_ACTOR_HEALTH = 2000;
 	
 	/**
-	 * 
+	 * The speed at which a bullet travels
 	 */
 	public static final float BULLET_SPEED = 20;
 }

@@ -83,6 +83,11 @@ public abstract class Actor implements Constants {
 		position.x = x;
 		position.y = y;
 	}
+	public void setPosition(Position p)
+	{
+		position.x = p.x;
+		position.y = p.y;
+	}
 	
 	public void moveBy(float x, float y)
 	{

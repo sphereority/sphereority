@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
+import java.util.Random;
 
 /**
  * This class describes the game loop for this game
@@ -13,6 +14,8 @@ import java.util.Vector;
  *
  */
 public class GameEngine implements Constants {
+	public static final Random rand = new Random();
+	
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -27,16 +30,16 @@ public class GameEngine implements Constants {
 
 	// CONSTRUCTORS
 	public GameEngine(Map m) {
-		this.gameOver = false;
-		this.gameMap = m;
-		this.gameViewArea = new ClientViewArea();
+		gameOver = false;
+		gameMap = m;
+		gameViewArea = new ClientViewArea();
 		
-		this.gameViewArea.setMap(this.gameMap);
+		gameViewArea.setMap(gameMap);
 		
-		this.localInputListener = new InputListener();
-		this.localPlayer = new LocalPlayer(this.localInputListener);
-		this.localPlayer.setPosition(0.5f, 0.5f);
-		this.gameViewArea.setLocalPlayer(this.localPlayer);
+		localInputListener = new InputListener();
+		localPlayer = new LocalPlayer(localInputListener);
+		placePlayer(localPlayer);
+		gameViewArea.setLocalPlayer(localPlayer);
 		
 		actorList = new Vector<Actor>();
 		actorList.add(localPlayer);
@@ -84,7 +87,7 @@ public class GameEngine implements Constants {
 			updateWorld();
 			
 			//Thread.yield();
-			try { Thread.sleep(20); }
+			try { Thread.sleep(10); }
 			catch (InterruptedException er) { }
 		}
 	}
@@ -100,11 +103,18 @@ public class GameEngine implements Constants {
 		gameViewArea.setActorList(actorList);
 		
 		// TEMP: Set up temporary stones to test collision detection
-		for (int i = 0; i < 10; i = i + 1) {
-			Stone s = new Stone(new Position(3.5f, i * 3 + 0.5f));
-			//gameViewArea.actorList.add(s);
-			actorList.add(s);
-		}
+//		for (int i = 0; i < 10; i = i + 1) {
+//			Stone s = new Stone(new Position(3.5f, i * 3 + 0.5f));
+//			//gameViewArea.actorList.add(s);
+//			actorList.add(s);
+//		}
+		// Copy the map as a bunch of Stones
+		for (int x=0; x < gameMap.getXSize(); x++)
+			for (int y=0; y < gameMap.getYSize(); y++)
+			{
+				if (gameMap.isWall(x, y))
+					actorList.add(new Stone(x, y));
+			}
 				
 		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
 		window.addKeyListener(this.gameViewArea);
@@ -161,6 +171,29 @@ public class GameEngine implements Constants {
 		lastTime = thisTime;
 		if (repaint)
 			gameViewArea.repaint();
+	}
+	
+	public void placePlayer(Player p)
+	{
+		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
+		
+		if (spawnPoints == null || spawnPoints.size() == 0)
+		{
+			final int width = gameMap.getXSize(), height = gameMap.getYSize();
+			int x = rand.nextInt(width), y = rand.nextInt(height);
+			
+			while (gameMap.isWall(x, y))
+			{
+				x = rand.nextInt(width);
+				y = rand.nextInt(height);
+			}
+			
+			p.setPosition(x + 0.5f, y + 0.5f);
+		}
+		else
+		{
+			p.setPosition(spawnPoints.get(rand.nextInt(spawnPoints.size())).getPosition());
+		}
 	}
 	
 	/* ********************************************* *

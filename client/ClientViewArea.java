@@ -14,16 +14,17 @@ import common.*;
  * This class manages displaying the current play area
  * @author dvanhumb
  */
-public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants//, ActionListener
+public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants
 {
 	private static final long serialVersionUID = 23498751L;
-	public static int TIMER_TICK = 75;
 	public static int MAP_WIDTH = 16;
 	public static int MAP_HEIGHT = 16;
 	
 	// Drawing-related variables
 	protected boolean antialiasing;
 	protected float scale;
+	protected boolean drawMap;
+	
 	// Colour-defining variables
 	protected Color playerColor;
 	
@@ -38,7 +39,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected int mapWidth, mapHeight;
 	
 	// Temporary testing stuff:
-	//protected Timer gameTimer;
 	protected long lastTime;
 	protected boolean[] keysPressed;
 	
@@ -50,7 +50,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		setMaximumSize(d);
 		
 		setBackground(Color.black);
-		setForeground(new Color(0.8f, 0.4f, 0.2f));
+		setForeground(STONE_COLOR);
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -59,12 +59,11 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		playerColor = Color.green;
 		scale = 50;
 		
-		//gameTimer = new Timer(TIMER_TICK, this);
-		//gameTimer.start();
 		lastTime = System.currentTimeMillis();
 		
 		keysPressed = new boolean[1024];
 		antialiasing = false;
+		drawMap = false;
 		
 		actorList = new Vector<Actor>();
 		
@@ -125,6 +124,17 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		return map;
 	}
 	
+	public void setDrawMap(boolean show)
+	{
+		drawMap = show;
+		repaint();
+	}
+	
+	public boolean getDrawMap()
+	{
+		return drawMap;
+	}
+	
 	public void addWidget(Widget w)
 	{
 		widgetList.add(w);
@@ -168,7 +178,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			a.draw(g2, scale);
 		
 		// Draw the walls
-		if (map != null)
+		if (map != null && drawMap)
 		{
 			int left, right, top, bottom;
 			left = Math.round((clip.x - offset_x) / scale - 0.5f);
@@ -327,24 +337,4 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	{
 		return actorList;
 	}
-	
-	public void actionPerformed(ActionEvent e)
-	{
-		//if (e.getSource().equals(gameTimer))
-		{
-			long thisTime = System.currentTimeMillis();
-			float dTime = 0.01f * (thisTime - lastTime);
-			boolean repaint = false;
-			
-			for (Actor a : actorList)
-				if (a.animate(dTime))
-					repaint = true;
-			
-			if (viewTracker != null && viewTracker.animate(dTime))
-				repaint = true;
-			
-			if (repaint) repaint();
-			lastTime = thisTime;
-		}
-	} // end actionPerformed()
 } // end ClientViewArea clas

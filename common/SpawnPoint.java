@@ -21,4 +21,9 @@ public class SpawnPoint {
     public int getY() {
         return y;
     }
+    
+    public Position getPosition()
+    {
+    	return new Position(x + 0.5f, y + 0.5f);
+    }
 }

@@ -13,7 +13,16 @@ public class Stone extends Actor {
 	public Stone() {
 		super();
 	}
-
+	
+	public Stone(int x, int y)
+	{
+		this(new Position(x+0.5f, y+0.5f));
+	}
+	public Stone(float x, float y)
+	{
+		this(new Position(x, y));
+	}
+	
 	public Stone(Position position) {
 		super(position, 1, 1);
 	}
