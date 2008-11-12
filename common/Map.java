@@ -3,6 +3,7 @@ package common;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Map {
     String name;       // map name
@@ -10,8 +11,8 @@ public class Map {
     int y_size;        // map y size
     int x_size;        // map x size
     char[][] mapping;  // two dimensional array of char for mapping
-    boolean[][] wall;  // two dimensional array of boolean for walls (true if wall exists on coordinates)
-
+    boolean[][] wall;  // two dimensional array of boolean for walls (if wall unit exists on [y][x] true, otherwise false)
+    Vector<SpawnPoint> spawnPoints; // vector of spawn points on map
     
     /**
      * Default Map constructor
@@ -55,6 +56,7 @@ public class Map {
         y_size = parser.nextInt();
         mapping = new char[y_size][x_size];
         wall = new boolean[y_size][x_size];
+        spawnPoints = new Vector<SpawnPoint>();
         if (parser.nextLine().toString().startsWith(" ")) {
             // do nothing
         }
@@ -70,6 +72,10 @@ public class Map {
                 if (mapping[y][x] == '+') {
                     wall[y][x] = true;
                 }
+                else if (mapping[y][x] == 's') {
+                    SpawnPoint s = new SpawnPoint(x, y);
+                    spawnPoints.addElement(s);
+                }
                 else {
                     wall[y][x] = false;
                 }
@@ -79,7 +85,7 @@ public class Map {
     
     /**
      * 
-     * @return the name of the map
+     * @return name of the map
      */
     public String getName() {
         return name;
@@ -87,7 +93,7 @@ public class Map {
     
     /** 
      * 
-     * @return the raw text data input
+     * @return raw text data input prior to processing
      */
     public String getData() {
         return data;
@@ -95,7 +101,7 @@ public class Map {
     
     /**
      * 
-     * @return the maximum x of the map
+     * @return maximum x of the map
      */
     public int getXSize() {
         return x_size;
@@ -103,27 +109,45 @@ public class Map {
     
     /**
      * 
-     * @return the maximum y of the map
+     * @return maximum y of the map
      */
     public int getYSize() {
         return y_size;
     }
     
     /**
+     * 
+     * @return vector of SpawnPoint objects
+     */
+    public Vector getSpawnPoints() {
+        return spawnPoints;
+    }
+       
+    /**
      * Note: this method uses zero-based indexing.
      * @param   x the x-axis coordinate (origin is top-left corner)
      * @param   y the y-axis coordinate (origin is top-left corner)
-     * @return  true if there exists a wall on the coordinate; false otherwise.
+     * @return  true if there exists a wall on the coordinates; false otherwise.
      */
     public boolean isWall(int x, int y) {
         return wall[y][x];
     }
-    
+
     /**
-     * Method to dump all variables contained within Map object.
+     * Prints coordinate of spawnpoints in spawnPoints vector.
      *
      */
-    public void varDump() {
+    public void dumpSpawnPoints() {
+        for (int i=0; i < spawnPoints.size(); i++) {
+            System.out.println("Spawnpoint exists at: " + spawnPoints.get(i).getX() + ", " + spawnPoints.get(i).getY());
+        }
+    }    
+    
+    /**
+     * Prints all variables contained within Map object.
+     *
+     */
+    public void dumpVars() {
         System.out.println("String name: " + name);
         System.out.println("String data: " + data);
         System.out.println("int x_size: " + x_size);
