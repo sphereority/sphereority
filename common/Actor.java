@@ -34,6 +34,11 @@ public abstract class Actor implements Constants {
 		
 		health = DEFAULT_ACTOR_HEALTH;
 		
+		/* Old values:
+		 * height = 1;
+		 * width = 1;
+		 */
+		
 		height = DEFAULT_ACTOR_HEIGHT;
 		width = DEFAULT_ACTOR_WIDTH;
 

@@ -18,10 +18,13 @@ public class TrackingObject extends WeightedPosition
 	{
 		super();
 		setPosition(x, y);
+		width = height = 0; // This doesn't bump into anything
 	}
 	
 	public TrackingObject(Position p)
 	{
+		// Copy the position so we're not actually following their position exactly
+		// Possible bug: Position objects are not immutable!
 		position = new Position(p);
 	}
 
@@ -42,7 +45,7 @@ public class TrackingObject extends WeightedPosition
 		{
 			Position delta = target.position.subtract(position);
 			
-			if (delta.getMagnitude() < 0.05f)
+			if (delta.getMagnitude() < 0.01f && target.velocity.getMagnitude() < 0.05f)
 			{
 				velocity.x = velocity.y = 0;
 				position.x = target.getX();
@@ -53,13 +56,13 @@ public class TrackingObject extends WeightedPosition
 			
 			velocity.scale(1 - ((1 - FRICTION_COEFFICIENT) * dTime));
 			
+			if (velocity.getMagnitude() > 0.1f)
+				velocity.setDirection(delta);
+			
 			if (delta.getMagnitude() > velocity.getMagnitude())
 				velocity.move(delta, TRACKING_SPEED * dTime / delta.getMagnitude());
 			else
 				velocity.move(delta, -TRACKING_SPEED * dTime / delta.getMagnitude());
-			
-			if (velocity.getMagnitude() > 0.1f)
-				velocity.setDirection(delta);
 		} // end if we have a target
 		
 		velocity.checkLength();

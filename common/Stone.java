@@ -22,8 +22,8 @@ public class Stone extends Actor {
 	public void draw(Graphics2D g, float scale)
 	{
 		g.setColor(STONE_COLOR);
-		g.fillRect(Math.round(position.getX() * scale),
-				Math.round(position.getY() * scale),
+		g.fillRect(Math.round((position.getX() - 0.5f * width) * scale),
+				Math.round((position.getY() - 0.5f * height) * scale),
 				Math.round(width*scale),
 				Math.round(height*scale));
 	}

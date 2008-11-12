@@ -41,8 +41,8 @@ public abstract class Player extends WeightedPosition {
 	}
 
   public void collision(Actor a) {
-		if (a instanceof Stone) {
-			System.out.println("You hit a stone!");
-		}		
+//		if (a instanceof Stone) {
+//			System.out.println("You hit a stone!");
+//		}		
 	} 
 }

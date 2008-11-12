@@ -1,9 +1,7 @@
 package	client;
 
-import common.Map;
-import common.Actor;
-import common.Stone;
-import common.Position;
+import common.*;
+import client.audio.*;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import java.awt.geom.Rectangle2D;
@@ -14,7 +12,7 @@ import java.util.Vector;
  * @author smaboshe
  *
  */
-public class GameEngine {
+public class GameEngine implements Constants {
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -23,6 +21,8 @@ public class GameEngine {
 	
 	public Vector<Actor> actorList;
 	public long lastTime;
+	public GameSoundSystem soundSystem;
+	public SoundEffect soundBump;
 
 
 	// CONSTRUCTORS
@@ -40,6 +40,10 @@ public class GameEngine {
 		
 		actorList = new Vector<Actor>();
 		actorList.add(localPlayer);
+		
+		// Sound engine stuff:
+		soundSystem = new GameSoundSystem();
+		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
 	}
 	
 	
@@ -79,7 +83,9 @@ public class GameEngine {
 			checkCollisions();
 			updateWorld();
 			
-			Thread.yield();
+			//Thread.yield();
+			try { Thread.sleep(10); }
+			catch (InterruptedException er) { }
 		}
 	}
 	
@@ -95,7 +101,7 @@ public class GameEngine {
 		
 		// TEMP: Set up temporary stones to test collision detection
 		for (int i = 0; i < 10; i = i + 1) {
-			Stone s = new Stone(new Position(3, i * 3));
+			Stone s = new Stone(new Position(3.5f, i * 3 + 0.5f));
 			//gameViewArea.actorList.add(s);
 			actorList.add(s);
 		}
@@ -121,6 +127,8 @@ public class GameEngine {
 		//Vector actorList = this.gameViewArea.actorList;
 		for (int i = 0; i < actorList.size(); i = i + 1) {
 			Actor actor1 = actorList.get(i);
+			if (actor1 instanceof TrackingObject) continue;
+			
 			Rectangle2D bound1 = actor1.getBounds();
 			if (bound1.intersects(playerBounds)) {
 				this.localPlayer.collision(actor1);
@@ -128,6 +136,8 @@ public class GameEngine {
 			}
 			for (int j = i + 1; j < actorList.size(); j = j + 1) {
 				Actor actor2 = actorList.get(j);
+				if (actor2 instanceof TrackingObject) continue;
+				
 				Rectangle2D bound2 = actor2.getBounds();
 				if (bound1.intersects(bound2)) {
 					actor1.collision(actor2);
@@ -151,5 +161,37 @@ public class GameEngine {
 		lastTime = thisTime;
 		if (repaint)
 			gameViewArea.repaint();
+	}
+	
+	/* ********************************************* *
+	 * These method(s) are for playing sound effects *
+	 * ********************************************* */
+	/**
+	 * Plays a bump sound effect at the specified volume. If the sound is already playing at a lower volume, it is stopped and restarted at the louder volume, otherwise nothing happens.
+	 * @param volume	The volume at which to play.
+	 */
+	public void playBump(float volume)
+	{
+		playSound(volume, soundBump);
+	}
+	
+	/**
+	 * A slightly more generic sound playing method so we don't have to duplicate code all over the place.
+	 * This actually handles playing or not playing the sound.
+	 * @param volume
+	 * @param sound
+	 */
+	private void playSound(float volume, SoundEffect sound)
+	{
+		if (sound.isPlaying())
+		{
+			if (sound.getVolume() < volume)
+				sound.stop();
+			else
+				return;
+		}
+		
+		sound.setVolume(volume);
+		sound.play();
 	}
 }
