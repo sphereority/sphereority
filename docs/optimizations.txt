@@ -1,4 +1,8 @@
 Optimizations made during development:
 
-common/Stone.java:	Because they don't move, we're now saving the bounding rectangle instead of throwing it away each time.
-		This has sped the game up noticeably.
+12 November 2008
+----------------
+common/Stone.java:
+	Because they don't move, we're now saving the bounding rectangle instead of throwing it away each time.
+	This has sped the game up noticeably.
+

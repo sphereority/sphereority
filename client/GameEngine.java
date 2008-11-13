@@ -93,7 +93,7 @@ public class GameEngine implements Constants {
 	}
 	
 	public void initialize() {
-		String title = "Game Engine Test";
+		String title = CLIENT_WINDOW_NAME;
 		System.out.println(title);
 		
 		// Set up game window
@@ -102,12 +102,6 @@ public class GameEngine implements Constants {
 		
 		gameViewArea.setActorList(actorList);
 		
-		// TEMP: Set up temporary stones to test collision detection
-//		for (int i = 0; i < 10; i = i + 1) {
-//			Stone s = new Stone(new Position(3.5f, i * 3 + 0.5f));
-//			//gameViewArea.actorList.add(s);
-//			actorList.add(s);
-//		}
 		// Copy the map as a bunch of Stones
 		for (int x=0; x < gameMap.getXSize(); x++)
 			for (int y=0; y < gameMap.getYSize(); y++)
@@ -120,9 +114,6 @@ public class GameEngine implements Constants {
 		window.addKeyListener(this.gameViewArea);
 		
 		localInputListener.attachListeners(window);
-		//window.addKeyListener(this.localInputListener);
-		//window.addMouseListener(this.localInputListener);
-		//window.addMouseMotionListener(this.localInputListener);
 		
 		window.pack();
 		window.setLocationRelativeTo(null);
