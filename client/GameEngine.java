@@ -5,6 +5,7 @@ import client.audio.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 import java.util.Random;
@@ -32,6 +33,7 @@ public class GameEngine implements Constants, ActionListener {
 	public long lastTime;
 	public GameSoundSystem soundSystem;
 	public SoundEffect soundBump;
+	public Timer timer;
 
 
 	// CONSTRUCTORS
@@ -87,6 +89,8 @@ public class GameEngine implements Constants, ActionListener {
 	
 	public void gameOver() {
 		gameOver = true;
+		if (timer != null)
+			timer.stop();
 	}
 	
 	public void gameStep()
@@ -98,12 +102,15 @@ public class GameEngine implements Constants, ActionListener {
 	public void play() {
 		initialize();
 		
-		while (!isGameOver()) {
-			gameStep();
-			
-			try { Thread.sleep(10); }
-			catch (InterruptedException er) { }
-		}
+		timer = new Timer(20, this);
+		timer.start();
+		
+//		while (!isGameOver()) {
+//			gameStep();
+//			
+//			try { Thread.sleep(10); }
+//			catch (InterruptedException er) { }
+//		}
 	}
 	
 	public void initialize() {
