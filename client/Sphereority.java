@@ -17,7 +17,7 @@ public class Sphereority extends Thread {
 	}
 	
 	public static void main(String[] args) {
-		GameEngine game = new GameEngine(new Map("sample-map"));
+		GameEngine game = new GameEngine(new Map("mercury"));
 		Sphereority s = new Sphereority(game);
 		s.start();
 		//game.play();
