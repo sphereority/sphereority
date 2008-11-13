@@ -1,12 +1,13 @@
 package common.messages;
 
 /**
- *
- *  MessageAnalyzer - Helper class used in figuring out
- *                    the meaning of messages.
- *                    This includes changing from messages
- *                    to their byte representations.
+
+ *  MessageAnalyzer
+
  *  @author Raphael Lagman 
+
+ .
+
  */
 public abstract class MessageAnalyzer {
 	
@@ -52,13 +53,13 @@ public abstract class MessageAnalyzer {
 		return message;
 	}
 
-    /**
+  /**
 	 * Translates from a byte to its corresponding
 	 * message type value.
 	 * @param type
 	 * @return
 	 */
-    public static byte getByteMessageType(MessageType type) {
+    public static byte getMessageType(MessageType type) {
 		byte message;
 		switch (type) {
 			case PlayerMotion:
@@ -85,53 +86,25 @@ public abstract class MessageAnalyzer {
 		return message;
     }
 
-    
-    /**
-     *  Creates a message from an array of bytes.
-     *  @param message The message that is received
-     *  @return The message that was sent.  Must be cast in order to work
-     *          with it.
-     */
-    public static Packetizable getMessage(byte[] message) {
-        Packetizable createdMessage;
-        
-        // Figure out what message type we have
-		switch (message[MESSAGE_TYPE]) {
-			case PLAYER_MOTION:
-				createdMessage = new PlayerMotionMessage();
-                break;
-			case MAP_CHANGE:
-				createdMessage = new MapChangeMessage();
+    public static Message getMessage(MessageType type, byte[] data) {
+		Message message = null;
+		
+        switch (type) {
+			case PlayerMotion:
 				break;
-			case SCORE_UPDATE:
-				createdMessage = new ScoreUpdateMessage();
+			case MapChange:
 				break;
-			case HEALTH_UPDATE:
-				createdMessage = new HealthUpdateMessage();
+			case ScoreUpdate:
 				break;
-			case CHAT_MESSAGE:
-				createdMessage = new ChatMessage();
+			case HealthUpdate:
 				break;
-			case DEATH_MESSAGE:
-				createdMessage = new DeathMessage();
+			case ChatMessage:
 				break;
-			default:
-				createdMessage = null;
+			case DeathMessage:
+                message = DeathMessage.readMessage(data);
+				break;
 		}
-
-        /* Read the packet data if a message was read */
-        if (createdMessage != null)
-            createdMessage.readPacketData(message);
-				
-		return createdMessage;
+		return message;
     }
 
-    /**
-     *  Creates an array of bytes from a message.
-     *  @param message The message that is received
-     *  @return The message to be sent.
-     */
-    public static byte[] getMessage(Packetizable message) {
-        return message.createPacketData();
-    }
 }

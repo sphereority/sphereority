@@ -7,29 +7,40 @@ import java.nio.ByteBuffer;
  * 
  * @author rlagman
  */
-public class DeathMessage implements Packetizable {
-
-
-    /**
-     *  The header for the message.
-     */
-    private Header header;
+public class DeathMessage extends Message implements MessageLengths {
 
     /**
      * The id of the player who killed.
      */
-    private int killedByplayerId;
+    private byte killedByPlayerId;
 
     /**
      * The id of the player who was killed.
      */
-    private int killedplayerId;    
+    private byte killedPlayerId;    
 
     /**
-     *  Constructor - Creates a new instance.
+     * Constructor - Creates a new DeathMessage.
      */
-    public DeathMessage() {
-        header = new TCPHeader(MessageType.DeathMessage,255);
+    public DeathMessage(byte killedByPlayerId, byte killedPlayerId) {
+        super(MessageType.DeathMessage);
+        this.killedByPlayerId = killedByPlayerId;
+        this.killedPlayerId   = killedPlayerId;
+        dataLength = DeathMessageLength;    
+    }
+
+    /**
+     * Retrieve the ID of the player who was killed.
+     */
+    public byte getKilled() {
+        return killedPlayerId;
+    }
+
+    /**
+     * Retrieves the ID of the player who killed.
+     */
+    public byte getKiller() {
+        return killedByPlayerId;
     }
 
 	/**
@@ -38,19 +49,18 @@ public class DeathMessage implements Packetizable {
 	 * @param data The raw byte data that was sent.
 	 * @return The DeathMessage populated with the input data.
 	 */
-	public Packetizable readPacketData(byte[] data) {
+	public static DeathMessage readMessage(byte[] data) {
         // Wrap the stream of bytes into a buffer
        
         ByteBuffer buffer = ByteBuffer.wrap(data);
 
 		
         
-        if(MessageAnalyzer.getMessageType(buffer.get()) != MessageType.DeathMessage)
-		    return null;
-
 		// Process the information to create the object.
-		
-		return this;
+        byte killedByPlayerId = buffer.get();
+        byte killedPlayerId   = buffer.get();
+
+		return new DeathMessage(killedByPlayerId,killedPlayerId);
 	}
 	
 	/**
@@ -58,27 +68,23 @@ public class DeathMessage implements Packetizable {
 	 * that represents a Packetizable object.
 	 * @return A byte representation of the Packetizable object.
 	 */
-	public byte[] createPacketData() {
+	public byte[] getByteMessage() {
+        // Get the header
+        byte[] header = getByteHeader();
         
-        byte[] data = new byte[MTU];
-       
+        byte[] message = new byte[header.length + dataLength];
         
-        // Create a buffer the size of the maximum transmission unit
-		ByteBuffer buffer = ByteBuffer.wrap(data);
-        
+        // Place the header information
+        ByteBuffer buffer = ByteBuffer.wrap(message);
         
         
-        // Create the packet by processing the data
-
+        buffer.put(header);
+        
+        // Place the contents of this data
+        buffer.put(killedByPlayerId);
+        buffer.put(killedPlayerId);
+        
         // Return
-        return data;
+        return message;
 	}
-
-    /**
-     *  Retrieves the type of message to be sent.
-     *  @return The type of message of this packet.
-     */
-    public MessageType getMessageType() {
-        return header.getMessageType();
-    }
 }

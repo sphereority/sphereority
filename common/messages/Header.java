@@ -1,14 +1,16 @@
 package common.messages;
 
+import java.nio.ByteBuffer;
+
 /**
  *  Abstracts the basic properties of a header within the project.
  *  @author Raphael Lagman
  */
-public abstract class Header {
+public class Header {
     /**
      *  Constant - Maximum size of the header is 16 bytes.
      */
-    protected final int HEADER_MAX = 8;
+    public static final int HEADER_MAX = 8;
 
     /**
      *  message - Tells what kind of message is being associated with a packet.
@@ -16,40 +18,43 @@ public abstract class Header {
     protected MessageType message;
 
     /**
-     *  dataLength - The length of the data portion of the packet.
-     */
-    protected int dataLength;
-
-    /**
      *  Constructor - Initializes the parts of a Header.
      */
-    protected Header(MessageType message, int dataLength) {
+    protected Header(MessageType message) {
         this.message = message;
-        this.dataLength = dataLength;
     }
 
     /**
-     *  Creates the byte representation of the header.
+     * Retrieves header information given an array of bytes.
+     * @param header The header represented as bytes.
+     * @return The Header object representation of the array of bytes.
      */
-    protected abstract byte[] createHeader();
+    public static Header getHeader(byte[] header) {
+        ByteBuffer buffer = ByteBuffer.wrap(header);
+        MessageType type = MessageAnalyzer.getMessageType(buffer.get());
+        return new Header(type);
+    }
 
     /**
-     *  Construct a header given an array of bytes.
+     * Creates a byte representation of a header.
+     * @return The header as a byte array.
      */
-    protected abstract Header getHeader(byte[] packet);
+    public byte[] createHeader() {
+        // Create the header and a buffer to wrap it
+        byte[] header = new byte[HEADER_MAX];
+        ByteBuffer buffer = ByteBuffer.wrap(header);
+
+        // Put in the contents of a header
+        buffer.put(MessageAnalyzer.getMessageType(message));
+
+        // Return the header as a byte array
+        return header;
+    }
 
     /**
      *  Gets the message type associated with the header.
      */
     public MessageType getMessageType() {
         return message;
-    }
-
-    /**
-     * Gets the length of the data segment this header is
-     * associated with.
-     */
-    public int getDataLength() {
-        return dataLength;
     }
 }
