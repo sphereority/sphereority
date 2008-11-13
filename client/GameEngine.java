@@ -3,6 +3,7 @@ package	client;
 import common.*;
 import client.audio.*;
 import java.awt.BorderLayout;
+import java.awt.event.*;
 import javax.swing.JFrame;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
@@ -13,7 +14,7 @@ import java.util.Random;
  * @author smaboshe
  *
  */
-public class GameEngine implements Constants {
+public class GameEngine implements Constants, ActionListener {
 	public static final Random rand = new Random();
 	
 	public boolean gameOver;
@@ -22,7 +23,12 @@ public class GameEngine implements Constants {
 	public LocalPlayer localPlayer;
 	public InputListener localInputListener;
 	
+	// Lists
 	public Vector<Actor> actorList;
+	public Vector<Stone> stoneList;
+	public Vector<Player> playerList;
+	public Vector<Projectile> bulletList;
+	
 	public long lastTime;
 	public GameSoundSystem soundSystem;
 	public SoundEffect soundBump;
@@ -43,6 +49,10 @@ public class GameEngine implements Constants {
 		
 		actorList = new Vector<Actor>();
 		actorList.add(localPlayer);
+		stoneList = new Vector<Stone>();
+		playerList = new Vector<Player>();
+		playerList.add(localPlayer);
+		bulletList = new Vector<Projectile>();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
@@ -76,17 +86,21 @@ public class GameEngine implements Constants {
 	}
 	
 	public void gameOver() {
-		this.gameOver = true;
+		gameOver = true;
+	}
+	
+	public void gameStep()
+	{
+		checkCollisions();
+		updateWorld();
 	}
 	
 	public void play() {
 		initialize();
 		
 		while (!isGameOver()) {
-			checkCollisions();
-			updateWorld();
+			gameStep();
 			
-			//Thread.yield();
 			try { Thread.sleep(10); }
 			catch (InterruptedException er) { }
 		}
@@ -102,27 +116,21 @@ public class GameEngine implements Constants {
 		
 		gameViewArea.setActorList(actorList);
 		
-		// TEMP: Set up temporary stones to test collision detection
-//		for (int i = 0; i < 10; i = i + 1) {
-//			Stone s = new Stone(new Position(3.5f, i * 3 + 0.5f));
-//			//gameViewArea.actorList.add(s);
-//			actorList.add(s);
-//		}
 		// Copy the map as a bunch of Stones
 		for (int x=0; x < gameMap.getXSize(); x++)
 			for (int y=0; y < gameMap.getYSize(); y++)
 			{
 				if (gameMap.isWall(x, y))
-					actorList.add(new Stone(x, y));
+				{
+					stoneList.add(new Stone(x, y));
+					actorList.add(stoneList.get(stoneList.size() - 1));
+				}
 			}
 				
 		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
 		window.addKeyListener(this.gameViewArea);
 		
 		localInputListener.attachListeners(window);
-		//window.addKeyListener(this.localInputListener);
-		//window.addMouseListener(this.localInputListener);
-		//window.addMouseMotionListener(this.localInputListener);
 		
 		window.pack();
 		window.setLocationRelativeTo(null);
@@ -133,28 +141,81 @@ public class GameEngine implements Constants {
 	
 	public void checkCollisions() {
 		// Environment, Player and projectile collision code goes here
-		Rectangle2D playerBounds = this.localPlayer.getBounds();
-		//Vector actorList = this.gameViewArea.actorList;
-		for (int i = 0; i < actorList.size(); i = i + 1) {
-			Actor actor1 = actorList.get(i);
-			if (actor1 instanceof TrackingObject) continue;
+		Rectangle2D bounds1, bounds2;
+		Actor actor1, actor2;
+		
+		// Check players against stones
+		for (int i=0; i < stoneList.size(); i ++)
+		{
+			actor1 = stoneList.get(i);
+			bounds1 = actor1.getBounds();
 			
-			Rectangle2D bound1 = actor1.getBounds();
-			if (bound1.intersects(playerBounds)) {
-				this.localPlayer.collision(actor1);
-				actor1.collision(this.localPlayer);
-			}
-			for (int j = i + 1; j < actorList.size(); j = j + 1) {
-				Actor actor2 = actorList.get(j);
-				if (actor2 instanceof TrackingObject) continue;
+			for (int j=0; j < playerList.size(); j ++)
+			{
+				actor2 = playerList.get(j);
+				bounds2 = actor2.getBounds();
 				
-				Rectangle2D bound2 = actor2.getBounds();
-				if (bound1.intersects(bound2)) {
+				if (bounds1.intersects(bounds2))
+				{
 					actor1.collision(actor2);
 					actor2.collision(actor1);
 				}
 			}
-		}
+		} // end check players against stones
+		
+		// Check bullets against players and stones
+		for (int i=0; i < bulletList.size(); i ++)
+		{
+			actor1 = bulletList.get(i);
+			bounds1 = actor1.getBounds();
+			
+			for (int j=0; j < playerList.size(); j ++)
+			{
+				actor2 = playerList.get(j);
+				bounds2 = actor2.getBounds();
+				
+				if (bounds1.intersects(bounds2))
+				{
+					actor1.collision(actor2);
+					actor2.collision(actor1);
+				}
+			}
+			
+			for (int j=0; j < stoneList.size(); j ++)
+			{
+				actor2 = stoneList.get(j);
+				bounds2 = actor2.getBounds();
+				
+				if (bounds1.intersects(bounds2))
+				{
+					actor1.collision(actor2);
+					actor2.collision(actor1);
+				}
+			}
+		} // end check bullets against players and stones
+		
+		//Vector actorList = this.gameViewArea.actorList;
+//		Rectangle2D playerBounds = this.localPlayer.getBounds();
+//		for (int i = 0; i < actorList.size(); i = i + 1) {
+//			Actor actor1 = actorList.get(i);
+//			if (actor1 instanceof TrackingObject) continue;
+//			
+//			Rectangle2D bound1 = actor1.getBounds();
+//			if (bound1.intersects(playerBounds)) {
+//				this.localPlayer.collision(actor1);
+//				actor1.collision(this.localPlayer);
+//			}
+//			for (int j = i + 1; j < actorList.size(); j = j + 1) {
+//				Actor actor2 = actorList.get(j);
+//				if (actor2 instanceof TrackingObject) continue;
+//				
+//				Rectangle2D bound2 = actor2.getBounds();
+//				if (bound1.intersects(bound2)) {
+//					actor1.collision(actor2);
+//					actor2.collision(actor1);
+//				}
+//			}
+//		}
 	}
 	
 	public void updateWorld() {
@@ -171,6 +232,11 @@ public class GameEngine implements Constants {
 		lastTime = thisTime;
 		if (repaint)
 			gameViewArea.repaint();
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		gameStep();
 	}
 	
 	public void placePlayer(Player p)

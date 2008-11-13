@@ -11,7 +11,7 @@ public interface Constants
 	/**
 	 * The fastest an object can move in units per second
 	 */
-	public static final float MAXIMUM_SPEED = 25;
+	public static final float MAXIMUM_SPEED = 10;
 
 	/**
 	 * The amount of friction we have to slow motion down
@@ -26,7 +26,7 @@ public interface Constants
 	/**
 	 * The amount of speed you have after bumping into a wall
 	 */
-	public static final float STONE_REBOUND = 0.75f;
+	public static final float STONE_REBOUND = 0.5f;
 
 	/**
 	 * The amount of speed you have after bumping into another player
@@ -36,7 +36,7 @@ public interface Constants
 	/**
 	 * The speed at which a player accelerates due to keypresses
 	 */
-	public static final float PLAYER_ACCELERATION = 1.0f;
+	public static final float PLAYER_ACCELERATION = 2.0f;
 
 	/**
 	 * The size of a player in world units

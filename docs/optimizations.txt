@@ -2,3 +2,5 @@ Optimizations made during development:
 
 common/Stone.java:	Because they don't move, we're now saving the bounding rectangle instead of throwing it away each time.
 		This has sped the game up noticeably.
+client/GameEngine.java:	Instead of checking all actors against all other actors, we're now only checking stones against player and bullets against players and stones, but not amongst themselves.
+		This has sped things up a little bit more.

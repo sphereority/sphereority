@@ -2,6 +2,7 @@ package client;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import common.*;
 
 /**
@@ -15,6 +16,7 @@ public class LocalPlayer extends Player
 {
 	protected InputListener inputDevice;
 	private int bump_count;
+	protected Rectangle2D bounds = null;
 	
 	/**
 	 * Due to the requirement that this type of Player needs information about
@@ -37,7 +39,13 @@ public class LocalPlayer extends Player
 		if (inputDevice.isUpKeyPressed()) accelerate(0, -PLAYER_ACCELERATION*dTime);
 		if (inputDevice.isDownKeyPressed()) accelerate(0, PLAYER_ACCELERATION*dTime);
 		bump_count--;
-		return super.animate(dTime);
+		
+		boolean result = super.animate(dTime);
+		if (result && bounds != null)
+		{
+			bounds.setRect(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height); 
+		}
+		return result;
 	}
 	
 	public void draw(Graphics2D g, float scale)
@@ -63,22 +71,22 @@ public class LocalPlayer extends Player
 			Position difference = a.getPosition().subtract(position);
 			if (Math.abs(difference.getX()) > Math.abs(difference.getY()))
 			{
-				// Add check to make sure we're actually going towards the stone
-				// not away from it
 				if ((difference.getX() > 0.01f && velocity.getX() > 0.01f) || (difference.getX() < -0.01f && velocity.getX() < -0.01f))
-				{
 					velocity.bounceX();
-				}
 			}
 			else if (Math.abs(difference.getY()) > Math.abs(difference.getX()))
 			{
-				// Add check to make sure we're actually going towards the stone
-				// not away from it
 				if ((difference.getY() > 0.01f && velocity.getY() > 0.01f) || (difference.getY() < -0.01f && velocity.getY() < -0.01f))
-				{
 					velocity.bounceY();
-				}
 			}
 		}
 	} // end collision()
+	
+	public Rectangle2D getBounds()
+	{
+		if (bounds == null)
+			bounds = super.getBounds();
+		
+		return bounds;
+	}
 } // end class LocalPlayer
