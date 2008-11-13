@@ -1,17 +1,21 @@
 package common;
 
+import java.awt.Graphics2D;
+
+/*
+ * TODO: I'm in the process of splitting the speed stuff into two parts:
+ * The velocity is the direction we want to go in
+ * The velocity is the velocity we have now
+ * Each step we try to move in the direction of our velocity
+ */
+
 /**
  * This represents a location with possible tracking capabilities
  * @author dvanhumb
  *
  */
-public class WeightedPosition implements Constants
+public class WeightedPosition extends Actor implements Constants
 {
-	protected float pos_x, pos_y;
-	protected float speed_x, speed_y;
-	
-	protected WeightedPosition target;
-	
 	public WeightedPosition()
 	{
 		this(0, 0);
@@ -20,72 +24,26 @@ public class WeightedPosition implements Constants
 	public WeightedPosition(float x, float y)
 	{
 		setPosition(x, y);
-		speed_x = speed_y = 0;
 	}
 	
-	public float getX()
-	{
-		return pos_x;
-	}
-	
-	public float getY()
-	{
-		return pos_y;
-	}
-	
-	public void setPosition(float x, float y)
-	{
-		pos_x = x;
-		pos_y = y;
-	}
-	
-	public void moveBy(float x, float y)
-	{
-		pos_x += x;
-		pos_y += y;
-	}
-	
-	public float getSpeedX()
-	{
-		return speed_x;
-	}
-	
-	public float getSpeedY()
-	{
-		return speed_y;
-	}
 	
 	public void accelerate(float x, float y)
 	{
-		speed_x += x;
-		speed_y += y;
-		checkSpeed();
+		velocity.x += x;
+		velocity.y += y;
+		velocity.checkLength();
 	}
 	
 	protected float checkSpeed()
 	{
-		float speed = (float) Math.sqrt(speed_x * speed_x + speed_y * speed_y);
+		float speed = velocity.getMagnitude();
 		if (speed > MAXIMUM_SPEED)
 		{
-			speed_x = MAXIMUM_SPEED * speed_x / speed;
-			speed_y = MAXIMUM_SPEED * speed_y / speed;
+			velocity.x = MAXIMUM_SPEED * velocity.x / speed;
+			velocity.y = MAXIMUM_SPEED * velocity.y / speed;
 			return MAXIMUM_SPEED;
 		}
 		return speed;
-	}
-	
-	/* ******************************************** *
-	 * This section is about tracking other objects *
-	 * This may be helpful for AI stuff             *
-	 * ******************************************** */
-	public void setTarget(WeightedPosition target)
-	{
-		this.target = target;
-	}
-	
-	public WeightedPosition getTarget()
-	{
-		return target;
 	}
 	
 	/**
@@ -93,46 +51,27 @@ public class WeightedPosition implements Constants
 	 */
 	public boolean animate(float dTime)
 	{
-		// If we're tracking something/someone
-		if (target != null)
-		{
-			float dx = target.getX() - pos_x;
-			float dy = target.getY() - pos_y;
-			float speed = speedOf(dx, dy);
-			
-			if (speed > 1)
-			{
-				dx /= speed;
-				dy /= speed;
-			}
-			
-			if (speed > 0.1f)
-			{
-				if (speedOf(speed_x, speed_y) < speed)
-				{
-					speed_x += dx * TRACKING_SPEED;
-					speed_y += dy * TRACKING_SPEED;
-				}
-				else
-				{
-					//speed_x -= dx * TRACKING_SPEED;
-					//speed_y -= dy * TRACKING_SPEED;
-				}
-			}
-		}
-		
 		// Apply some friction to our motion
-		speed_x *= FRICTION_COEFFICIENT;
-		speed_y *= FRICTION_COEFFICIENT;
+		velocity.scale(1 - ((1 - FRICTION_COEFFICIENT)*dTime));
 		
 		// Check our speed to see if it's too fast
+		// And if we aren't actually moving, say so
 		if (checkSpeed() < 0.01f) return false;
 		
 		// Actually apply the speed to our position
-		pos_x += speed_x * dTime;
-		pos_y += speed_y * dTime;
+		position.move(velocity, dTime);
 		
 		return true;
+	}
+	
+	
+	public void draw(Graphics2D g, float scale)
+	{
+		/*
+		 * We don't actually draw anything here, as this doesn't have
+		 * a graphical representation, but still needs this method so
+		 * as to be a non-abstract class.
+		 */
 	}
 	
 	/**
@@ -144,5 +83,12 @@ public class WeightedPosition implements Constants
 	public static float speedOf(float a, float b)
 	{
 		return (float)Math.sqrt(a*a + b*b);
+	}
+	
+	public void collision(Actor a) {
+		/*
+		 * We don't need an implementation, but still need the method so
+		 * as to be a non-abstract class.
+		 */		
 	}
 }

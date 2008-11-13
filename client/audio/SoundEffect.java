@@ -12,7 +12,7 @@ public class SoundEffect implements LineListener
 	protected float volume;
 	protected File soundFile;
 	protected Clip soundClip;
-	protected Object lock;
+	protected Object lock = new Object();
 	protected volatile boolean playing;
 	protected FloatControl volumeControl;
 	protected FloatControl gainControl;
@@ -26,7 +26,6 @@ public class SoundEffect implements LineListener
 		soundClip.addLineListener(this);
 		
 		volume = 1.0f;
-		lock = new Object();
 		playing = false;
 		
 		if (soundClip.isControlSupported(FloatControl.Type.VOLUME))
@@ -92,12 +91,19 @@ public class SoundEffect implements LineListener
 		soundClip.loop(numTimes);
 	}
 	
+	/**
+	 * Returns true if this sound effect is currently being played
+	 * @return	Whether the sound is being played or not
+	 */
+	public boolean isPlaying()
+	{
+		return playing;
+	}
+	
 	public void update(LineEvent event)
 	{
-		//System.out.printf("Event recieved from clip: %s\n", event.getType().toString());
 		if (event.getType().equals(LineEvent.Type.STOP))
 		{
-			//System.out.println("Stopped.");
 			playing = false;
 			lock.notifyAll();
 		}
