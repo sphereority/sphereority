@@ -2,6 +2,7 @@ package	common;
 
 //import client.gui.GuiUtils;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class describes a stone which will serve as a building block for a wall
@@ -9,6 +10,8 @@ import java.awt.Graphics2D;
  *
  */
 public class Stone extends Actor {
+	protected Rectangle2D bounds = null;
+	
 	// CONSTRUCTOR
 	public Stone() {
 		super();
@@ -41,5 +44,13 @@ public class Stone extends Actor {
 
 	public void collision(Actor a) {
 		//System.out.println("A " + a.getClass().getName() + " bumped into a " + this.getClass().getName());
+	}
+	
+	public Rectangle2D getBounds()
+	{
+		if (bounds == null)
+			bounds = super.getBounds();
+		
+		return bounds;
 	}
 }
