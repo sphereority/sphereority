@@ -107,7 +107,7 @@ public class GameEngine implements Constants, ActionListener {
 	}
 	
 	public void initialize() {
-		String title = "Game Engine Test";
+		String title = CLIENT_WINDOW_NAME;
 		System.out.println(title);
 		
 		// Set up game window

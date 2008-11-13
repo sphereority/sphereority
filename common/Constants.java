@@ -151,4 +151,9 @@ public interface Constants
 	 * The speed at which a bullet travels
 	 */
 	public static final float BULLET_SPEED = 20;
+	
+	/**
+	 * The name of the client application window
+	 */
+	public static final String CLIENT_WINDOW_NAME = "Sphereority";
 }
