@@ -1,5 +1,7 @@
 package common.messages;
 
+import java.nio.ByteBuffer;
+
 /**
 
  *  MessageAnalyzer translates from the enumerated
@@ -13,7 +15,7 @@ package common.messages;
 
  */
 public abstract class MessageAnalyzer {
-	
+	public static final int  INIT           = 0;
 	public static final byte PLAYER_MOTION  = 0;
 	public static final byte MAP_CHANGE     = 1;
 	public static final byte SCORE_UPDATE   = 2;
@@ -90,15 +92,25 @@ public abstract class MessageAnalyzer {
     }
 
     /**
-     * Retrieves a message given its type and the data portion of the message.
-     * @param type The type of message to create.
-     * @param data The data portion of the message.
+     * Retrieves a message given its header and the data portion of the message.
      * @return The message that the byte array represeneted.
      */
-    public static Message getMessage(MessageType type, byte[] data) {
-		Message message = null;
+    public static Message getMessage(byte[] message) throws Exception {
+        ByteBuffer buffer = ByteBuffer.wrap(message);
+        
+        // Store the header information
+        byte[] byteHeader = new byte[Header.HEADER_MAX];
+        buffer.get(byteHeader,INIT,Header.HEADER_MAX);
+   
+        // Store the data information
+        int dataLength = message.length - Header.HEADER_MAX;
+        byte[] byteData = new byte[dataLength];
+        buffer.get(byteData,INIT,dataLength);       
+
+        // Construct the header
+        Message receivedMessage = null;
 		
-        switch (type) {
+        switch (getMessageType(byteHeader[MESSAGE_TYPE])) {
 			case PlayerMotion:
 				break;
 			case MapChange:
@@ -108,13 +120,13 @@ public abstract class MessageAnalyzer {
 			case HealthUpdate:
 				break;
 			case ChatMessage:
-                message = ChatMessage.readByteMessage(data);
+                receivedMessage = new ChatMessage(byteHeader,byteData);
 				break;
 			case DeathMessage:
-                message = DeathMessage.readByteMessage(data);
+                //message = DeathMessage.readByteMessage(data);
 				break;
 		}
-		return message;
+		return receivedMessage;
     }
 
 }

@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
  *  Contains information common to all messages in Sphereority.
  *  @author Raphael Lagman
  */
-public class Header {
+public class Header implements MessageConstants {
     /**
      *  Constant - Maximum size of the header is 16 bytes.
      */
@@ -18,23 +18,39 @@ public class Header {
     protected MessageType message;
 
     /**
-     *  Constructor - Initializes the parts of a Header.
+     * gameId - Identifies a game that is being played.
      */
-    protected Header(MessageType message) {
-        this.message = message;
+    protected byte gameId;
+    
+    /**
+     * playerId - Identifies a player in the game.
+     */
+    protected byte playerId;
+    
+    /**
+     *  Constructor - Initializes the parts of a Header.
+     *  @param message The type of message the header is associated with
+     *  @param gameId The id of the game (unused at the moment)
+     *  @param playerId The id of the player sending a message.
+     */
+    public Header(MessageType message, byte gameId, byte playerId) {
+        this.message  = message;
+        this.gameId   = gameId;
+        this.playerId = playerId;
     }
 
     /**
-     * Retrieves header information given an array of bytes.
+     * Constructor - Creates a header given a byte representation of an
+     *               instance of a header.
      * @param header The header represented as bytes.
-     * @return The Header object representation of the array of bytes.
      */
-    public static Header getHeader(byte[] header) {
+    public Header(byte[] header) {
         ByteBuffer buffer = ByteBuffer.wrap(header);
-        MessageType type = MessageAnalyzer.getMessageType(buffer.get());
-        return new Header(type);
+        this.message  = MessageAnalyzer.getMessageType(buffer.get());
+        this.gameId   = buffer.get();
+        this.playerId = buffer.get();    
     }
-
+    
     /**
      * Creates a byte representation of a header.
      * @return The header as a byte array.
@@ -46,7 +62,9 @@ public class Header {
 
         // Put in the contents of a header
         buffer.put(MessageAnalyzer.getMessageType(message));
-
+        buffer.put(gameId);
+        buffer.put(playerId);
+        
         // Return the header as a byte array
         return header;
     }
@@ -56,5 +74,19 @@ public class Header {
      */
     public MessageType getMessageType() {
         return message;
+    }
+    
+    /**
+     *  Gets the player associated with this message.
+     */
+    public byte getPlayerId() {
+        return playerId;
+    }
+    
+    /**
+     * Gets the gameId associated with this message.
+     */
+    public byte getGameId() {
+        return gameId;
     }
 }

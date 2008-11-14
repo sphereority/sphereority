@@ -6,12 +6,7 @@ import java.nio.ByteBuffer;
  * 
  * @author rlagman
  */
-public class ChatMessage extends Message implements MessageLengths {
-    /**
-     * The id of the player who sent the message.
-     */
-    private byte playerId;
-
+public class ChatMessage extends Message implements MessageConstants {
     /**
      * The type of message that is being sent.
      */
@@ -24,55 +19,48 @@ public class ChatMessage extends Message implements MessageLengths {
 
     /**
      * Constructor - Creates a new ChatMessage.
+     * @param playerId The id of a player.
+     * @param destId The id of where the message should be sent.
+     * @param message The message to be delivered.
      */
     public ChatMessage(byte playerId, byte destId, String message) {
-        super(MessageType.ChatMessage, ChatMessageLength);
-        this.playerId         = playerId;
-        this.destId           = destId;
+        super(MessageType.ChatMessage, playerId, ChatMessageLength);
+        this.destId   = destId;
+        this.message  = message;
     }
 
-    public byte getPlayerId() {
-        return playerId;
-    }
-
-    public byte getDestId() {
-        return destId;
-    }
-
-    public String getMessage() {
-        return message;    
-    }
-
-	/**
-	 * Reads the packet information and reconstructs
-	 * the Packetizable object.
-	 * @param data The raw byte data that was sent.
-	 * @return The ChatMessage populated with the input data.
-	 */
-	public static ChatMessage readByteMessage(byte[] data) {
+    /**
+     * Constructor - Creates a new ChatMessage.
+     * @param header Representation of a Header in bytes.
+     * @param data Representation of the data portion in bytes.
+     */
+    public ChatMessage(byte[] header, byte[] data) {
+        // Create the Message superclass
+        super(header,ChatMessageLength);
+        
         // Wrap the stream of bytes into a buffer       
         ByteBuffer buffer = ByteBuffer.wrap(data);
 		
-        
 		// Process the information to create the object.
-        byte playerId      = buffer.get();
         byte destId        = buffer.get();
         int messageLength = (int) buffer.get();
         
-        char[] message = new char[messageLength];
+        char[] messageArray = new char[messageLength];
 
-        for(int i = 0; i < messageLength; i++)      
-            message[i] = buffer.getChar();
-
-		return new ChatMessage(playerId,destId,String.copyValueOf(message));
-	}
-	
-	/**
+        // Recreate the string as an array of characters
+        for(int i = INIT; i < messageLength; i++)      
+            messageArray[i] = buffer.getChar();
+        
+        // Store the message
+        this.message = String.copyValueOf(messageArray);
+    }
+    
+    /**
 	 * Creates an array of bytes to be sent across the network
 	 * that represents a Packetizable object.
 	 * @return A byte representation of the Packetizable object.
 	 */
-	public byte[] getByteMessage() {
+	public byte[] getByteMessage() throws Exception {
         // Get the header
         byte[] header = getByteHeader();        
         byte[] message = new byte[header.length + dataLength];
@@ -82,14 +70,28 @@ public class ChatMessage extends Message implements MessageLengths {
         buffer.put(header);
         
         // Place the contents of this data
-        buffer.put(playerId);
         buffer.put(destId);
         buffer.put((byte)this.message.length());
-        try {
-            buffer.put(this.message.getBytes("UTF-8"));
-        } catch (Exception ex) { }
+        buffer.put(this.message.getBytes("UTF-8"));
         
         // Return
         return message;
 	}
+    
+    /**
+     * Retrieves the id of the destination for this message.
+     * @return An id.
+     */
+    public byte getDestId() {
+        return destId;
+    }
+
+    /**
+     * Retrieves the message that was sent by the sender.
+     * @return The message sent by the sender.
+     */
+    public String getMessage() {
+        return message;    
+    }
+	
 }
