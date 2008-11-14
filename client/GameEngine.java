@@ -151,8 +151,8 @@ public class GameEngine implements Constants, ActionListener {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Copy the map as a bunch of Stones
-		for (int x=0; x < gameMap.getXSize(); x++)
-			for (int y=0; y < gameMap.getYSize(); y++)
+		for (int x=0; x < gameMap.getWidth(); x++)
+			for (int y=0; y < gameMap.getHeight(); y++)
 			{
 				if (gameMap.isWall(x, y))
 				{
@@ -179,23 +179,45 @@ public class GameEngine implements Constants, ActionListener {
 		Actor actor1, actor2;
 		
 		// Check players against stones
-		for (int i=0; i < stoneList.size(); i ++)
+		Player p;
+		for (int i=0; i < playerList.size(); i ++)
 		{
-			actor1 = stoneList.get(i);
-			bounds1 = actor1.getBounds();
+			p = playerList.get(i);
+			float px = p.getX(), py = p.getY();
+			int ix = (int)px, iy = (int)py;
+			if (px < 0 || py < 0)
+				continue;
+			if (px >= gameMap.getWidth() || py >= gameMap.getHeight())
+				continue;
 			
-			for (int j=0; j < playerList.size(); j ++)
-			{
-				actor2 = playerList.get(j);
-				bounds2 = actor2.getBounds();
-				
-				if (bounds1.intersects(bounds2))
-				{
-					actor1.collision(actor2);
-					actor2.collision(actor1);
-				}
-			}
-		} // end check players against stones
+			px = px - ix;
+			py = py - iy;
+			if (px < 0.25 && gameMap.isWall(ix - 1, iy))
+				p.collideLeft();
+			else if (px > 0.75 && gameMap.isWall(ix + 1, iy))
+				p.collideRight();
+			if (py < 0.25 && gameMap.isWall(ix, iy - 1))
+				p.collideUp();
+			else if (py > 0.72 && gameMap.isWall(ix, iy + 1))
+				p.collideDown();
+		}
+//		for (int i=0; i < stoneList.size(); i ++)
+//		{
+//			actor1 = stoneList.get(i);
+//			bounds1 = actor1.getBounds();
+//			
+//			for (int j=0; j < playerList.size(); j ++)
+//			{
+//				actor2 = playerList.get(j);
+//				bounds2 = actor2.getBounds();
+//				
+//				if (bounds1.intersects(bounds2))
+//				{
+//					actor1.collision(actor2);
+//					actor2.collision(actor1);
+//				}
+//			}
+//		} // end check players against stones
 		
 		// Check bullets against players and stones
 		for (int i=0; i < bulletList.size(); i ++)
@@ -215,16 +237,21 @@ public class GameEngine implements Constants, ActionListener {
 				}
 			}
 			
-			for (int j=0; j < stoneList.size(); j ++)
+//			for (int j=0; j < stoneList.size(); j ++)
+//			{
+//				actor2 = stoneList.get(j);
+//				bounds2 = actor2.getBounds();
+//				
+//				if (bounds1.intersects(bounds2))
+//				{
+//					actor1.collision(actor2);
+//					actor2.collision(actor1);
+//				}
+//			}
+			// Simpler check:
+			if (gameMap.isWall((int)actor1.getX(), (int)actor1.getY()))
 			{
-				actor2 = stoneList.get(j);
-				bounds2 = actor2.getBounds();
-				
-				if (bounds1.intersects(bounds2))
-				{
-					actor1.collision(actor2);
-					actor2.collision(actor1);
-				}
+				actor1.collision(null);
 			}
 		} // end check bullets against players and stones
 		
@@ -283,6 +310,12 @@ public class GameEngine implements Constants, ActionListener {
 		
 		lastTime = thisTime;
 		if (repaint)
+		{
+			/*
+			 * This may not actually be desireable.
+			 * If you bump or fire then stop moving, it won't repaint
+			 */
+		}
 			gameViewArea.repaint();
 	} // end updateWorld()
 	
@@ -297,7 +330,7 @@ public class GameEngine implements Constants, ActionListener {
 		
 		if (spawnPoints == null || spawnPoints.size() == 0)
 		{
-			final int width = gameMap.getXSize(), height = gameMap.getYSize();
+			final int width = gameMap.getWidth(), height = gameMap.getHeight();
 			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
 			
 			while (gameMap.isWall(x, y))

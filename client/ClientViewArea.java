@@ -104,8 +104,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			repaint();
 		if (map != null)
 		{
-			mapWidth = map.getXSize();
-			mapHeight = map.getYSize();
+			mapWidth = map.getWidth();
+			mapHeight = map.getHeight();
 		}
 		else
 		{
@@ -181,10 +181,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			top = Math.round((clip.y - offset_y) / scale - 0.5f);
 			bottom = Math.round((clip.y + clip.height - offset_y) / scale);
 			
-			left = Math.max(0, Math.min(map.getXSize()-1, left));
-			right = Math.max(0, Math.min(map.getXSize()-1, right));
-			top = Math.max(0, Math.min(map.getYSize()-1, top));
-			bottom = Math.max(0, Math.min(map.getYSize()-1, bottom));
+			left = Math.max(0, Math.min(map.getWidth()-1, left));
+			right = Math.max(0, Math.min(map.getWidth()-1, right));
+			top = Math.max(0, Math.min(map.getHeight()-1, top));
+			bottom = Math.max(0, Math.min(map.getHeight()-1, bottom));
 			
 			g2.setColor(getForeground());
 			for (int x=left; x <= right; x++)

@@ -21,8 +21,8 @@ public class Map {
 	
     String name;       // map name
     String data;       // map raw data **pending for deletion (waste of space)**
-    int y_size;        // map y size
-    int x_size;        // map x size
+    int height;        // map y size
+    int width;        // map x size
     char[][] mapping;  // two dimensional array of char for mapping
     boolean[][] wall;  // two dimensional array of boolean for walls (if wall unit exists on [y][x] true, otherwise false)
     Vector<SpawnPoint> spawnPoints; // vector of spawn points on map
@@ -65,10 +65,10 @@ public class Map {
         // parse raw data here
         Scanner parser = new Scanner(data);
         String line;
-        x_size = parser.nextInt();
-        y_size = parser.nextInt();
-        mapping = new char[y_size][x_size];
-        wall = new boolean[y_size][x_size];
+        width = parser.nextInt();
+        height = parser.nextInt();
+        mapping = new char[height][width];
+        wall = new boolean[height][width];
         spawnPoints = new Vector<SpawnPoint>();
         if (parser.nextLine().toString().startsWith(" ")) {
             // do nothing
@@ -80,8 +80,8 @@ public class Map {
             mapping[y] = line.toCharArray();
             y++;
         }
-        for (y=0; y<y_size; y++) {
-            for (x=0; x<x_size; x++) {
+        for (y=0; y<height; y++) {
+            for (x=0; x<width; x++) {
                 if (mapping[y][x] == '+') {
                     wall[y][x] = true;
                 }
@@ -116,16 +116,16 @@ public class Map {
      * 
      * @return maximum x of the map
      */
-    public int getXSize() {
-        return x_size;
+    public int getWidth() {
+        return width;
     }
     
     /**
      * 
      * @return maximum y of the map
      */
-    public int getYSize() {
-        return y_size;
+    public int getHeight() {
+        return height;
     }
     
     /**
@@ -142,7 +142,12 @@ public class Map {
      * @param   y the y-axis coordinate (origin is top-left corner)
      * @return  true if there exists a wall on the coordinates; false otherwise.
      */
-    public boolean isWall(int x, int y) {
+    public boolean isWall(int x, int y)
+    {
+    	if (x < 0 || y < 0)
+    		return false;
+    	if (x >= width || y >= height)
+    		return false;
         return wall[y][x];
     }
 
@@ -163,15 +168,15 @@ public class Map {
     public void dumpVars() {
         System.out.println("String name: " + name);
         System.out.println("String data: " + data);
-        System.out.println("int x_size: " + x_size);
-        System.out.println("int y_size: " + y_size);
+        System.out.println("int x_size: " + width);
+        System.out.println("int y_size: " + height);
         
         // print char array
         System.out.print("char[][] mapping: ");
         int y = 0;
         int x = 0;
-        for (y = 0; y < y_size; y++) {
-            for (x =0; x < x_size; x++) {
+        for (y = 0; y < height; y++) {
+            for (x =0; x < width; x++) {
                 System.out.print(mapping[y][x]);
             }
             System.out.println();
@@ -181,8 +186,8 @@ public class Map {
         System.out.print("boolean[][] wall: ");
         y = 0;
         x = 0;
-        for (y = 0; y < y_size; y++) {
-            for (x =0; x < x_size; x++) {
+        for (y = 0; y < height; y++) {
+            for (x =0; x < width; x++) {
                 if (wall[y][x]) {
                     System.out.print("t");
                 }

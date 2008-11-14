@@ -111,7 +111,11 @@ public abstract class Actor implements Constants {
 		// Since the Actors origin is in the middle of the actor we'll have to wiggle the coordinates to generate the correct bounding box
 		return new Rectangle2D.Float(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height);
 	}
-
+	
+	/**
+	 * When this Actor collides with another Actor, this method gets called
+	 * @param a	The other Actor that we collided with, or null if it's a wall
+	 */
 	public abstract void collision(Actor a);
 	
 	public String toString() {

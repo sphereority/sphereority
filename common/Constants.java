@@ -85,7 +85,7 @@ public interface Constants
 	 * The colour of a stone
 	 */
 	//public static final Color STONE_COLOR = Color.gray;
-	public static final Color STONE_COLOR = new Color(0.8f, 0.4f, 0.2f);
+	public static final Color STONE_COLOR = new Color(0.6f, 0.2f, 0.1f);
 
 	/**
 	 * The width of a stone

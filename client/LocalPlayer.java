@@ -89,4 +89,40 @@ public class LocalPlayer extends Player
 		
 		return bounds;
 	}
+
+	public void collideDown()
+	{
+		if (getSpeedY() > 0)
+		{
+			velocity.bounceY();
+			timeSinceLastSound = 0;
+		}
+	}
+
+	public void collideLeft()
+	{
+		if (getSpeedX() < 0)
+		{
+			velocity.bounceX();
+			timeSinceLastSound = 0;
+		}
+	}
+
+	public void collideRight()
+	{
+		if (getSpeedX() > 0)
+		{
+			velocity.bounceX();
+			timeSinceLastSound = 0;
+		}
+	}
+
+	public void collideUp()
+	{
+		if (getSpeedY() < 0)
+		{
+			velocity.bounceY();
+			timeSinceLastSound = 0;
+		}
+	}
 } // end class LocalPlayer

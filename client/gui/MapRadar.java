@@ -2,6 +2,8 @@ package client.gui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+
 import common.*;
 import client.*;
 
@@ -10,8 +12,10 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 	public static final Color RADAR_COLOR = new Color(180, 180, 180, 127);
 	public static final Color RADAR_BACKGROUND_COLOR = new Color(200, 200, 200, 60);
 	
-	protected Map map;
 	protected float scale;
+	protected boolean showName;
+	
+	protected Map map;
 	protected GameEngine engine;
 	
 	public MapRadar(int x, int y, GameEngine engine, Map map)
@@ -33,6 +37,17 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 	private void setup()
 	{
 		scale = 1.0f;
+		showName = true;
+	}
+	
+	public void setShowName(boolean flag)
+	{
+		showName = flag;
+	}
+	
+	public boolean getShowName()
+	{
+		return showName;
 	}
 	
 	public void setMap(Map map)
@@ -42,8 +57,8 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 		
 		this.map = map;
 		scale = 8;
-		width = Math.round(scale * map.getXSize());
-		height = Math.round(scale * map.getYSize());
+		width = Math.round(scale * map.getWidth());
+		height = Math.round(scale * map.getHeight());
 	}
 	
 	public Map getMap()
@@ -63,8 +78,8 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 		// Draw walls
 		g.setColor(RADAR_COLOR);
 		final int offsetX = getFixedX(windowWidth), offsetY = getFixedY(windowHeight); 
-		for (int x=0; x < map.getXSize(); x++)
-			for (int y=0; y < map.getYSize(); y++)
+		for (int x=0; x < map.getWidth(); x++)
+			for (int y=0; y < map.getHeight(); y++)
 			{
 				if (map.isWall(x, y))
 					g.fillRect(Math.round(scale * x) + offsetX,
@@ -85,11 +100,10 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 			}
 			else if (p.getTeam() != TEAM_A && p.getTeam() != TEAM_B)
 			{
-				time = p.getTimeSinceLastShot();
+				time = p.getTimeSinceLastSound();
 				if (time > BLIP_TIME)
 					continue;
-				g.setColor(GuiUtils.modulateColor(TEAMLESS_COLOR, 1 - time/BLIP_TIME));
-				g.setColor(TEAMLESS_COLOR);
+				g.setColor(GuiUtils.modulateColor(TEAMLESS_COLOR, 1 - (float)time/BLIP_TIME));
 			}
 			else if (p.getTeam() == localPlayer.getTeam())
 			{
@@ -97,15 +111,30 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 			}
 			else
 			{
-				time = p.getTimeSinceLastShot();
+				time = p.getTimeSinceLastSound();
 				if (time > BLIP_TIME)
 					continue;
-				g.setColor(GuiUtils.modulateColor(Color.red, 1 - time/BLIP_TIME));
+				g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
 			}
 			
 			g.fillRect(Math.round(p.getPosition().getX() * scale) + offsetX,
 			           Math.round(p.getPosition().getY() * scale) + offsetY,
 			           3, 3);
+		} // end if draw players
+		
+		if (showName)
+		{
+			String name = map.getName();
+			Rectangle2D bounds = g.getFontMetrics().getStringBounds(name, g);
+			
+			int xpos = x, ypos = y + height;
+			if (x < 0)
+				xpos = (int)Math.round(windowWidth - bounds.getWidth() + x - width - bounds.getX());
+			if (y < 0)
+				ypos = (int)Math.round(windowHeight - bounds.getHeight() + y - height - bounds.getY());
+			
+			g.setColor(Color.yellow);
+			g.drawString(name, xpos, ypos);
 		}
 	} // end draw()
 

@@ -11,7 +11,7 @@ import client.gui.GuiUtils;
  *
  */
 public abstract class Player extends WeightedPosition {
-	protected float timeSinceLastShot;
+	protected float timeSinceLastSound;
 	protected int playerID;
 	// INSTANCE METHODS
 	
@@ -19,16 +19,17 @@ public abstract class Player extends WeightedPosition {
 	// CONSTRUCTORS
 	public Player() {
 		super();
-		timeSinceLastShot = Float.MAX_VALUE;
+		//timeSinceLastShot = Float.MAX_VALUE;
+		timeSinceLastSound = 0;
 		playerID = RANDOM.nextInt(255);
 		
 		System.out.printf("Created new Player. New ID is %d\n", playerID);
 	}
 	
 	// GETTERS
-	public float getTimeSinceLastShot()
+	public float getTimeSinceLastSound()
 	{
-		return timeSinceLastShot;
+		return timeSinceLastSound;
 	}
 	
 	public boolean equals(Object o)
@@ -69,19 +70,43 @@ public abstract class Player extends WeightedPosition {
 	
 	public void fire()
 	{
-		timeSinceLastShot = 0;
+		timeSinceLastSound = 0;
 	}
 	
 	public boolean animate(float dTime)
 	{
-		timeSinceLastShot += dTime;
+		timeSinceLastSound += dTime;
 		
-		return super.animate(dTime);
+		boolean result = super.animate(dTime);
+		if (! result && (timeSinceLastSound <= BLIP_TIME))
+			return true;
+		return result;
 	}
 	
-	public void collision(Actor a) {
-//		if (a instanceof Stone) {
-//			System.out.println("You hit a stone!");
-//		}		
-	} 
+	public void collision(Actor a)
+	{
+		// We show up again after bumping into a wall
+		if (a == null || a instanceof Stone)
+			timeSinceLastSound = 0;
+	}
+	
+	public void collideLeft()
+	{
+		collision(null);
+	}
+	
+	public void collideRight()
+	{
+		collision(null);
+	}
+	
+	public void collideUp()
+	{
+		collision(null);
+	}
+	
+	public void collideDown()
+	{
+		collision(null);
+	}
 }
