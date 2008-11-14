@@ -29,7 +29,7 @@ public interface Constants
 	/**
 	 * The amount of speed you have after bumping into a wall
 	 */
-	public static final float STONE_REBOUND = 0.5f;
+	public static final float STONE_REBOUND = 0.75f;
 
 	/**
 	 * The amount of speed you have after bumping into another player
@@ -169,4 +169,9 @@ public interface Constants
 	 * The amount of time (in seconds) that a player shows up for after they fire
 	 */
 	public static final float BLIP_TIME = 2.0f;
+	
+	/**
+	 * The amount to shove the player when they bump into a wall
+	 */
+	public static final float BUMP_FORCE = 0.25f;
 }

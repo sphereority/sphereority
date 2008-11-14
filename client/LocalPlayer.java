@@ -95,6 +95,7 @@ public class LocalPlayer extends Player
 		if (getSpeedY() > 0)
 		{
 			velocity.bounceY();
+			velocity.setY(velocity.getY() - BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -104,6 +105,7 @@ public class LocalPlayer extends Player
 		if (getSpeedX() < 0)
 		{
 			velocity.bounceX();
+			velocity.setX(velocity.getX() + BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -113,6 +115,7 @@ public class LocalPlayer extends Player
 		if (getSpeedX() > 0)
 		{
 			velocity.bounceX();
+			velocity.setX(velocity.getX() - BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -122,6 +125,7 @@ public class LocalPlayer extends Player
 		if (getSpeedY() < 0)
 		{
 			velocity.bounceY();
+			velocity.setY(velocity.getY() + BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
 	}
