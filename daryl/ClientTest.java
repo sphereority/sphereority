@@ -18,7 +18,7 @@ public class ClientTest implements ActionCallback
 		
 		InputListener listener = new InputListener();
 		
-		cva = new ClientViewArea();
+		cva = new ClientViewArea(null);
 		LocalPlayer player = new LocalPlayer(listener);
 		player.setPosition(0.5f, 0.5f);
 		cva.setLocalPlayer(player);
@@ -57,10 +57,11 @@ public class ClientTest implements ActionCallback
 		}
 		else if (label.equals("Team"))
 		{
-			if (cva.getPlayerColor().equals(Color.green))
-				cva.setPlayerColor(Color.orange);
+			LocalPlayer player = cva.getLocalPlayer();
+			if (player.getTeam() == Constants.TEAM_A)
+				player.setTeam(Constants.TEAM_B);
 			else
-				cva.setPlayerColor(Color.green);
+				player.setTeam(Constants.TEAM_A);
 		}
 	}
 }

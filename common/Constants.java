@@ -1,6 +1,7 @@
 package common;
 
 import java.awt.Color;
+import java.util.Random;
 
 /**
  * These are some constants that are useful to have quickly
@@ -8,6 +9,8 @@ import java.awt.Color;
  */
 public interface Constants
 {
+	public static final Random RANDOM = new Random();
+	
 	/**
 	 * The fastest an object can move in units per second
 	 */
@@ -16,7 +19,7 @@ public interface Constants
 	/**
 	 * The amount of friction we have to slow motion down
 	 */
-	public static final float FRICTION_COEFFICIENT = 1 - 0.4f;
+	public static final float FRICTION_COEFFICIENT = 1 - 0.8f;
 
 	/**
 	 * The speed at which objects track each other (this affects the "slow parent" of objects)
@@ -156,4 +159,14 @@ public interface Constants
 	 * The name of the client application window
 	 */
 	public static final String CLIENT_WINDOW_NAME = "Sphereority - v0.5beta";
+	
+	/**
+	 * The amount of time between game steps
+	 */
+	public static final int TIMER_TICK = 50;
+	
+	/**
+	 * The amount of time (in seconds) that a player shows up for after they fire
+	 */
+	public static final float BLIP_TIME = 2.0f;
 }

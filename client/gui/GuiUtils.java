@@ -248,4 +248,9 @@ public final class GuiUtils
 		
 		g.setTransform(oldTransform);
 	}
+	
+	public static Color modulateColor(Color c, float alpha)
+	{
+		return new Color(c.getRed(), c.getGreen(), c.getBlue(), Math.round(255 * alpha));
+	}
 }

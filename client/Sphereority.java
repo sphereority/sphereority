@@ -3,7 +3,6 @@ package	client;
 /**
  * This is the main client application
  * @author smaboshe
- *
  */
 
 import common.*;

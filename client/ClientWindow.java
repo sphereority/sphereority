@@ -18,7 +18,7 @@ public class ClientWindow implements WindowListener, ActionCallback
 		mainWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		mainWindow.addWindowListener(this);
 		
-		viewArea = new ClientViewArea();
+		viewArea = new ClientViewArea(null);
 		
 		mainWindow.getContentPane().add(viewArea, BorderLayout.CENTER);
 		mainWindow.pack();

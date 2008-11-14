@@ -26,7 +26,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected boolean drawMap;
 	
 	// Colour-defining variables
-	protected Color playerColor;
 	
 	// Gui-related stuff:
 	protected Vector<Widget> widgetList;
@@ -34,7 +33,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	// Game-related stuff:
 	protected LocalPlayer localPlayer;
 	protected TrackingObject viewTracker;
-	protected Vector<Actor> actorList;
 	protected Map map;
 	protected int mapWidth, mapHeight;
 	protected GameEngine gameEngine;
@@ -58,7 +56,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		addMouseMotionListener(this);
 		
 		widgetList = new Vector<Widget>();
-		playerColor = Color.green;
 		scale = 50;
 		
 		lastTime = System.currentTimeMillis();
@@ -66,7 +63,16 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		antialiasing = false;
 		drawMap = false;
 		
-		actorList = new Vector<Actor>();
+		MapRadar radar = new MapRadar(5, -5, gameEngine, map);
+		addWidget(radar);
+		
+		if (gameEngine != null)
+		{
+			gameEngine.addMapListener(this);
+			gameEngine.addMapListener(radar);
+		}
+		else
+			System.err.println("client.ClientViewArea.<init>: GameEngine not specified!");
 		
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
@@ -74,33 +80,21 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	public void setLocalPlayer(LocalPlayer p)
 	{
-		if (!actorList.contains(p))
-			actorList.add(p);
 		localPlayer = p;
 		if (viewTracker == null)
 		{
 			viewTracker = new TrackingObject(localPlayer.getPosition());
 		}
 		viewTracker.setTarget(localPlayer);
-		if (!actorList.contains(viewTracker))
-			actorList.add(viewTracker);
+		if (!gameEngine.actorList.contains(viewTracker))
+			gameEngine.addActor(viewTracker);
+		
 		repaint();
 	}
 	
 	public LocalPlayer getLocalPlayer()
 	{
 		return localPlayer;
-	}
-	
-	public Color getPlayerColor()
-	{
-		return playerColor;
-	}
-	
-	public void setPlayerColor(Color color)
-	{
-		playerColor = color;
-		repaint();
 	}
 	
 	public void setMap(Map m)
@@ -175,7 +169,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		g2.translate(offset_x, offset_y);		
 		
 		// Draw all actors:
-		for (Actor a : actorList)
+		for (Actor a : gameEngine.actorList)
 			a.draw(g2, scale);
 		
 		// Draw the walls
@@ -324,19 +318,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 	}
 	
-	public void setActorList(Vector<Actor> list)
-	{
-		actorList = list;
-		
-		if (!actorList.contains(viewTracker))
-			actorList.add(viewTracker);
-	}
-	
-	public Vector<Actor> getActorList()
-	{
-		return actorList;
-	}
-
 	public void mapChanged(Map newMap)
 	{
 		setMap(newMap);

@@ -4,20 +4,16 @@ import common.*;
 import client.audio.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.Timer;
-import java.awt.geom.Rectangle2D;
 import java.util.Vector;
-import java.util.Random;
 
 /**
  * This class describes the game loop for this game
  * @author smaboshe
- *
  */
 public class GameEngine implements Constants, ActionListener {
-	public static final Random rand = new Random();
-	
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -25,10 +21,11 @@ public class GameEngine implements Constants, ActionListener {
 	public InputListener localInputListener;
 	
 	// Actor lists and sub-lists
-	public Vector<Actor> actorList;
-	public Vector<Stone> stoneList;
-	public Vector<Player> playerList;
-	public Vector<Projectile> bulletList;
+	public Vector<Actor> actorList; // This contains all actors in the game
+	public Vector<Stone> stoneList; // This only contains stones
+	public Vector<Player> playerList; // This only contains players
+	public Vector<Projectile> bulletList; // This only contains bullets
+	public Vector<Actor> miscList; // This contains stuff that doesn't fit in any of the other
 	
 	public long lastTime;
 	public Timer timer;
@@ -39,34 +36,33 @@ public class GameEngine implements Constants, ActionListener {
 	public GameSoundSystem soundSystem;
 	public SoundEffect soundBump;
 
-
 	// CONSTRUCTORS
 	public GameEngine(Map m) {
 		gameOver = false;
 		gameMap = m;
 		mapListeners = new Vector<MapChangeListener>();
 		
+		actorList = new Vector<Actor>();
+		stoneList = new Vector<Stone>();
+		playerList = new Vector<Player>();
+		bulletList = new Vector<Projectile>();
+		miscList = new Vector<Actor>();
+		
 		gameViewArea = new ClientViewArea(this);
-		addMapListener(gameViewArea);
 		
 		localInputListener = new InputListener();
 		localPlayer = new LocalPlayer(localInputListener);
 		placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
 		
-		actorList = new Vector<Actor>();
-		actorList.add(localPlayer);
-		stoneList = new Vector<Stone>();
-		playerList = new Vector<Player>();
-		playerList.add(localPlayer);
-		bulletList = new Vector<Projectile>();
+		addActor(localPlayer);
 		
 		triggerMapListeners();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
-	}
+	} // end GameEngine() constructor
 	
 	
 	// GETTERS
@@ -77,7 +73,6 @@ public class GameEngine implements Constants, ActionListener {
 	public Map getGameMap() {
 		return this.gameMap;
 	}
-
 	
 	// SETTERS
 	public void setLocalPlayer(LocalPlayer p) {
@@ -86,10 +81,23 @@ public class GameEngine implements Constants, ActionListener {
 	
 	public void setGameMap(Map m) {
 		this.gameMap = m;
+		triggerMapListeners();
 	}
 	
-	
 	// OPERATIONS
+	public void addActor(Actor a)
+	{
+		actorList.add(a);
+		if (a instanceof Stone)
+			stoneList.add((Stone)a);
+		else if (a instanceof Projectile)
+			bulletList.add((Projectile)a);
+		else if (a instanceof Player)
+			playerList.add((Player)a);
+		else
+			miscList.add(a);
+	}
+	
 	public boolean isGameOver() {
 		return this.gameOver;
 	}
@@ -104,13 +112,16 @@ public class GameEngine implements Constants, ActionListener {
 	{
 		checkCollisions();
 		updateWorld();
+		
+		Thread.yield();
 	}
 	
 	public void play() {
 		initialize();
 		
-		timer = new Timer(10, this);
+		timer = new Timer(TIMER_TICK, this);
 		timer.start();
+		timer.setCoalesce(true);
 		
 //		while (!isGameOver()) {
 //			gameStep();
@@ -139,8 +150,6 @@ public class GameEngine implements Constants, ActionListener {
 		JFrame window = new JFrame(title);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		gameViewArea.setActorList(actorList);
-		
 		// Copy the map as a bunch of Stones
 		for (int x=0; x < gameMap.getXSize(); x++)
 			for (int y=0; y < gameMap.getYSize(); y++)
@@ -162,7 +171,7 @@ public class GameEngine implements Constants, ActionListener {
 		window.setVisible(true);
 		
 		lastTime = System.currentTimeMillis();
-	}
+	} // end initialize()
 	
 	public void checkCollisions() {
 		// Environment, Player and projectile collision code goes here
@@ -219,7 +228,7 @@ public class GameEngine implements Constants, ActionListener {
 			}
 		} // end check bullets against players and stones
 		
-		//Vector actorList = this.gameViewArea.actorList;
+//		//Vector actorList = this.gameViewArea.actorList;
 //		Rectangle2D playerBounds = this.localPlayer.getBounds();
 //		for (int i = 0; i < actorList.size(); i = i + 1) {
 //			Actor actor1 = actorList.get(i);
@@ -241,23 +250,41 @@ public class GameEngine implements Constants, ActionListener {
 //				}
 //			}
 //		}
-	}
+	} // end checkCollisions()
 	
 	public void updateWorld() {
 		long thisTime = System.currentTimeMillis();
 		float dTime = 0.001f*(thisTime - lastTime);
 		boolean repaint = false;
 		
-		for (Actor a : actorList)
+//		for (Actor a : actorList)
+//		{
+//			if (a.animate(dTime))
+//				repaint = true;
+//		}
+		
+		for (Actor a : playerList)
 		{
-			if (!(a instanceof Stone) && a.animate(dTime))
+			if (a.animate(dTime))
+				repaint = true;
+		}
+		
+		for (Actor a : bulletList)
+		{
+			if (a.animate(dTime))
+				repaint = true;
+		}
+		
+		for (Actor a : miscList)
+		{
+			if (a.animate(dTime))
 				repaint = true;
 		}
 		
 		lastTime = thisTime;
 		if (repaint)
 			gameViewArea.repaint();
-	}
+	} // end updateWorld()
 	
 	public void actionPerformed(ActionEvent e)
 	{
@@ -271,19 +298,19 @@ public class GameEngine implements Constants, ActionListener {
 		if (spawnPoints == null || spawnPoints.size() == 0)
 		{
 			final int width = gameMap.getXSize(), height = gameMap.getYSize();
-			int x = rand.nextInt(width), y = rand.nextInt(height);
+			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
 			
 			while (gameMap.isWall(x, y))
 			{
-				x = rand.nextInt(width);
-				y = rand.nextInt(height);
+				x = RANDOM.nextInt(width);
+				y = RANDOM.nextInt(height);
 			}
 			
 			p.setPosition(x + 0.5f, y + 0.5f);
 		}
 		else
 		{
-			p.setPosition(spawnPoints.get(rand.nextInt(spawnPoints.size())).getPosition());
+			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
 		}
 	}
 	
@@ -318,4 +345,4 @@ public class GameEngine implements Constants, ActionListener {
 		sound.setVolume(volume);
 		sound.play();
 	}
-}
+} // end class GameEngine

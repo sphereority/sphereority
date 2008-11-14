@@ -11,18 +11,45 @@ import client.gui.GuiUtils;
  *
  */
 public abstract class Player extends WeightedPosition {
+	protected float timeSinceLastShot;
+	protected int playerID;
 	// INSTANCE METHODS
 	
 	
 	// CONSTRUCTORS
 	public Player() {
 		super();
+		timeSinceLastShot = Float.MAX_VALUE;
+		playerID = RANDOM.nextInt(255);
+		
+		System.out.printf("Created new Player. New ID is %d\n", playerID);
 	}
 	
-		
-	
 	// GETTERS
+	public float getTimeSinceLastShot()
+	{
+		return timeSinceLastShot;
+	}
 	
+	public boolean equals(Object o)
+	{
+//		if (!(o instanceof Player))
+//			return false;
+		
+		try
+		{
+			return ((Player)o).playerID == this.playerID;
+		}
+		catch (Throwable er)
+		{
+			return false;
+		}
+	}
+	
+	public int getPlayerID()
+	{
+		return playerID;
+	}
 	
 	
 	// SETTERS
@@ -39,8 +66,20 @@ public abstract class Player extends WeightedPosition {
 		
 		GuiUtils.drawFilledOctagon(g, Math.round(position.getX()*scale), Math.round(position.getY()*scale), scale*PLAYER_SIZE);
 	}
-
-  public void collision(Actor a) {
+	
+	public void fire()
+	{
+		timeSinceLastShot = 0;
+	}
+	
+	public boolean animate(float dTime)
+	{
+		timeSinceLastShot += dTime;
+		
+		return super.animate(dTime);
+	}
+	
+	public void collision(Actor a) {
 //		if (a instanceof Stone) {
 //			System.out.println("You hit a stone!");
 //		}		
