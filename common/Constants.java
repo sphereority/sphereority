@@ -11,7 +11,7 @@ public interface Constants
 	/**
 	 * The fastest an object can move in units per second
 	 */
-	public static final float MAXIMUM_SPEED = 10;
+	public static final float MAXIMUM_SPEED = 5;
 
 	/**
 	 * The amount of friction we have to slow motion down
@@ -21,7 +21,7 @@ public interface Constants
 	/**
 	 * The speed at which objects track each other (this affects the "slow parent" of objects)
 	 */
-	public static final float TRACKING_SPEED = 2.0f;
+	public static final float TRACKING_SPEED = 3.0f;
 
 	/**
 	 * The amount of speed you have after bumping into a wall
@@ -155,5 +155,5 @@ public interface Constants
 	/**
 	 * The name of the client application window
 	 */
-	public static final String CLIENT_WINDOW_NAME = "Sphereority";
+	public static final String CLIENT_WINDOW_NAME = "Sphereority - v0.5beta";
 }

@@ -24,25 +24,30 @@ public class GameEngine implements Constants, ActionListener {
 	public LocalPlayer localPlayer;
 	public InputListener localInputListener;
 	
-	// Lists
+	// Actor lists and sub-lists
 	public Vector<Actor> actorList;
 	public Vector<Stone> stoneList;
 	public Vector<Player> playerList;
 	public Vector<Projectile> bulletList;
 	
 	public long lastTime;
+	public Timer timer;
+	
+	public Vector<MapChangeListener> mapListeners;
+	
+	// Sound stuff
 	public GameSoundSystem soundSystem;
 	public SoundEffect soundBump;
-	public Timer timer;
 
 
 	// CONSTRUCTORS
 	public GameEngine(Map m) {
 		gameOver = false;
 		gameMap = m;
-		gameViewArea = new ClientViewArea();
+		mapListeners = new Vector<MapChangeListener>();
 		
-		gameViewArea.setMap(gameMap);
+		gameViewArea = new ClientViewArea(this);
+		addMapListener(gameViewArea);
 		
 		localInputListener = new InputListener();
 		localPlayer = new LocalPlayer(localInputListener);
@@ -55,6 +60,8 @@ public class GameEngine implements Constants, ActionListener {
 		playerList = new Vector<Player>();
 		playerList.add(localPlayer);
 		bulletList = new Vector<Projectile>();
+		
+		triggerMapListeners();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
@@ -102,7 +109,7 @@ public class GameEngine implements Constants, ActionListener {
 	public void play() {
 		initialize();
 		
-		timer = new Timer(20, this);
+		timer = new Timer(10, this);
 		timer.start();
 		
 //		while (!isGameOver()) {
@@ -111,6 +118,17 @@ public class GameEngine implements Constants, ActionListener {
 //			try { Thread.sleep(10); }
 //			catch (InterruptedException er) { }
 //		}
+	}
+	
+	protected void triggerMapListeners()
+	{
+		for (MapChangeListener mcl : mapListeners)
+			mcl.mapChanged(gameMap);
+	}
+	
+	public void addMapListener(MapChangeListener listener)
+	{
+		mapListeners.add(listener);
 	}
 	
 	public void initialize() {
@@ -232,7 +250,7 @@ public class GameEngine implements Constants, ActionListener {
 		
 		for (Actor a : actorList)
 		{
-			if (a.animate(dTime))
+			if (!(a instanceof Stone) && a.animate(dTime))
 				repaint = true;
 		}
 		
