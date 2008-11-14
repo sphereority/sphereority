@@ -4,7 +4,8 @@ import java.nio.ByteBuffer;
 
 
 /**
- * 
+ * DeathMessage - Specifies that a player has killed another player in
+ *                a game.
  * @author rlagman
  */
 public class DeathMessage extends Message implements MessageLengths {
@@ -23,14 +24,14 @@ public class DeathMessage extends Message implements MessageLengths {
      * Constructor - Creates a new DeathMessage.
      */
     public DeathMessage(byte killedByPlayerId, byte killedPlayerId) {
-        super(MessageType.DeathMessage);
+        super(MessageType.DeathMessage,DeathMessageLength);
         this.killedByPlayerId = killedByPlayerId;
         this.killedPlayerId   = killedPlayerId;
-        dataLength = DeathMessageLength;    
     }
 
     /**
      * Retrieve the ID of the player who was killed.
+     * @return A player Id.
      */
     public byte getKilled() {
         return killedPlayerId;
@@ -38,6 +39,7 @@ public class DeathMessage extends Message implements MessageLengths {
 
     /**
      * Retrieves the ID of the player who killed.
+     * @return A player Id.
      */
     public byte getKiller() {
         return killedByPlayerId;
@@ -45,11 +47,11 @@ public class DeathMessage extends Message implements MessageLengths {
 
 	/**
 	 * Reads the packet information and reconstructs
-	 * the Packetizable object.
+	 * the DeathMessage object.
 	 * @param data The raw byte data that was sent.
 	 * @return The DeathMessage populated with the input data.
 	 */
-	public static DeathMessage readMessage(byte[] data) {
+	public static DeathMessage readByteMessage(byte[] data) {
         // Wrap the stream of bytes into a buffer
        
         ByteBuffer buffer = ByteBuffer.wrap(data);
@@ -66,7 +68,7 @@ public class DeathMessage extends Message implements MessageLengths {
 	/**
 	 * Creates an array of bytes to be sent across the network
 	 * that represents a Packetizable object.
-	 * @return A byte representation of the Packetizable object.
+	 * @return A byte representation of the DeathMessage.
 	 */
 	public byte[] getByteMessage() {
         // Get the header

@@ -3,7 +3,7 @@ package common.messages;
 import java.nio.ByteBuffer;
 
 /**
- *  Abstracts the basic properties of a header within the project.
+ *  Contains information common to all messages in Sphereority.
  *  @author Raphael Lagman
  */
 public class Header {

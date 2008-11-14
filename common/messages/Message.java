@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 /**
  * Encapsulates information common to all messages.
  * Also provides a way to figure out what kind of message is received.
- * 
  */
 public abstract class Message {
     protected Header header;
@@ -15,8 +14,9 @@ public abstract class Message {
      * Constructor - Creates a new message.
      * @param type The type of message
      */
-    protected Message(MessageType type) {
+    protected Message(MessageType type, int dataLength) {
         header = new Header(type);
+        this.dataLength = dataLength;
     }
     
     /**
@@ -24,12 +24,12 @@ public abstract class Message {
      * @param message The message in byte form.
      * @return A Message object representing the message that was sent.
      */
-    public static Message readMessage(byte[] message) {
+    public static Message readByteMessage(byte[] message) {
         ByteBuffer buffer = ByteBuffer.wrap(message);
         
         // Store the header information
         byte[] byteHeader = new byte[Header.HEADER_MAX];
-        buffer.get(byteHeader,0,8);
+        buffer.get(byteHeader,0,Header.HEADER_MAX);
    
         // Store the data information
         int dataLength = message.length - Header.HEADER_MAX;
@@ -43,10 +43,15 @@ public abstract class Message {
         return MessageAnalyzer.getMessage(header.getMessageType(),byteData);
     }
 
+    /**
+     * A class extending Message must be able to create a byte
+     * representation of itself.  As a result, it must implement this
+     * method.
+     */
     public abstract byte[] getByteMessage();
 
     /**
-     * Helper method for sendMessage.  This creates the byte header for a
+     * Helper method for getByteMessage().  This creates the byte header for a
      * particular message.
      */
     protected byte[] getByteHeader() {

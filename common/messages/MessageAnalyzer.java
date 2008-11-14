@@ -2,11 +2,14 @@ package common.messages;
 
 /**
 
- *  MessageAnalyzer
+ *  MessageAnalyzer translates from the enumerated
+ *  types of messages to their corresponding byte
+ *  values.  As well, it constructs messages
+ *  given an array of bytes that contain the whole
+ *  message.
 
  *  @author Raphael Lagman 
-
- .
+ * 
 
  */
 public abstract class MessageAnalyzer {
@@ -23,8 +26,8 @@ public abstract class MessageAnalyzer {
 	/**
 	 * Translates from a byte to its corresponding
 	 * message type value.
-	 * @param type
-	 * @return
+	 * @param type The byte representation of the type of message.
+	 * @return The enumerated type representation of the type of message.
 	 */
 	public static MessageType getMessageType(byte type) {
 		MessageType message;
@@ -56,8 +59,8 @@ public abstract class MessageAnalyzer {
   /**
 	 * Translates from a byte to its corresponding
 	 * message type value.
-	 * @param type
-	 * @return
+	 * @param type The enumerated type representation of the type of message.
+	 * @return The byte representation of the type of message.
 	 */
     public static byte getMessageType(MessageType type) {
 		byte message;
@@ -86,6 +89,12 @@ public abstract class MessageAnalyzer {
 		return message;
     }
 
+    /**
+     * Retrieves a message given its type and the data portion of the message.
+     * @param type The type of message to create.
+     * @param data The data portion of the message.
+     * @return The message that the byte array represeneted.
+     */
     public static Message getMessage(MessageType type, byte[] data) {
 		Message message = null;
 		
@@ -99,9 +108,10 @@ public abstract class MessageAnalyzer {
 			case HealthUpdate:
 				break;
 			case ChatMessage:
+                message = ChatMessage.readByteMessage(data);
 				break;
 			case DeathMessage:
-                message = DeathMessage.readMessage(data);
+                message = DeathMessage.readByteMessage(data);
 				break;
 		}
 		return message;

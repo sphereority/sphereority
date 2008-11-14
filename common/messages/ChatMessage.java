@@ -2,24 +2,45 @@ package common.messages;
 
 import java.nio.ByteBuffer;
 
-
 /**
  * 
  * @author rlagman
  */
-public class ChatMessage implements Packetizable {
+public class ChatMessage extends Message implements MessageLengths {
+    /**
+     * The id of the player who sent the message.
+     */
+    private byte playerId;
 
     /**
-     *  The header for the message.
+     * The type of message that is being sent.
      */
-
-   private Header header;
+    private byte destId;    
 
     /**
-     *  Constructor - Creates a new instance.
+     * The message to be sent.
      */
-    public ChatMessage() {
-        header = new TCPHeader(MessageType.ChatMessage,255);
+    private String message;
+
+    /**
+     * Constructor - Creates a new ChatMessage.
+     */
+    public ChatMessage(byte playerId, byte destId, String message) {
+        super(MessageType.ChatMessage, ChatMessageLength);
+        this.playerId         = playerId;
+        this.destId           = destId;
+    }
+
+    public byte getPlayerId() {
+        return playerId;
+    }
+
+    public byte getDestId() {
+        return destId;
+    }
+
+    public String getMessage() {
+        return message;    
     }
 
 	/**
@@ -28,21 +49,22 @@ public class ChatMessage implements Packetizable {
 	 * @param data The raw byte data that was sent.
 	 * @return The ChatMessage populated with the input data.
 	 */
-	public Packetizable readPacketData(byte[] data) {
-        
-        // Wrap the stream of bytes into a buffer
-       
+	public static ChatMessage readByteMessage(byte[] data) {
+        // Wrap the stream of bytes into a buffer       
         ByteBuffer buffer = ByteBuffer.wrap(data);
-
 		
-        if(MessageAnalyzer.getMessageType(buffer.get()) != MessageType.ChatMessage)
-			return null;
+        
+		// Process the information to create the object.
+        byte playerId      = buffer.get();
+        byte destId        = buffer.get();
+        int messageLength = (int) buffer.get();
+        
+        char[] message = new char[messageLength];
 
-		
-        // Process the information to create the object.		
+        for(int i = 0; i < messageLength; i++)      
+            message[i] = buffer.getChar();
 
-		
-        return this;
+		return new ChatMessage(playerId,destId,String.copyValueOf(message));
 	}
 	
 	/**
@@ -50,29 +72,24 @@ public class ChatMessage implements Packetizable {
 	 * that represents a Packetizable object.
 	 * @return A byte representation of the Packetizable object.
 	 */
-	public byte[] createPacketData() {
+	public byte[] getByteMessage() {
+        // Get the header
+        byte[] header = getByteHeader();        
+        byte[] message = new byte[header.length + dataLength];
         
-        byte[] data = new byte[MTU];
+        // Place the header information
+        ByteBuffer buffer = ByteBuffer.wrap(message);
+        buffer.put(header);
         
-        // Create a buffer the size of the maximum transmission unit
-		ByteBuffer buffer = ByteBuffer.wrap(data);
+        // Place the contents of this data
+        buffer.put(playerId);
+        buffer.put(destId);
+        buffer.put((byte)this.message.length());
+        try {
+            buffer.put(this.message.getBytes("UTF-8"));
+        } catch (Exception ex) { }
         
-        
-        
-        // Create the packet by processing the data
-
-      
-        
-        // Return 
-       
-        return data;
+        // Return
+        return message;
 	}
-
-    /**
-     *  Retrieves the type of message to be sent.
-     *  @return The type of message of this packet.
-     */
-    public MessageType getMessageType() {
-        return header.getMessageType();
-    }    
 }
