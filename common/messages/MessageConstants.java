@@ -11,9 +11,10 @@ public interface MessageConstants {
                      MapChangeLength    = 25,
                      ScoreUpdateLength  = 25,
                      HealthUpdateLength = 25,
-                     ChatMessageLength  = 25,
-	                 DeathMessageLength = 25;
+                     ChatMessageLength  = 258,
+	                 DeathMessageLength = 2;
     
+    public final int MessageCap = 255;
     public final int INIT = 0;
     public final byte DefaultGameId = 0;
     public final String CharacterEncoding = "UTF-8";

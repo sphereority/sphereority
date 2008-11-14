@@ -2,91 +2,62 @@ package common.messages;
 
 import java.nio.ByteBuffer;
 
-
 /**
- * DeathMessage - Specifies that a player has killed another player in
- *                a game.
+ * DeathMessage - Notifies that a player has killed another player.
  * @author rlagman
  */
-public class DeathMessage extends Message implements MessageLengths {
-
+public class DeathMessage extends Message implements MessageConstants {
+    private byte killedBy;    
+    private byte killed;
+    
     /**
-     * The id of the player who killed.
+     * Constructor - Creates a new DeathMessage.
+     * @param playerId The id of the player sending the message.
+     * @param killed  The id of the player who was killed.
+     * @param killedBy The id of the player who killed the other player.
      */
-    private byte killedByPlayerId;
-
-    /**
-     * The id of the player who was killed.
-     */
-    private byte killedPlayerId;    
+    public DeathMessage(byte playerId, byte killed, byte killedBy) {
+        super(MessageType.ChatMessage, playerId, DeathMessageLength);
+        this.killed   = killed;
+        this.killedBy  = killedBy;
+    }
 
     /**
      * Constructor - Creates a new DeathMessage.
+     * @param header Representation of a Header in bytes.
+     * @param data Representation of the data portion in bytes.
      */
-    public DeathMessage(byte killedByPlayerId, byte killedPlayerId) {
-        super(MessageType.DeathMessage,DeathMessageLength);
-        this.killedByPlayerId = killedByPlayerId;
-        this.killedPlayerId   = killedPlayerId;
-    }
-
-    /**
-     * Retrieve the ID of the player who was killed.
-     * @return A player Id.
-     */
-    public byte getKilled() {
-        return killedPlayerId;
-    }
-
-    /**
-     * Retrieves the ID of the player who killed.
-     * @return A player Id.
-     */
-    public byte getKiller() {
-        return killedByPlayerId;
-    }
-
-	/**
-	 * Reads the packet information and reconstructs
-	 * the DeathMessage object.
-	 * @param data The raw byte data that was sent.
-	 * @return The DeathMessage populated with the input data.
-	 */
-	public static DeathMessage readByteMessage(byte[] data) {
-        // Wrap the stream of bytes into a buffer
-       
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-
-		
+    public DeathMessage(byte[] header, byte[] data) {
+        // Create the Message superclass
+        super(header,DeathMessageLength);
         
+        // Wrap the stream of bytes into a buffer       
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+		
 		// Process the information to create the object.
-        byte killedByPlayerId = buffer.get();
-        byte killedPlayerId   = buffer.get();
-
-		return new DeathMessage(killedByPlayerId,killedPlayerId);
-	}
-	
-	/**
+        killed   = buffer.get();
+        killedBy = buffer.get();
+    }
+    
+    /**
 	 * Creates an array of bytes to be sent across the network
 	 * that represents a Packetizable object.
-	 * @return A byte representation of the DeathMessage.
+	 * @return A byte representation of the Packetizable object.
 	 */
-	public byte[] getByteMessage() {
+	public byte[] getByteMessage() throws Exception {
         // Get the header
-        byte[] header = getByteHeader();
-        
+        byte[] header = getByteHeader();        
         byte[] message = new byte[header.length + dataLength];
         
         // Place the header information
         ByteBuffer buffer = ByteBuffer.wrap(message);
-        
-        
         buffer.put(header);
         
         // Place the contents of this data
-        buffer.put(killedByPlayerId);
-        buffer.put(killedPlayerId);
+        buffer.put(killed);
+        buffer.put(killedBy);
         
-        // Return
+        // Return the fully created message
         return message;
-	}
+	}	
 }

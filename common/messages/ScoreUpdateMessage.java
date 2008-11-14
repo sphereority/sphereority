@@ -3,42 +3,42 @@ package common.messages;
 import java.nio.ByteBuffer;
 
 /**
- * HealthUpdateMessage - Notifies that a player's health has changed.
+ * ScoreUpdateMessage - Notifies that a player's score has changed.
  * @author rlagman
  */
-public class HealthUpdateMessage extends Message implements MessageConstants {
-    private byte newHealth;    
-
+public class ScoreUpdateMessage extends Message implements MessageConstants {
+    private int newScore;
+    
     /**
-     * Constructor - Creates a new HealthUpdateMessage.
+     * Constructor - Creates a new ScoreUpdateMessage.
      * @param playerId The id of the player sending the message.
-     * @param newHealth The new health amount for the player.
+     * @param newScore The new score for the player
      */
-    public HealthUpdateMessage(byte playerId, byte newHealth) {
-        super(MessageType.ChatMessage, playerId, HealthUpdateLength);
-        this.newHealth = newHealth;
+    public ScoreUpdateMessage(byte playerId, int newScore) {
+        super(MessageType.ChatMessage, playerId, ScoreUpdateLength);
+        this.newScore = newScore;
     }
 
     /**
-     * Constructor - Creates a new HealthUpdateMessage.
+     * Constructor - Creates a new ScoreUpdateMessage.
      * @param header Representation of a Header in bytes.
      * @param data Representation of the data portion in bytes.
      */
-    public HealthUpdateMessage(byte[] header, byte[] data) {
+    public ScoreUpdateMessage(byte[] header, byte[] data) {
         // Create the Message superclass
-        super(header,HealthUpdateLength);
+        super(header,ScoreUpdateLength);
         
         // Wrap the stream of bytes into a buffer       
         ByteBuffer buffer = ByteBuffer.wrap(data);
 		
 		// Process the information to create the object.
-        this.newHealth   = buffer.get();
+        this.newScore = buffer.getInt();
     }
     
     /**
 	 * Creates an array of bytes to be sent across the network
-	 * that represents a Packetizable object.
-	 * @return A byte representation of the Packetizable object.
+	 * that represents a Message object.
+	 * @return A byte representation of the Message object.
 	 */
 	public byte[] getByteMessage() throws Exception {
         // Get the header
@@ -50,13 +50,9 @@ public class HealthUpdateMessage extends Message implements MessageConstants {
         buffer.put(header);
         
         // Place the contents of this data
-        buffer.put(newHealth);
-        
+        buffer.putInt(newScore);
+       
         // Return the fully created message
         return message;
-	}
-    
-    public byte getNewHealth() {
-        return newHealth;
-    }
+	}	
 }

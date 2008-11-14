@@ -3,16 +3,13 @@ package common.messages;
 import java.nio.ByteBuffer;
 
 /**
-
  *  MessageAnalyzer translates from the enumerated
  *  types of messages to their corresponding byte
  *  values.  As well, it constructs messages
  *  given an array of bytes that contain the whole
  *  message.
-
  *  @author Raphael Lagman 
  * 
-
  */
 public abstract class MessageAnalyzer {
 	public static final int  INIT           = 0;
@@ -58,7 +55,7 @@ public abstract class MessageAnalyzer {
 		return message;
 	}
 
-  /**
+    /**
 	 * Translates from a byte to its corresponding
 	 * message type value.
 	 * @param type The enumerated type representation of the type of message.
@@ -112,21 +109,23 @@ public abstract class MessageAnalyzer {
 		
         switch (getMessageType(byteHeader[MESSAGE_TYPE])) {
 			case PlayerMotion:
+                receivedMessage = new PlayerMotionMessage(byteHeader,byteData);
 				break;
 			case MapChange:
 				break;
 			case ScoreUpdate:
+                receivedMessage = new ScoreUpdateMessage(byteHeader,byteData);
 				break;
 			case HealthUpdate:
+                receivedMessage = new HealthUpdateMessage(byteHeader,byteData);
 				break;
 			case ChatMessage:
                 receivedMessage = new ChatMessage(byteHeader,byteData);
 				break;
 			case DeathMessage:
-                //message = DeathMessage.readByteMessage(data);
+                receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
 		}
 		return receivedMessage;
     }
-
 }
