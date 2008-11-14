@@ -14,7 +14,7 @@ import common.*;
  * This class manages displaying the current play area
  * @author dvanhumb
  */
-public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants
+public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener
 {
 	private static final long serialVersionUID = 23498751L;
 	public static int MAP_WIDTH = 16;
@@ -37,13 +37,15 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected Vector<Actor> actorList;
 	protected Map map;
 	protected int mapWidth, mapHeight;
+	protected GameEngine gameEngine;
 	
 	// Temporary testing stuff:
 	protected long lastTime;
-	protected boolean[] keysPressed;
 	
-	public ClientViewArea()
+	public ClientViewArea(GameEngine engine)
 	{
+		gameEngine = engine;
+		
 		Dimension d = new Dimension(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
 		setMinimumSize(d);
 		setPreferredSize(d);
@@ -61,7 +63,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		lastTime = System.currentTimeMillis();
 		
-		keysPressed = new boolean[1024];
 		antialiasing = false;
 		drawMap = false;
 		
@@ -305,19 +306,17 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	public void keyPressed(KeyEvent e)
 	{
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) // TODO: replace this with a quit call so we go back to the login screen
+			System.exit(0);
 		else if (e.getKeyCode() == KeyEvent.VK_INSERT)
 		{
 			antialiasing = !antialiasing;
 			repaint();
 		}
-		
-		keysPressed[e.getKeyCode()] = true;
 	}
 	
 	public void keyReleased(KeyEvent e)
 	{
-		keysPressed[e.getKeyCode()] = false;
 	}
 	
 	public void keyTyped(KeyEvent e)
@@ -336,5 +335,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public Vector<Actor> getActorList()
 	{
 		return actorList;
+	}
+
+	public void mapChanged(Map newMap)
+	{
+		setMap(newMap);
 	}
 } // end ClientViewArea clas
