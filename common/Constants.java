@@ -173,5 +173,5 @@ public interface Constants
 	/**
 	 * The amount to shove the player when they bump into a wall
 	 */
-	public static final float BUMP_FORCE = 0.25f;
+	public static final float BUMP_FORCE = 0.1f;
 }
