@@ -88,16 +88,15 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 					           Math.round(scale));
 			}
 		
-		// TODO: Draw players:
 		final LocalPlayer localPlayer = engine.getLocalPlayer();
 		final int localID = localPlayer.getPlayerID();
 		float time;
 		for (Player p : engine.playerList)
 		{
+			// The local player
 			if (p.getPlayerID() == localID || p.equals(localPlayer))
-			{
 				g.setColor(Color.green);
-			}
+			// A player with no team
 			else if (p.getTeam() != TEAM_A && p.getTeam() != TEAM_B)
 			{
 				time = p.getTimeSinceLastSound();
@@ -105,10 +104,10 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 					continue;
 				g.setColor(GuiUtils.modulateColor(TEAMLESS_COLOR, 1 - (float)time/BLIP_TIME));
 			}
+			// A player on the same team
 			else if (p.getTeam() == localPlayer.getTeam())
-			{
 				g.setColor(Color.blue);
-			}
+			// An enemy player
 			else
 			{
 				time = p.getTimeSinceLastSound();

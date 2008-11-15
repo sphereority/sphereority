@@ -305,7 +305,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void keyPressed(KeyEvent e)
 	{
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) // TODO: replace this with a quit call so we go back to the login screen
-			System.exit(0);
+		{
+			if (gameEngine != null)
+				gameEngine.gameOver();
+			else
+			  System.exit(0);
+		}
 		else if (e.getKeyCode() == KeyEvent.VK_INSERT)
 		{
 			antialiasing = !antialiasing;

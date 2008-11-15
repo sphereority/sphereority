@@ -16,6 +16,7 @@ import java.util.Vector;
 public class GameEngine implements Constants, ActionListener {
 	public boolean gameOver;
 	public Map gameMap;
+	public JFrame gameWindow;
 	public ClientViewArea gameViewArea;
 	public LocalPlayer localPlayer;
 	public InputListener localInputListener;
@@ -106,6 +107,9 @@ public class GameEngine implements Constants, ActionListener {
 		gameOver = true;
 		if (timer != null)
 			timer.stop();
+		
+		gameWindow.setVisible(false);
+		gameWindow.dispose();
 	}
 	
 	public void gameStep()
@@ -147,8 +151,8 @@ public class GameEngine implements Constants, ActionListener {
 		System.out.println(title);
 		
 		// Set up game window
-		JFrame window = new JFrame(title);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow = new JFrame(title);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Copy the map as a bunch of Stones
 		for (int x=0; x < gameMap.getWidth(); x++)
@@ -161,14 +165,14 @@ public class GameEngine implements Constants, ActionListener {
 				}
 			}
 				
-		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
-		window.addKeyListener(this.gameViewArea);
+		gameWindow.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
+		gameWindow.addKeyListener(this.gameViewArea);
 		
-		localInputListener.attachListeners(window);
+		localInputListener.attachListeners(gameWindow);
 		
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
+		gameWindow.pack();
+		gameWindow.setLocationRelativeTo(null);
+		gameWindow.setVisible(true);
 		
 		lastTime = System.currentTimeMillis();
 	} // end initialize()
