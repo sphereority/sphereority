@@ -172,6 +172,7 @@ public interface Constants
 	
 	/**
 	 * The amount to shove the player when they bump into a wall
+	 * WARNING: Don't tweak this any lower than 0.1f, as then you can push your way through walls!
 	 */
-	public static final float BUMP_FORCE = 0.25f;
+	public static final float BUMP_FORCE = 0.125f;
 }
