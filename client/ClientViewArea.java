@@ -17,8 +17,9 @@ import common.*;
 public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener
 {
 	private static final long serialVersionUID = 23498751L;
-	public static int MAP_WIDTH = 16;
-	public static int MAP_HEIGHT = 16;
+	public static final int MAP_WIDTH = 16;
+	public static final int MAP_HEIGHT = 16;
+	public static final boolean DRAW_CENTER_DOT = false;
 	
 	// Drawing-related variables
 	protected boolean antialiasing;
@@ -198,9 +199,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		// Restore the view so the widgets are in the right spot
 		g2.setTransform(oldTransform);
 		
-		// TEMP: Mark the center of the window
-		g2.setColor(Color.red);
-		g2.fillRect(getWidth()/2 - 1, getHeight()/2 - 1, 3, 3);
+		// Mark the center of the window
+		if (DRAW_CENTER_DOT)
+		{
+			g2.setColor(Color.red);
+			g2.fillRect(getWidth()/2 - 1, getHeight()/2 - 1, 3, 3);
+		}
 		
 		final int width = getWidth(), height = getHeight();
 		// Draw the widgets
