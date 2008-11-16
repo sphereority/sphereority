@@ -12,6 +12,11 @@ public interface Constants
 	public static final Random RANDOM = new Random();
 	
 	/**
+	 * Default port for TCP network listener
+	 */
+	public static final int DEFAULT_PORT = 44000;
+	
+	/**
 	 * The fastest an object can move in units per second
 	 */
 	public static final float MAXIMUM_SPEED = 5;
@@ -84,18 +89,17 @@ public interface Constants
 	/**
 	 * The colour of a stone
 	 */
-	//public static final Color STONE_COLOR = Color.gray;
 	public static final Color STONE_COLOR = new Color(0.6f, 0.2f, 0.1f);
 
 	/**
 	 * The width of a stone
 	 */
-	public static final int STONE_WIDTH = 50;
+	public static final int STONE_WIDTH = 1;
 
 	/**
 	 * The height of a stone
 	 */
-	public static final int STONE_HEIGHT = 50;
+	public static final int STONE_HEIGHT = 1;
 
 
 	/**
