@@ -179,4 +179,9 @@ public interface Constants
 	 * WARNING: Don't tweak this any lower than 0.1f, as then you can push your way through walls!
 	 */
 	public static final float BUMP_FORCE = 0.125f;
+	
+	/**
+	 * The number of copies of the radar widget that can be displayed either horizontally or vertically
+	 */
+	public static final int RADAR_SIZE = 3;
 }

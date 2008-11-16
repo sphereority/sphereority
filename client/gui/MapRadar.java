@@ -9,11 +9,15 @@ import client.*;
 
 public class MapRadar extends Widget implements MapChangeListener, Constants
 {
-	public static final Color RADAR_COLOR = new Color(180, 180, 180, 127);
+	public static final Color RADAR_COLOR = new Color(180, 180, 180);
 	public static final Color RADAR_BACKGROUND_COLOR = new Color(200, 200, 200, 60);
 	
-	protected float scale;
+	protected int scale;
+	protected boolean showMap;
 	protected boolean showName;
+	protected boolean clipping;
+	
+	protected int winWidth = GAME_WINDOW_WIDTH, winHeight = GAME_WINDOW_HEIGHT;
 	
 	protected Map map;
 	protected GameEngine engine;
@@ -36,8 +40,9 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 
 	private void setup()
 	{
-		scale = 1.0f;
+		scale = 4;
 		showName = true;
+		showMap = true;
 	}
 	
 	public void setShowName(boolean flag)
@@ -56,9 +61,24 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 			return;
 		
 		this.map = map;
-		scale = 8;
-		width = Math.round(scale * map.getWidth());
-		height = Math.round(scale * map.getHeight());
+		if (winWidth < 0)
+			scale = 1;
+		else
+		{
+			scale = 16;
+			while (RADAR_SIZE * scale * map.getWidth() > winWidth || RADAR_SIZE * scale * map.getHeight() > winHeight)
+			{
+				scale --;
+				if (scale < 1)
+				{
+					scale = 1;
+					clipping = true;
+					break;
+				}
+			}
+		}
+		width = scale * map.getWidth();
+		height = scale * map.getHeight();
 	}
 	
 	public Map getMap()
@@ -68,12 +88,15 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 	
 	public void draw(Graphics2D g, int windowWidth, int windowHeight)
 	{
-		if (map == null)
+		if (map == null || !showMap)
 			return;
 		
+		winWidth = windowWidth;
+		winHeight = windowHeight;
+		
 		// Draw background
-		g.setColor(RADAR_BACKGROUND_COLOR);
-		g.fill(getFixedBounds(windowWidth, windowHeight));
+//		g.setColor(RADAR_BACKGROUND_COLOR);
+//		g.fill(getFixedBounds(windowWidth, windowHeight));
 		
 		// Draw walls
 		g.setColor(RADAR_COLOR);
@@ -82,13 +105,12 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 			for (int y=0; y < map.getHeight(); y++)
 			{
 				if (map.isWall(x, y))
-					g.fillRect(Math.round(scale * x) + offsetX,
-					           Math.round(scale * y) + offsetY,
-					           Math.round(scale),
-					           Math.round(scale));
+					g.fillRect(scale * x + offsetX,
+					           scale * y + offsetY,
+					           scale, scale);
 			}
 		
-		// TODO: Draw players:
+		// Draw players:
 		final LocalPlayer localPlayer = engine.getLocalPlayer();
 		final int localID = localPlayer.getPlayerID();
 		float time;
@@ -96,9 +118,7 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 		for (Player p : engine.playerList)
 		{
 			if (p.getPlayerID() == localID || p.equals(localPlayer))
-			{
 				g.setColor(Color.green);
-			}
 			else if (p.getTeam() != TEAM_A && p.getTeam() != TEAM_B)
 			{
 				time = p.getTimeSinceLastSound();
@@ -107,9 +127,7 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 				g.setColor(GuiUtils.modulateColor(TEAMLESS_COLOR, 1 - (float)time/BLIP_TIME));
 			}
 			else if (p.getTeam() == localPlayer.getTeam())
-			{
 				g.setColor(Color.blue);
-			}
 			else
 			{
 				time = p.getTimeSinceLastSound();
@@ -117,7 +135,6 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 					continue;
 				g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
 			}
-			
 			
 			px = Math.round(p.getPosition().getX() * scale) + offsetX;
 			py = Math.round(p.getPosition().getY() * scale) + offsetY;
@@ -146,5 +163,15 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 	public void mapChanged(Map newMap)
 	{
 		setMap(newMap);
+	}
+
+	public boolean isShowMap()
+	{
+		return showMap;
+	}
+
+	public void setShowMap(boolean showMap)
+	{
+		this.showMap = showMap;
 	}
 }
