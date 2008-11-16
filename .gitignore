@@ -1,4 +1,6 @@
 *.class
-*~
+*.classpath
 *.prefs
+*.project
 *.swp
+*~
