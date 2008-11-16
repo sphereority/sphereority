@@ -92,6 +92,7 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 		final LocalPlayer localPlayer = engine.getLocalPlayer();
 		final int localID = localPlayer.getPlayerID();
 		float time;
+		int px, py;
 		for (Player p : engine.playerList)
 		{
 			if (p.getPlayerID() == localID || p.equals(localPlayer))
@@ -117,9 +118,13 @@ public class MapRadar extends Widget implements MapChangeListener, Constants
 				g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
 			}
 			
-			g.fillRect(Math.round(p.getPosition().getX() * scale) + offsetX,
-			           Math.round(p.getPosition().getY() * scale) + offsetY,
-			           3, 3);
+			
+			px = Math.round(p.getPosition().getX() * scale) + offsetX;
+			py = Math.round(p.getPosition().getY() * scale) + offsetY;
+			px = Math.min(x + width, Math.max(x, px));
+			py = Math.min(y + height, Math.max(y, py));
+			
+			g.fillRect(px - 1, py - 1, 3, 3);
 		} // end if draw players
 		
 		if (showName)

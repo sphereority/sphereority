@@ -1,12 +1,11 @@
 package	client;
 
+import common.*;
+
 /**
  * This is the main client application
  * @author smaboshe
  */
-
-import common.*;
-
 public class Sphereority extends Thread {
 	private GameEngine game;
 	
