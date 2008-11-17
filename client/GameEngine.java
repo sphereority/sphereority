@@ -11,7 +11,6 @@ import client.gui.*;
 
 import java.awt.Color;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
