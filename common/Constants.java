@@ -13,6 +13,11 @@ public interface Constants
   public static final int DEFAULT_PORT = 44000;
 
   /**
+   * Default port for Game engine IPC listener
+  */
+  public static final int SERVER_GAME_ENGINE_PORT = 44001;
+
+  /**
    * The fastest an object can move in units per second
    */
   public static final float MAXIMUM_SPEED = 25;
