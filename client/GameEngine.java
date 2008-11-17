@@ -1,18 +1,15 @@
-package	client;
+package client;
 
 /**
  * This class describes the game loop for this game
  * @author smaboshe
  */
 
+import common.*;
 import client.audio.*;
-<<<<<<< HEAD:client/GameEngine.java
 import client.gui.*;
 
 import java.awt.Color;
-=======
-import common.*;
->>>>>>> efeaab567c0ccfb058fd5c352edeadb01a7f89d0:client/GameEngine.java
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -20,15 +17,11 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-<<<<<<< HEAD:client/GameEngine.java
 /**
  * This class describes the game loop for this game
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
-=======
-public class GameEngine implements Constants, ActionListener {
->>>>>>> efeaab567c0ccfb058fd5c352edeadb01a7f89d0:client/GameEngine.java
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -352,29 +345,28 @@ public class GameEngine implements Constants, ActionListener {
 		gameStep();
 	}
 	
-<<<<<<< HEAD:client/GameEngine.java
-	public void placePlayer(Player p)
-	{
-		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
-		
-		if (spawnPoints == null || spawnPoints.size() == 0)
-		{
-			final int width = gameMap.getWidth(), height = gameMap.getHeight();
-			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
-			
-			while (gameMap.isWall(x, y))
-			{
-				x = RANDOM.nextInt(width);
-				y = RANDOM.nextInt(height);
-			}
-			
-			p.setPosition(x + 0.5f, y + 0.5f);
-		}
-		else
-		{
-			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
-		}
-	}
+//	public void placePlayer(Player p)
+//	{
+//		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
+//		
+//		if (spawnPoints == null || spawnPoints.size() == 0)
+//		{
+//			final int width = gameMap.getWidth(), height = gameMap.getHeight();
+//			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
+//			
+//			while (gameMap.isWall(x, y))
+//			{
+//				x = RANDOM.nextInt(width);
+//				y = RANDOM.nextInt(height);
+//			}
+//			
+//			p.setPosition(x + 0.5f, y + 0.5f);
+//		}
+//		else
+//		{
+//			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
+//		}
+//	}
 	
 	protected void addButton(int x, int y, int width, int height, String label)
 	{
@@ -396,8 +388,6 @@ public class GameEngine implements Constants, ActionListener {
 		}
 	}
 	
-=======
->>>>>>> efeaab567c0ccfb058fd5c352edeadb01a7f89d0:client/GameEngine.java
 	/* ********************************************* *
 	 * These method(s) are for playing sound effects *
 	 * ********************************************* */
