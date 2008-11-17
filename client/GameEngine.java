@@ -52,7 +52,7 @@ public class GameEngine implements Constants, ActionListener {
 		
 		localInputListener = new InputListener();
 		localPlayer = new LocalPlayer(localInputListener);
-		placePlayer(localPlayer);
+		gameMap.placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
 		
 		addActor(localPlayer);
@@ -322,29 +322,6 @@ public class GameEngine implements Constants, ActionListener {
 	public void actionPerformed(ActionEvent e)
 	{
 		gameStep();
-	}
-	
-	public void placePlayer(Player p)
-	{
-		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
-		
-		if (spawnPoints == null || spawnPoints.size() == 0)
-		{
-			final int width = gameMap.getWidth(), height = gameMap.getHeight();
-			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
-			
-			while (gameMap.isWall(x, y))
-			{
-				x = RANDOM.nextInt(width);
-				y = RANDOM.nextInt(height);
-			}
-			
-			p.setPosition(x + 0.5f, y + 0.5f);
-		}
-		else
-		{
-			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
-		}
 	}
 	
 	/* ********************************************* *
