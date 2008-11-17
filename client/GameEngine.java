@@ -9,12 +9,14 @@ import common.*;
 import client.audio.*;
 import client.gui.*;
 
+//import java.awt.BorderLayout;
+//import javax.swing.JFrame;
+
 import java.awt.Color;
-import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
-import javax.swing.JFrame;
 import javax.swing.Timer;
 
 /**
@@ -164,13 +166,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	}
 	
 	public void initialize() {
-		String title = CLIENT_WINDOW_NAME;
-		System.out.println(title);
-		
-		// Set up game window
-		JFrame window = new JFrame(title);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		// Copy the map as a bunch of Stones
 		for (int x=0; x < gameMap.getWidth(); x++)
 			for (int y=0; y < gameMap.getHeight(); y++)
@@ -181,17 +176,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 					actorList.add(stoneList.get(stoneList.size() - 1));
 				}
 			}
-				
-		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
-		window.addKeyListener(this.gameViewArea);
-		
-		localInputListener.attachListeners(window);
-		
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-		
-		lastTime = System.currentTimeMillis();
+			
+		lastTime = System.currentTimeMillis();					
 	} // end initialize()
 	
 	public void checkCollisions() {
@@ -419,4 +405,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		sound.setVolume(volume);
 		sound.play();
 	}
+	
+	public void registerActionListeners(Component c) {
+		this.localInputListener.attachListeners(c);
+	}
+	
 } // end class GameEngine
