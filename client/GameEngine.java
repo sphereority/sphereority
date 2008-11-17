@@ -1,22 +1,34 @@
 package	client;
 
-import common.*;
+/**
+ * This class describes the game loop for this game
+ * @author smaboshe
+ */
+
 import client.audio.*;
+<<<<<<< HEAD:client/GameEngine.java
 import client.gui.*;
 
 import java.awt.Color;
+=======
+import common.*;
+>>>>>>> efeaab567c0ccfb058fd5c352edeadb01a7f89d0:client/GameEngine.java
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.Timer;
-import java.util.Vector;
 
+<<<<<<< HEAD:client/GameEngine.java
 /**
  * This class describes the game loop for this game
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
+=======
+public class GameEngine implements Constants, ActionListener {
+>>>>>>> efeaab567c0ccfb058fd5c352edeadb01a7f89d0:client/GameEngine.java
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -56,7 +68,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		localInputListener = new InputListener();
 		localPlayer = new LocalPlayer(localInputListener);
-		placePlayer(localPlayer);
+		gameMap.placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
 		
 		addActor(localPlayer);
@@ -76,6 +88,18 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	public Map getGameMap() {
 		return this.gameMap;
+	}
+
+	public boolean getGameOver() {
+		return this.gameOver;
+	}
+
+	public ClientViewArea getGameViewArea() {
+		return this.gameViewArea;
+	}
+
+	public InputListener getInputListener() {
+		return this.localInputListener;
 	}
 	
 	// SETTERS
@@ -328,6 +352,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameStep();
 	}
 	
+<<<<<<< HEAD:client/GameEngine.java
 	public void placePlayer(Player p)
 	{
 		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
@@ -371,6 +396,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		}
 	}
 	
+=======
+>>>>>>> efeaab567c0ccfb058fd5c352edeadb01a7f89d0:client/GameEngine.java
 	/* ********************************************* *
 	 * These method(s) are for playing sound effects *
 	 * ********************************************* */
