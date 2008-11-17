@@ -6,15 +6,18 @@ package	client;
  */
 
 import client.audio.*;
+import client.gui.*;
 import common.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-public class GameEngine implements Constants, ActionListener {
+
+public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -50,6 +53,7 @@ public class GameEngine implements Constants, ActionListener {
 		miscList = new Vector<Actor>();
 		
 		gameViewArea = new ClientViewArea(this);
+		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
 		localPlayer = new LocalPlayer(localInputListener);
@@ -335,6 +339,49 @@ public class GameEngine implements Constants, ActionListener {
 	public void actionPerformed(ActionEvent e)
 	{
 		gameStep();
+	}
+	
+	public void placePlayer(Player p)
+	{
+		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
+		
+		if (spawnPoints == null || spawnPoints.size() == 0)
+		{
+			final int width = gameMap.getWidth(), height = gameMap.getHeight();
+			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
+			
+			while (gameMap.isWall(x, y))
+			{
+				x = RANDOM.nextInt(width);
+				y = RANDOM.nextInt(height);
+			}
+			
+			p.setPosition(x + 0.5f, y + 0.5f);
+		}
+		else
+		{
+			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
+		}
+	}
+	
+	protected void addButton(int x, int y, int width, int height, String label)
+	{
+		addButton(x, y, width, height, label, Color.green);
+	}
+	
+	protected void addButton(int x, int y, int width, int height, String label, Color c)
+	{
+		SimpleButton b = new SimpleButton(x, y, width, height, label, c);
+		b.addCallback(this);
+		gameViewArea.addWidget(b);
+	}
+	
+	public void actionCallback(InteractiveWidget source, int buttons)
+	{
+		if (source.getLabel().equalsIgnoreCase("Quit"))
+		{
+			gameOver();
+		}
 	}
 	
 	/* ********************************************* *

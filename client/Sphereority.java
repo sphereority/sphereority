@@ -15,9 +15,11 @@ public class Sphereority extends Thread {
 	}
 	
 	public static void main(String[] args) {
-		//GameEngine game = new GameEngine(new Map("widefield"));
+		//GameEngine game = new GameEngine(new Map("circles"));
 		//GameEngine game = new GameEngine(new Map("round"));
-		GameEngine game = new GameEngine(new Map("mercury"));
+		//GameEngine game = new GameEngine(new Map("widefield"));
+		//GameEngine game = new GameEngine(new Map("mercury"));
+		GameEngine game = new GameEngine(new Map("random_1"));
 		Sphereority s = new Sphereority(game);
 		s.start();
 	}
