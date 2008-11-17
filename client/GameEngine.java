@@ -1,18 +1,19 @@
 package	client;
 
-import common.*;
-import client.audio.*;
-import java.awt.BorderLayout;
-import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
-import javax.swing.JFrame;
-import javax.swing.Timer;
-import java.util.Vector;
-
 /**
  * This class describes the game loop for this game
  * @author smaboshe
  */
+
+import client.audio.*;
+import common.*;
+import java.awt.BorderLayout;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.Timer;
+
 public class GameEngine implements Constants, ActionListener {
 	public boolean gameOver;
 	public Map gameMap;
@@ -72,6 +73,18 @@ public class GameEngine implements Constants, ActionListener {
 	
 	public Map getGameMap() {
 		return this.gameMap;
+	}
+
+	public boolean getGameOver() {
+		return this.gameOver;
+	}
+
+	public ClientViewArea getGameViewArea() {
+		return this.gameViewArea;
+	}
+
+	public InputListener getInputListener() {
+		return this.localInputListener;
 	}
 	
 	// SETTERS
