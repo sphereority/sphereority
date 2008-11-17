@@ -72,7 +72,7 @@ public class ChatMessage extends Message implements MessageConstants {
         // Place the contents of this data
         buffer.put(destId);
         buffer.put((byte)this.message.length());
-        buffer.put(this.message.getBytes("UTF-8"));
+        buffer.put(this.message.getBytes(CharacterEncoding));
         
         // Return
         return message;
