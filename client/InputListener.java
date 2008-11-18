@@ -1,13 +1,16 @@
 package client;
 
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.awt.Window;
+import java.awt.KeyEventDispatcher;
 import java.awt.event.*;
 
 /**
  * This class provides a handy place to put keyboard/mouse event handling code
  * @author dvanhumb
  */
-public class InputListener implements MouseListener, MouseMotionListener, KeyListener
+public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher
 {
 	protected boolean[] keysPressed;
 	protected int numKeysPressed;
@@ -132,11 +135,21 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		c.addKeyListener(this);
 	}
 	
+	public void attachListeners(Window w)
+	{
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
+	}
+	
 	public void detachListeners(Component c)
 	{
 		c.removeMouseListener(this);
 		c.removeMouseMotionListener(this);
 		c.removeKeyListener(this);
+	}
+	
+	public void detachListeners(Window w)
+	{
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
 	}
 
 	/* *********************************************** *
@@ -209,4 +222,16 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	
 	// Don't need this one
 	public void keyTyped(KeyEvent e) { }
+
+	public boolean dispatchKeyEvent(KeyEvent e)
+	{
+		if (e.getID() == KeyEvent.KEY_PRESSED)
+			keyPressed(e);
+		else if (e.getID() == KeyEvent.KEY_RELEASED)
+			keyReleased(e);
+		else if (e.getID() == KeyEvent.KEY_TYPED)
+			keyTyped(e);
+		
+		return false;
+	}
 }

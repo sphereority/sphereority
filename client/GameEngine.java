@@ -392,13 +392,25 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		sound.play();
 	}
 	
-	public void registerActionListeners(Component c) {
+	public void registerActionListeners(Component c)
+	{
 		localInputListener.attachListeners(c);
+		c.addKeyListener(gameViewArea);
+	}
+	
+	public void registerActionListeners(Window w)
+	{
+		localInputListener.attachListeners(w);
 	}
 	
 	public void unregisterActionListeners(Component c)
 	{
 		localInputListener.detachListeners(c);
+		c.removeKeyListener(gameViewArea);
 	}
 	
+	public void unregisterActionListenerst(Window w)
+	{
+		localInputListener.detachListeners(w);
+	}
 } // end class GameEngine

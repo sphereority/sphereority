@@ -32,9 +32,6 @@ public class Sphereority extends Thread implements Constants {
 		gameWindow.setModal(true);
 		
 		gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-		gameWindow.addKeyListener(game.getGameViewArea());
-		
-		game.registerActionListeners(gameWindow);
 		
 		gameWindow.pack();
 		gameWindow.setLocationRelativeTo(null);
@@ -50,6 +47,7 @@ public class Sphereority extends Thread implements Constants {
 		// Else play the game
 		do
 		{
+			game.registerActionListeners(gameWindow);
 			// Play the game once:
 			gameWindow.setVisible(true);
 			game.unregisterActionListeners(gameWindow);
