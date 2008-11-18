@@ -10,14 +10,16 @@ public class Projectile extends Actor
 {
 	protected Position startPos;
 	protected Position direction;
+	protected int owner;
 	
-	public Projectile(Position startPos, Position direction, float startTime, float curTime)
+	public Projectile(Position startPos, Position direction, float startTime, float curTime, int owner)
 	{
 		this.startPos = new Position(startPos);	// Duplicate this one so we're not following somebody else
 		this.direction = direction;
 		
 		position = new Position(startPos);
 		position.move(direction, (curTime - startTime) * BULLET_SPEED);
+		this.owner = owner;
 	}
 	
 	public boolean animate(float dTime)
@@ -37,6 +39,11 @@ public class Projectile extends Actor
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getOwner()
+	{
+		return owner;
 	}
 	
 }
