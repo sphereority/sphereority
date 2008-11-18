@@ -14,7 +14,7 @@ import client.gui.*;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
@@ -133,11 +133,11 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		// This code finds the Frame (or JFrame) that contains the gameViewArea and tells it to disapear
 		Component c = gameViewArea.getParent();
-		while (!(c instanceof Frame) && c != null)
+		while (!(c instanceof Window) && c != null)
 			c = c.getParent();
 		
 		if (c != null)
-			((Frame)c).dispose();
+			((Window)c).setVisible(false);
 	}
 	
 	public void gameStep()

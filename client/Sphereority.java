@@ -2,7 +2,7 @@ package	client;
 
 import common.*;
 import java.awt.BorderLayout;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  * This is the main client application
@@ -10,10 +10,11 @@ import javax.swing.JFrame;
  */
 public class Sphereority extends Thread implements Constants {
 	public static final String[] MAP_LIST = new String[]
-		{
-			"circles", "mercury", "random_1", "round", "sample-map", "widefield"
-		};
+		{ "circles", "mercury", "random_1", "round", "sample-map", "widefield" };
+	
 	private GameEngine game;
+	private static JDialog gameWindow;
+	private static ClientLogonDialog loginWindow;
 	
 	public Sphereority(GameEngine game)
 	{
@@ -25,23 +26,40 @@ public class Sphereority extends Thread implements Constants {
 		Map map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
 		GameEngine game = new GameEngine(map);
 		
-		String title = CLIENT_WINDOW_NAME;
+		// Set up the game gameWindow
+		gameWindow = new JDialog();
+		gameWindow.setTitle(CLIENT_WINDOW_NAME);
+		gameWindow.setModal(true);
 		
-		// Set up the game window
-		JFrame window = new JFrame(title);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+		gameWindow.addKeyListener(game.getGameViewArea());
 		
-		window.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-		window.addKeyListener(game.getGameViewArea());
+		game.registerActionListeners(gameWindow);
 		
-		game.registerActionListeners(window);
-		
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
+		gameWindow.pack();
+		gameWindow.setLocationRelativeTo(null);
 		
 		Sphereority s = new Sphereority(game);
 		s.start();
+		
+		// Create and display the LoginDialog
+		loginWindow = new ClientLogonDialog(null);
+		// If the user quit the dialog, we must quit
+		if (!loginWindow.show())
+			System.exit(0);
+		// Else play the game
+		do
+		{
+			// Play the game once:
+			gameWindow.setVisible(true);
+			
+			// Show the login dialog again
+			// If quit, don't loop
+		}
+		while (false);
+		
+		// TEMP: this is for testing only:
+		gameWindow.dispose();
 	}
 	
 	public void run()
