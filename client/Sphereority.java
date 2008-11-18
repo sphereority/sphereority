@@ -52,14 +52,19 @@ public class Sphereority extends Thread implements Constants {
 		{
 			// Play the game once:
 			gameWindow.setVisible(true);
+			game.unregisterActionListeners(gameWindow);
 			
 			// Show the login dialog again
+			if (!loginWindow.show())
+				break;
 			// If quit, don't loop
 		}
-		while (false);
+		while (true);
 		
 		// TEMP: this is for testing only:
 		gameWindow.dispose();
+		
+		System.exit(0);
 	}
 	
 	public void run()

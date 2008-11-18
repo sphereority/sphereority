@@ -340,29 +340,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameStep();
 	}
 	
-//	public void placePlayer(Player p)
-//	{
-//		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
-//		
-//		if (spawnPoints == null || spawnPoints.size() == 0)
-//		{
-//			final int width = gameMap.getWidth(), height = gameMap.getHeight();
-//			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
-//			
-//			while (gameMap.isWall(x, y))
-//			{
-//				x = RANDOM.nextInt(width);
-//				y = RANDOM.nextInt(height);
-//			}
-//			
-//			p.setPosition(x + 0.5f, y + 0.5f);
-//		}
-//		else
-//		{
-//			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
-//		}
-//	}
-	
 	protected void addButton(int x, int y, int width, int height, String label)
 	{
 		addButton(x, y, width, height, label, Color.green);
@@ -416,7 +393,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	}
 	
 	public void registerActionListeners(Component c) {
-		this.localInputListener.attachListeners(c);
+		localInputListener.attachListeners(c);
+	}
+	
+	public void unregisterActionListeners(Component c)
+	{
+		localInputListener.detachListeners(c);
 	}
 	
 } // end class GameEngine

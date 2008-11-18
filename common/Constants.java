@@ -24,7 +24,7 @@ public interface Constants
 	/**
 	 * The fastest an object can move in units per second
 	 */
-	public static final float MAXIMUM_SPEED = 5;
+	public static final float MAXIMUM_SPEED = 10;
 
 	/**
 	 * The amount of friction we have to slow motion down

@@ -19,6 +19,10 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 	protected String serverPassword;
 	protected boolean result;
 	
+	/*
+	 * TODO: Fixed key-detection code!
+	 */
+	
 	public ClientLogonDialog(Frame owner)
 	{
 		dialog = new JDialog(owner, true);
@@ -36,10 +40,10 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 		
 		buttonOkay = new JButton("Login");
 		buttonOkay.addActionListener(this);
-		buttonOkay.setMnemonic(0);
+		buttonOkay.setMnemonic('L');
 		buttonCancel = new JButton("Quit");
 		buttonCancel.addActionListener(this);
-		buttonCancel.setMnemonic(0);
+		buttonCancel.setMnemonic('Q');
 		
 		JPanel panel = new JPanel(new GridLayout(0, 2));
 		panel.add(new JLabel("Server IP or name:"));
@@ -125,7 +129,10 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 		return result;
 	}
 
-	public void keyPressed(KeyEvent e) { }
+	public void keyPressed(KeyEvent e)
+	{
+		keyTyped(e);
+	}
 	public void keyReleased(KeyEvent e) { }
 	public void keyTyped(KeyEvent e)
 	{

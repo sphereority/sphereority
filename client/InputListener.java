@@ -131,11 +131,23 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		c.addMouseMotionListener(this);
 		c.addKeyListener(this);
 	}
+	
+	public void detachListeners(Component c)
+	{
+		c.removeMouseListener(this);
+		c.removeMouseMotionListener(this);
+		c.removeKeyListener(this);
+	}
 
 	/* *********************************************** *
 	 * These methods are for handling input events and *
 	 * can be safely ignored by game engine code(rs)   *
 	 * *********************************************** */
+	
+	/* *********************************** *
+	 * These are the mouse-related methods * 
+	 * *********************************** */
+	
 	public void mouseClicked(MouseEvent e)
 	{
 		
@@ -170,7 +182,11 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	{
 		
 	}
-
+	
+	/* ******************* *
+	 * Key-related methods *
+	 * ******************* */
+	
 	public void keyPressed(KeyEvent e)
 	{
 		int code = e.getKeyCode();
