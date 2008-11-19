@@ -77,7 +77,7 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 		{
 			cancel();
 		}
-		else if (source.equals(buttonOkay))
+		else if (source.equals(buttonOkay) || source instanceof JTextField)
 		{
 			login();
 		}
@@ -162,6 +162,7 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 
 	public boolean dispatchKeyEvent(KeyEvent e)
 	{
+		// If the Escape key was pressed, press the cancel button
 		if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			cancel();
 		
