@@ -9,9 +9,6 @@ import common.*;
 import client.audio.*;
 import client.gui.*;
 
-//import java.awt.BorderLayout;
-//import javax.swing.JFrame;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Window;

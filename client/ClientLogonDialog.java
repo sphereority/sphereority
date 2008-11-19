@@ -9,10 +9,13 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 {
 	protected JDialog dialog;
 	
+	// Entry widgets
 	protected JTextField entryServer, entryName;
 	protected JPasswordField entryPassword;
+	// Buttons
 	protected JButton buttonOkay, buttonCancel;
-	protected JLabel statusMessage;
+	// Labels
+	protected JLabel statusMessage, labelServer, labelName, labelPassword;
 	
 	// Results of the dialog
 	protected String serverName;
@@ -47,11 +50,11 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 		buttonCancel.setMnemonic('Q');
 		
 		JPanel panel = new JPanel(new GridLayout(0, 2));
-		panel.add(new JLabel("Server IP or name:"));
+		panel.add(labelServer = new JLabel("Server IP or name:"));
 		panel.add(entryServer);
-		panel.add(new JLabel("User name:"));
+		panel.add(labelName = new JLabel("User name:"));
 		panel.add(entryName);
-		panel.add(new JLabel("Server password:"));
+		panel.add(labelPassword = new JLabel("Server password:"));
 		panel.add(entryPassword);
 		
 		dialog.getContentPane().add(panel, BorderLayout.CENTER);
@@ -86,8 +89,13 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 	
 	public boolean show()
 	{
+		// Reset the labels
+		labelServer.setForeground(Color.black);
+		labelName.setForeground(Color.black);
+		labelPassword.setForeground(Color.black);
+		statusMessage.setVisible(false);
 		// Center the dialog on the parent
-		dialog.setLocationRelativeTo(null);
+		dialog.setLocationRelativeTo(dialog.getParent());
 		dialog.setVisible(true);
 		
 		return result;
@@ -105,19 +113,26 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 		if (entryServer.getText().length() < 1)
 		{
 			statusMessage.setText("Need server name!");
+			labelServer.setForeground(Color.red);
 			result = false;
 		}
+		else
+			labelServer.setForeground(Color.black);
 		if (entryName.getText().length() < 1)
 		{
 			if (result)
 				statusMessage.setText("Need user name!");
 			else
-				statusMessage.setText("Need server and user names!");
+				statusMessage.setText("Need server and user name!");
+			labelName.setForeground(Color.red);
 			result = false;
 		}
+		else
+			labelName.setForeground(Color.black);
 		
 		if (result)
 		{
+			statusMessage.setVisible(false);
 			serverName = entryServer.getText();
 			serverPassword = new String(entryPassword.getPassword());
 			userName = entryName.getText();
@@ -125,8 +140,7 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 			dialog.setVisible(false);
 		}
 		else
-			for (Component c : dialog.getContentPane().getComponents())
-				c.validate();
+			statusMessage.setVisible(true);
 		
 		return result;
 	}

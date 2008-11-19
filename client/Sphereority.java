@@ -47,17 +47,17 @@ public class Sphereority extends Thread implements Constants {
 		// Else play the game
 		do
 		{
+			// TODO: Technically, the GameEngine creation code should be here...
+			
 			game.registerActionListeners(gameWindow);
 			// Play the game once:
 			gameWindow.setVisible(true);
 			game.unregisterActionListeners(gameWindow);
 			
 			// Show the login dialog again
-			if (!loginWindow.show())
-				break;
-			// If quit, don't loop
 		}
-		while (true);
+		while (loginWindow.show());
+		// If quit, don't loop
 		
 		// TEMP: this is for testing only:
 		gameWindow.dispose();
