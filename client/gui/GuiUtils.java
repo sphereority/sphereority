@@ -172,6 +172,52 @@ public final class GuiUtils
 		g.fill(p);
 	}
 	
+	public static Polygon getBoxShape(int x, int y, int width, int height)
+	{
+		Polygon result = new Polygon();
+		
+		int bevel_amount = DEFAULT_BEVEL_AMOUNT;
+		if (width < bevel_amount*2)
+			bevel_amount = width/2;
+		if (height < bevel_amount*2)
+			bevel_amount = height/2;
+		
+		// Top left
+		if ((DEFAULT_BEVEL_CORNERS & BEVEL_CORNER_TOP_LEFT) == BEVEL_CORNER_TOP_LEFT)
+		{
+			result.addPoint(x, y + bevel_amount);
+			result.addPoint(x + bevel_amount, y);
+		}
+		else
+			result.addPoint(x, y);
+		// Top right
+		if ((DEFAULT_BEVEL_CORNERS & BEVEL_CORNER_TOP_RIGHT) == BEVEL_CORNER_TOP_RIGHT)
+		{
+			result.addPoint(x + width - bevel_amount, y);
+			result.addPoint(x + width, y + bevel_amount);
+		}
+		else
+			result.addPoint(x + width, y);
+		// Bottom right
+		if ((DEFAULT_BEVEL_CORNERS & BEVEL_CORNER_BOTTOM_RIGHT) == BEVEL_CORNER_BOTTOM_RIGHT)
+		{
+			result.addPoint(x + width, y - bevel_amount + height);
+			result.addPoint(x + width - bevel_amount, y + height);
+		}
+		else
+			result.addPoint(x + width, y + height);
+		// Bottom left
+		if ((DEFAULT_BEVEL_CORNERS & BEVEL_CORNER_BOTTOM_LEFT) == BEVEL_CORNER_BOTTOM_LEFT)
+		{
+			result.addPoint(x + bevel_amount, y + height);
+			result.addPoint(x, y + height - bevel_amount);
+		}
+		else
+			result.addPoint(x, y + height);
+		
+		return result;
+	}
+	
 	/**
 	 * Draw a filled octagon at the specified position with the specified size
 	 * @param g		The graphics context to use
@@ -201,5 +247,10 @@ public final class GuiUtils
 		g.fill(octagon);
 		
 		g.setTransform(oldTransform);
+	}
+	
+	public static Color modulateColor(Color c, float alpha)
+	{
+		return new Color(c.getRed(), c.getGreen(), c.getBlue(), Math.round(255 * alpha));
 	}
 }

@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import common.*;
-import client.ClientViewArea;
+import client.*;
 import client.gui.*;
 
 public class ClientTest implements ActionCallback
@@ -16,8 +16,12 @@ public class ClientTest implements ActionCallback
 		JFrame window = new JFrame("Sphereority client test");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		cva = new ClientViewArea();
-		cva.setLocalPlayer(new Player(0.5f, 0.5f));
+		InputListener listener = new InputListener();
+		
+		cva = new ClientViewArea(null);
+		LocalPlayer player = new LocalPlayer(listener);
+		player.setPosition(0.5f, 0.5f);
+		cva.setLocalPlayer(player);
 		cva.setMap(new Map());
 		window.getContentPane().add(cva, BorderLayout.CENTER);
 		window.addKeyListener(cva);
@@ -36,6 +40,8 @@ public class ClientTest implements ActionCallback
 		sb.setFontSize(9);
 		cva.addWidget(sb);
 		
+		listener.attachListeners(window);
+		
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
@@ -51,10 +57,11 @@ public class ClientTest implements ActionCallback
 		}
 		else if (label.equals("Team"))
 		{
-			if (cva.getPlayerColor().equals(Color.green))
-				cva.setPlayerColor(Color.orange);
+			LocalPlayer player = cva.getLocalPlayer();
+			if (player.getTeam() == Constants.TEAM_A)
+				player.setTeam(Constants.TEAM_B);
 			else
-				cva.setPlayerColor(Color.green);
+				player.setTeam(Constants.TEAM_A);
 		}
 	}
 }

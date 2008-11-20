@@ -1,17 +1,22 @@
 package client.gui;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.*;
 
 public class SimpleButton extends InteractiveWidget
 {
 	protected Vector<ActionCallback> callbacks;
+	protected Polygon outline, fill;
 	
 	public SimpleButton(int x, int y, int width, int height, String label, Color color)
 	{
 		super(x, y, width, height, label);
 		setColor(color);
 		callbacks = new Vector<ActionCallback>();
+		
+		outline = GuiUtils.getBoxShape(x, y, width, height);
+		fill = GuiUtils.getBoxShape(x+2, y+2, width-3, height-3);
 	}
 	
 	public void trigger(int buttons)
@@ -29,13 +34,30 @@ public class SimpleButton extends InteractiveWidget
 		
 		int px = getFixedX(windowWidth), py = getFixedY(windowHeight);
 		
-		GuiUtils.drawOutlinedBox(g, px, py, width, height);
+		AffineTransform oldTransform = null;
+		if (px != x || py != y)
+		{
+			oldTransform = g.getTransform();
+			if (px != x)
+				g.translate(windowWidth-width, 0);
+			if (py != y)
+				g.translate(0, windowHeight-height);
+		}
+		
+		g.draw(outline);
+		
+//		g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 127));	
+//		g.fill(outline);
 		
 		if (cur_state == STATE_HOVERED)
 		{
-			GuiUtils.drawFilledBox(g, px+2, py+2, width-3, height-3);
+			g.setColor(color);
+			g.fill(fill);
 			g.setColor(Color.black);
 		}
+		
+		if (oldTransform != null)
+			g.setTransform(oldTransform);
 		
 		GuiUtils.drawCenteredText(g, label, px, py, width, height, 0.5f, 0.25f, fontSize);
 		

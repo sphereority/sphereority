@@ -29,19 +29,19 @@ public class GameSoundSystem
 		{
 			return new SoundEffect(new File(fileName));
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
 		catch (UnsupportedAudioFileException e)
 		{
-			System.err.printf("File '%s' is an unsupported type!\n", fileName);
+			System.err.printf("client.audio.GameSoundSyste: Error: File '%s' is an unsupported type!\n", fileName);
 			return null;
 		}
 		catch (LineUnavailableException e)
 		{
-			System.err.printf("Can't find an audio line to play the sound on!\n");
+			System.err.printf("client.audio.GameSoundSyste: Error: Can't find an audio line to play the sound on!\n");
+			return null;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 			return null;
 		}
 	}

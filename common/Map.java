@@ -1,10 +1,12 @@
 package common;
 
+import common.Constants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Vector;
 
-public class Map {
+public class Map implements Constants {
 	public static final String DEFAULT_MAP = "10 10\n"+
     "++++++++++\n" +
     "+        +\n" +
@@ -19,11 +21,12 @@ public class Map {
 
 	
     String name;       // map name
-    String data;       // map raw data
-    int x_size;        // map x size
-    int y_size;        // map y size
+    String data;       // map raw data **pending for deletion (waste of space)**
+    int height;        // map y size
+    int width;        // map x size
     char[][] mapping;  // two dimensional array of char for mapping
-
+    boolean[][] wall;  // two dimensional array of boolean for walls (if wall unit exists on [y][x] true, otherwise false)
+    Vector<SpawnPoint> spawnPoints; // vector of spawn points on map
     
     /**
      * Default Map constructor
@@ -36,14 +39,14 @@ public class Map {
     }
     
     /**
-     * 
+     * Map constructor which reads in a map name
      * @param mapname the name of the map to be read (default filepath is maps directory)
      */
     public Map(String mapname) {
         name = mapname.toString();
         data = "";
         try {
-            File file = new File("maps/" + name + ".map"); //will this screw up in windows?
+            File file = new File("maps" + File.separator + name + ".map");
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 data = data + scanner.nextLine() + "\n";
@@ -63,23 +66,40 @@ public class Map {
         // parse raw data here
         Scanner parser = new Scanner(data);
         String line;
-        x_size = parser.nextInt();
-        y_size = parser.nextInt();
-        mapping = new char[x_size][y_size];
+        width = parser.nextInt();
+        height = parser.nextInt();
+        mapping = new char[height][width];
+        wall = new boolean[height][width];
+        spawnPoints = new Vector<SpawnPoint>();
         if (parser.nextLine().toString().startsWith(" ")) {
             // do nothing
         }
         int y = 0;
+        int x = 0;
         while (parser.hasNextLine()) {
             line = parser.nextLine().toString();
             mapping[y] = line.toCharArray();
             y++;
-        }        
+        }
+        for (y=0; y<height; y++) {
+            for (x=0; x<width; x++) {
+                if (mapping[y][x] == '+') {
+                    wall[y][x] = true;
+                }
+                else if (mapping[y][x] == 's') {
+                    SpawnPoint s = new SpawnPoint(x, y);
+                    spawnPoints.addElement(s);
+                }
+                else {
+                    wall[y][x] = false;
+                }
+            }
+        }
     }
     
     /**
      * 
-     * @return the name of the map
+     * @return name of the map
      */
     public String getName() {
         return name;
@@ -87,7 +107,7 @@ public class Map {
     
     /** 
      * 
-     * @return the raw text data input
+     * @return raw text data input prior to processing
      */
     public String getData() {
         return data;
@@ -95,52 +115,112 @@ public class Map {
     
     /**
      * 
-     * @return the maximum x of the map
+     * @return maximum x of the map
      */
-    public int getXSize() {
-        return x_size;
+    public int getWidth() {
+        return width;
     }
     
     /**
      * 
-     * @return the maximum y of the map
+     * @return maximum y of the map
      */
-    public int getYSize() {
-        return y_size;
+    public int getHeight() {
+        return height;
     }
     
     /**
-     * Note: this will be changed to use a two-dimensional array of boolean instead.
+     * 
+     * @return vector of SpawnPoint objects
+     */
+    public Vector<SpawnPoint> getSpawnPoints() {
+        return spawnPoints;
+    }
+       
+    /**
+     * Note: this method uses zero-based indexing.
      * @param   x the x-axis coordinate (origin is top-left corner)
      * @param   y the y-axis coordinate (origin is top-left corner)
-     * @return  true if there exists a wall on the coordinate; false otherwise.
+     * @return  true if there exists a wall on the coordinates; false otherwise.
      */
-    public boolean isWall(int x, int y) {
-        if (mapping[y][x] == '+')
-            return true;
+    public boolean isWall(int x, int y)
+    {
+    	if (x < 0 || y < 0)
+    		return false;
+    	if (x >= width || y >= height)
+    		return false;
+        return wall[y][x];
+    }
+
+    /**
+     * Sets position of the player according to spawn points on map.
+     * @param p player object
+     */
+    public void placePlayer(Player p)
+    {      
+        if (spawnPoints == null || spawnPoints.size() == 0)
+        {
+            int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
+            
+            while (isWall(x, y))
+            {
+                x = RANDOM.nextInt(width);
+                y = RANDOM.nextInt(height);
+            }            
+            p.setPosition(x + 0.5f, y + 0.5f);
+        }
         else
-            return false;
+        {
+            p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
+        }
     }
     
     /**
-     * 
-     * @return string representation of raw Map data
+     * Prints coordinate of spawnpoints in spawnPoints vector.
+     *
      */
-    public String toString() {
-        int i = 0;
-        int j = 0;
-        for (i = 0; i < y_size; i++) {
-            for (j =0; j < x_size; j++) {
-                System.out.print(mapping[i][j]);
+    public void dumpSpawnPoints() {
+        for (int i=0; i < spawnPoints.size(); i++) {
+            System.out.println("Spawnpoint exists at: " + spawnPoints.get(i).getX() + ", " + spawnPoints.get(i).getY());
+        }
+    }    
+    
+    /**
+     * Prints all variables contained within Map object.
+     *
+     */
+    public void dumpVars() {
+        System.out.println("String name: " + name);
+        System.out.println("String data: " + data);
+        System.out.println("int x_size: " + width);
+        System.out.println("int y_size: " + height);
+        
+        // print char array
+        System.out.print("char[][] mapping: ");
+        int y = 0;
+        int x = 0;
+        for (y = 0; y < height; y++) {
+            for (x =0; x < width; x++) {
+                System.out.print(mapping[y][x]);
             }
             System.out.println();
         }
-        //System.out.print(mapping[9][10]);
-        return "";
-    }
-    
-    public boolean isWall(int x, int y)
-    {
-    	return (mapping[x][y] == '+');
+        
+        // print boolean array
+        System.out.print("boolean[][] wall: ");
+        y = 0;
+        x = 0;
+        for (y = 0; y < height; y++) {
+            for (x =0; x < width; x++) {
+                if (wall[y][x]) {
+                    System.out.print("t");
+                }
+                else {
+                    System.out.print("f");
+                }
+            }
+            System.out.print("\r\n");
+        }        
+        
     }
 }
