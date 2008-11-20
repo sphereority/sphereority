@@ -101,7 +101,7 @@ public abstract class Actor implements Constants {
 	public void setWeight(float w) { weight = w; }
 	
 	// OPERATIONS
-	public abstract boolean animate(float dTime);
+	public abstract boolean animate(float dTime, float currentTime);
 	public abstract void draw(Graphics2D g, float scale);
 	public void kill() { this.alive = false; }
 	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }

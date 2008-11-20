@@ -19,6 +19,7 @@ public class RemotePlayer extends Player
 	 */
 	public static final float OLDEST_SAVED_MESSAGE = 10;
 	
+	protected float currentTime;
 	protected Vector<PlayerMotionMessage> messageList;
 	
 	/**
@@ -31,15 +32,30 @@ public class RemotePlayer extends Player
 		super(playerID, name);
 		
 		messageList = new Vector<PlayerMotionMessage>();
+		currentTime = -1;
 	}
 	
 	public void addMotionPacket(PlayerMotionMessage msg)
 	{
+		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE)
+			return;
 		
+		messageList.add(msg);
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
+		this.currentTime = currentTime;
+		
+		for (PlayerMotionMessage m : messageList)
+		{
+			if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
+			{
+				messageList.remove(m);
+				continue;
+			}
+		}
+		
 		return false;
 	}
 }

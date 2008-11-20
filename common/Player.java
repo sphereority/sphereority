@@ -87,11 +87,11 @@ public abstract class Player extends WeightedPosition {
 		timeSinceLastSound = 0;
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		timeSinceLastSound += dTime;
 		
-		boolean result = super.animate(dTime);
+		boolean result = super.animate(dTime, currentTime);
 		if (! result && (timeSinceLastSound <= BLIP_TIME))
 			return true;
 		return result;

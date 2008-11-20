@@ -9,7 +9,6 @@ import common.Position;
  */
 public class PlayerMotionMessage extends Message implements MessageConstants {
 	protected Position position, velocity;
-    protected float v_x, v_y;
 	protected float time;
 	
     /**
@@ -80,5 +79,14 @@ public class PlayerMotionMessage extends Message implements MessageConstants {
      */
 	public Position getVelocity() {
         return velocity;
+	}
+	
+	/**
+	 * Retrives the time that this message was sent
+	 * @return The time the player was at this point
+	 */
+	public float getTime()
+	{
+		return time;
 	}
 }

@@ -40,7 +40,7 @@ public class Stone extends Actor {
 				Math.round(height*scale));
 	}
 	
-	public boolean animate(float scale) { return false; }
+	public boolean animate(float scale, float currentTime) { return false; }
 
 	public void collision(Actor a) {
 		//System.out.println("A " + a.getClass().getName() + " bumped into a " + this.getClass().getName());
