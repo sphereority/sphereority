@@ -2,9 +2,10 @@ package client;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
-public class ClientLogonDialog implements ActionListener, KeyListener
+public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 {
 	protected JDialog dialog;
 	
@@ -18,6 +19,10 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 	protected String userName;
 	protected String serverPassword;
 	protected boolean result;
+	
+	/*
+	 * TODO: Fix key-detection code!
+	 */
 	
 	public ClientLogonDialog(Frame owner)
 	{
@@ -36,10 +41,10 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 		
 		buttonOkay = new JButton("Login");
 		buttonOkay.addActionListener(this);
-		buttonOkay.setMnemonic(0);
+		buttonOkay.setMnemonic('L');
 		buttonCancel = new JButton("Quit");
 		buttonCancel.addActionListener(this);
-		buttonCancel.setMnemonic(0);
+		buttonCancel.setMnemonic('Q');
 		
 		JPanel panel = new JPanel(new GridLayout(0, 2));
 		panel.add(new JLabel("Server IP or name:"));
@@ -59,6 +64,7 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 		dialog.getContentPane().add(panel, BorderLayout.SOUTH);
 		
 		dialog.pack();
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -125,16 +131,6 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 		return result;
 	}
 
-	public void keyPressed(KeyEvent e) { }
-	public void keyReleased(KeyEvent e) { }
-	public void keyTyped(KeyEvent e)
-	{
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-		{
-			dialog.setVisible(false);
-		}
-	}
-	
 	public String getServerName()
 	{
 		return serverName;
@@ -148,5 +144,13 @@ public class ClientLogonDialog implements ActionListener, KeyListener
 	public String getPassword()
 	{
 		return serverPassword;
+	}
+
+	public boolean dispatchKeyEvent(KeyEvent e)
+	{
+		if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			cancel();
+		
+		return false;
 	}
 }

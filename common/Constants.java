@@ -17,14 +17,19 @@ public interface Constants
 	public static final int DEFAULT_PORT = 44000;
 	
 	/**
+	 * Default port for Game engine IPC listener
+	*/
+	public static final int SERVER_GAME_ENGINE_PORT = 44001;
+	
+	/**
 	 * The fastest an object can move in units per second
 	 */
-	public static final float MAXIMUM_SPEED = 5;
+	public static final float MAXIMUM_SPEED = 10;
 
 	/**
 	 * The amount of friction we have to slow motion down
 	 */
-	public static final float FRICTION_COEFFICIENT = 1 - 0.8f;
+	public static final float FRICTION_COEFFICIENT = 1 - 0.85f;
 
 	/**
 	 * The speed at which objects track each other (this affects the "slow parent" of objects)
@@ -179,4 +184,9 @@ public interface Constants
 	 * WARNING: Don't tweak this any lower than 0.1f, as then you can push your way through walls!
 	 */
 	public static final float BUMP_FORCE = 0.125f;
+	
+	/**
+	 * The number of copies of the radar widget that can be displayed either horizontally or vertically
+	 */
+	public static final int RADAR_SIZE = 3;
 }

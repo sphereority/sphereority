@@ -1,19 +1,30 @@
-package	client;
-
-import common.*;
-import client.audio.*;
-import java.awt.BorderLayout;
-import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
-import javax.swing.JFrame;
-import javax.swing.Timer;
-import java.util.Vector;
+package client;
 
 /**
  * This class describes the game loop for this game
  * @author smaboshe
  */
-public class GameEngine implements Constants, ActionListener {
+
+import common.*;
+import client.audio.*;
+import client.gui.*;
+
+//import java.awt.BorderLayout;
+//import javax.swing.JFrame;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Window;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.util.Vector;
+import javax.swing.Timer;
+
+/**
+ * This class describes the game loop for this game
+ * @author smaboshe
+ */
+public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -49,10 +60,11 @@ public class GameEngine implements Constants, ActionListener {
 		miscList = new Vector<Actor>();
 		
 		gameViewArea = new ClientViewArea(this);
+		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
 		localPlayer = new LocalPlayer(localInputListener);
-		placePlayer(localPlayer);
+		gameMap.placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
 		
 		addActor(localPlayer);
@@ -72,6 +84,18 @@ public class GameEngine implements Constants, ActionListener {
 	
 	public Map getGameMap() {
 		return this.gameMap;
+	}
+
+	public boolean getGameOver() {
+		return this.gameOver;
+	}
+
+	public ClientViewArea getGameViewArea() {
+		return this.gameViewArea;
+	}
+
+	public InputListener getInputListener() {
+		return this.localInputListener;
 	}
 	
 	// SETTERS
@@ -106,6 +130,14 @@ public class GameEngine implements Constants, ActionListener {
 		gameOver = true;
 		if (timer != null)
 			timer.stop();
+		
+		// This code finds the Frame (or JFrame) that contains the gameViewArea and tells it to disapear
+		Component c = gameViewArea.getParent();
+		while (!(c instanceof Window) && c != null)
+			c = c.getParent();
+		
+		if (c != null)
+			((Window)c).setVisible(false);
 	}
 	
 	public void gameStep()
@@ -143,13 +175,6 @@ public class GameEngine implements Constants, ActionListener {
 	}
 	
 	public void initialize() {
-		String title = CLIENT_WINDOW_NAME;
-		System.out.println(title);
-		
-		// Set up game window
-		JFrame window = new JFrame(title);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		// Copy the map as a bunch of Stones
 		for (int x=0; x < gameMap.getWidth(); x++)
 			for (int y=0; y < gameMap.getHeight(); y++)
@@ -160,17 +185,8 @@ public class GameEngine implements Constants, ActionListener {
 					actorList.add(stoneList.get(stoneList.size() - 1));
 				}
 			}
-				
-		window.getContentPane().add(this.gameViewArea, BorderLayout.CENTER);
-		window.addKeyListener(this.gameViewArea);
-		
-		localInputListener.attachListeners(window);
-		
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-		
-		lastTime = System.currentTimeMillis();
+			
+		lastTime = System.currentTimeMillis();					
 	} // end initialize()
 	
 	public void checkCollisions() {
@@ -324,26 +340,23 @@ public class GameEngine implements Constants, ActionListener {
 		gameStep();
 	}
 	
-	public void placePlayer(Player p)
+	protected void addButton(int x, int y, int width, int height, String label)
 	{
-		Vector<SpawnPoint> spawnPoints = gameMap.getSpawnPoints();
-		
-		if (spawnPoints == null || spawnPoints.size() == 0)
+		addButton(x, y, width, height, label, Color.green);
+	}
+	
+	protected void addButton(int x, int y, int width, int height, String label, Color c)
+	{
+		SimpleButton b = new SimpleButton(x, y, width, height, label, c);
+		b.addCallback(this);
+		gameViewArea.addWidget(b);
+	}
+	
+	public void actionCallback(InteractiveWidget source, int buttons)
+	{
+		if (source.getLabel().equalsIgnoreCase("Quit"))
 		{
-			final int width = gameMap.getWidth(), height = gameMap.getHeight();
-			int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
-			
-			while (gameMap.isWall(x, y))
-			{
-				x = RANDOM.nextInt(width);
-				y = RANDOM.nextInt(height);
-			}
-			
-			p.setPosition(x + 0.5f, y + 0.5f);
-		}
-		else
-		{
-			p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
+			gameOver();
 		}
 	}
 	
@@ -377,5 +390,27 @@ public class GameEngine implements Constants, ActionListener {
 		
 		sound.setVolume(volume);
 		sound.play();
+	}
+	
+	public void registerActionListeners(Component c)
+	{
+		localInputListener.attachListeners(c);
+		c.addKeyListener(gameViewArea);
+	}
+	
+	public void registerActionListeners(Window w)
+	{
+		localInputListener.attachListeners(w);
+	}
+	
+	public void unregisterActionListeners(Component c)
+	{
+		localInputListener.detachListeners(c);
+		c.removeKeyListener(gameViewArea);
+	}
+	
+	public void unregisterActionListenerst(Window w)
+	{
+		localInputListener.detachListeners(w);
 	}
 } // end class GameEngine
