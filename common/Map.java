@@ -1,11 +1,12 @@
 package common;
 
+import common.Constants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class Map {
+public class Map implements Constants {
 	public static final String DEFAULT_MAP = "10 10\n"+
     "++++++++++\n" +
     "+        +\n" +
@@ -151,6 +152,29 @@ public class Map {
         return wall[y][x];
     }
 
+    /**
+     * Sets position of the player according to spawn points on map.
+     * @param p player object
+     */
+    public void placePlayer(Player p)
+    {      
+        if (spawnPoints == null || spawnPoints.size() == 0)
+        {
+            int x = RANDOM.nextInt(width), y = RANDOM.nextInt(height);
+            
+            while (isWall(x, y))
+            {
+                x = RANDOM.nextInt(width);
+                y = RANDOM.nextInt(height);
+            }            
+            p.setPosition(x + 0.5f, y + 0.5f);
+        }
+        else
+        {
+            p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
+        }
+    }
+    
     /**
      * Prints coordinate of spawnpoints in spawnPoints vector.
      *
