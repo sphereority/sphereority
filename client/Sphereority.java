@@ -22,9 +22,17 @@ public class Sphereority extends Thread implements Constants {
 	}
 	
 	public static void main(String[] args) {
+		// Create and display the LoginDialog
+		loginWindow = new ClientLogonDialog(null);
+		
+		// If the user quit the dialog, we must quit
+		if (!loginWindow.show())
+			System.exit(0);
+		// Else play the game
+		
 		// This now grabs a random map on startup
 		Map map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
-		GameEngine game = new GameEngine(map);
+		GameEngine game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName);
 		
 		// Set up the game gameWindow
 		gameWindow = new JDialog();
@@ -38,13 +46,6 @@ public class Sphereority extends Thread implements Constants {
 		
 		Sphereority s = new Sphereority(game);
 		s.start();
-		
-		// Create and display the LoginDialog
-		loginWindow = new ClientLogonDialog(null);
-		// If the user quit the dialog, we must quit
-		if (!loginWindow.show())
-			System.exit(0);
-		// Else play the game
 		do
 		{
 			// TODO: Technically, the GameEngine creation code should be here...
