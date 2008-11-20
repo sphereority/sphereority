@@ -1,4 +1,4 @@
-package common;
+package common.messages;
 
 import java.nio.charset.Charset;
 import java.nio.ByteBuffer;
