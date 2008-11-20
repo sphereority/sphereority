@@ -11,8 +11,8 @@ import java.nio.channels.*;
 import java.util.*;
 
 class NetworkListener extends Thread {
+    ServerGameEngine            gameengine;
     private int                 remoteport;
-    private int                 gameengineport;
 
     // socket to listen on and address for it
     private ServerSocketChannel channel;
@@ -30,9 +30,9 @@ class NetworkListener extends Thread {
     byte		[]	bytes;
     String			message;
 
-    NetworkListener (int rport,int gport) {
+    NetworkListener (int rport,ServerGameEngine sge) {
         remoteport = rport;
-        gameengineport = gport;
+        gameengine = sge;
     }
     public void run() {
 	// a class for storing and checking user ids and passwords
@@ -68,21 +68,24 @@ class NetworkListener extends Thread {
 		bytes[i] = Array.getByte(obj,i);
 
 	    // get user name and password
+            String uname;
+            String upass;
 	    if (LoginMessage.isLoginMessage(bytes)){
-		String uname = LoginMessage.getUserName(bytes);
-		String upass = LoginMessage.getUserPass(bytes);
+		uname = LoginMessage.getUserName(bytes);
+		upass = LoginMessage.getUserPass(bytes);
 
 		/* DEBUG
 		System.out.println("User Name: " + uname);
 		System.out.println("Password: " + upass);
-		System.out.println(usernames.checkUserPass(uname,upass));
+		System.out.println(usernames.addUser(uname,upass));
 		*/
-		if (usernames.checkUserPass(uname,upass)){
+		if (usernames.addUser(uname,upass)){
 		    log = true;
+            System.out.println("about to start connection");
+	            connections[next] = new Connection(uname,gameengine,connchannel,istream);
+	            connections[next].start();
 		}
 	    }
-	    connections[next] = new Connection(connchannel,istream);
-	    connections[next].start();
 	}
 	catch (Exception e){
 	    System.out.println("Networklistener.java: DAMN! ");
