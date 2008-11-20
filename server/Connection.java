@@ -1,7 +1,7 @@
 package server;
 
 import common.*;
-import common.LoginMessage;
+import common.messages.LoginMessage;
 
 import java.lang.reflect.Array;
 import java.net.*;
@@ -114,7 +114,7 @@ class Connection extends Thread {
                          SelectionKey selKey = (SelectionKey)it.next();
                          // remove it from list
                          it.remove();
-                         //processSelectionKey(selKey);
+                         processSelectionKey(selKey);
                      }
                  }
 
@@ -128,6 +128,8 @@ class Connection extends Thread {
 	        e.printStackTrace();
 	        System.exit(1);
 	    }
+    }
+    private void processSelectionKey(SelectionKey selKey){
     }
 }
 	

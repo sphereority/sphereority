@@ -1,7 +1,7 @@
 package patrick;
 
 import common.*;
-import common.LoginMessage;
+import common.messages.LoginMessage;
 
 import java.lang.reflect.Array;
 import java.net.*;
