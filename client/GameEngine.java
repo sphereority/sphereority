@@ -8,6 +8,7 @@ package client;
 import common.*;
 import client.audio.*;
 import client.gui.*;
+import common.messages.*;
 
 //import java.awt.BorderLayout;
 //import javax.swing.JFrame;
@@ -413,4 +414,51 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	{
 		localInputListener.detachListeners(w);
 	}
+
+
+    /* =====================================
+     * Methods for processing messages
+     * =====================================
+     */
+    public void processPlayerMotion(PlayerMotionMessage message) {
+        playerList.get(getPlayerIndex(message.getPlayerId())).setPosition(message.getPosition());
+    }
+
+    public void processScoreUpdate(ScoreUpdateMessage message) {
+        
+    }
+    
+    
+    public void processMulticastGroup(MulticastGroupMessage message) {
+
+    }
+
+    public void processMapChange(MapChangeMessage message) {
+    }
+    
+    public void processHealthUpdateMessage(HealthUpdateMessage message) {
+    }
+
+    public void processDeathMessage(DeathMessage message) {
+    }
+
+    public void processChatMessage(ChatMessage message) {
+
+    }
+
+    /**
+     * Retrieve a player given their ID.
+     */
+    public int getPlayerIndex(int playerId) {
+        int index = -1;
+        for (int i = 0; i < playerList.size(); i++) {
+            if(playerList.get(i).getPlayerID() == playerId) {
+                index = i;
+                break;
+            }
+        }
+        return index;    
+    }
+
+
 } // end class GameEngine

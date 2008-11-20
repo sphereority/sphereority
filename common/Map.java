@@ -17,7 +17,7 @@ public class Map implements Constants {
     "+        +\n" +
     "+        +\n" +
     "+        +\n" +
-    "++++++++++\n"; 
+    "++++++++++\n";
 
 	
     String name;       // map name

@@ -1,5 +1,6 @@
 package common.messages;
 
+import common.Map;
 import java.nio.ByteBuffer;
 
 /**
@@ -7,13 +8,15 @@ import java.nio.ByteBuffer;
  * @author rlagman
  */
 public class MapChangeMessage extends Message implements MessageConstants {
+    private Map map;
     
     /**
      * Constructor - Creates a new MapChangeMessage.
      * @param playerId The id of the player sending the message.
      */
-    public MapChangeMessage(byte playerId) {
+    public MapChangeMessage(byte playerId, Map map) {
         super(MessageType.ChatMessage, playerId, MapChangeLength);
+        this.map = map;
     }
 
     /**
@@ -27,6 +30,18 @@ public class MapChangeMessage extends Message implements MessageConstants {
         
         // Wrap the stream of bytes into a buffer       
         ByteBuffer buffer = ByteBuffer.wrap(data);
+        
+        // Get the name
+        int nameLength = buffer.getInt();
+        byte[] nameInBytes = new byte[nameLength];
+        buffer.get(nameInBytes,0,nameLength);
+        
+        // Get the data
+        int dataLength = buffer.getInt();
+        byte[] dataInBytes = new byte[dataLength];
+        buffer.get(dataInBytes,0,dataLength);
+        
+        map = new Map(new String(nameInBytes), new String(dataInBytes));
 	 }
     
     /**
@@ -43,6 +58,11 @@ public class MapChangeMessage extends Message implements MessageConstants {
         ByteBuffer buffer = ByteBuffer.wrap(message);
         buffer.put(header);
         
+        buffer.putInt(map.getName().length());
+        buffer.put(map.getName().getBytes(CharacterEncoding));
+        buffer.putInt(map.getData().length());
+        buffer.put(map.getData().getBytes(CharacterEncoding));
+
         // Return the fully created message
         return message;
 	}	
