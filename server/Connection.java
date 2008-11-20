@@ -85,6 +85,10 @@ class Connection extends Thread {
                 int udp_remoteport = LoginMessage.getPort(bytes);
                 dsockchannel.socket().connect(new InetSocketAddress(sockchannel.socket().getInetAddress(),udp_remoteport));
 
+                // register the client with the game engine
+                // gived it handles to the outputs streams of the sockets so it can send on it's own
+                gameengine.newClient(username,sockoutputstream,dsockchannel);
+
                 // create the selector for polling the channels
                 selector = Selector.open();
                 // set channels to non-blocking and register them
@@ -93,14 +97,22 @@ class Connection extends Thread {
         	    dsockchannel.configureBlocking(false);
         	    dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
 
-                // register the client with the game engine
-                // gived it handles to the outputs streams of the sockets so it can send on it's own
-                gameengine.newClient(username,sockoutputstream,dsockchannel);
-
                 /*
                  * Everything is set up
                  * Sleep on the selector
                  */
+                 while (true) {
+                     // wait for an event
+                     selector.select();
+                     // get list of selection keys with pending events
+                     Iterator it = selector.selectedKeys().iterator();
+                     // process each key at a time
+                     while (it.hasNext()){
+                         // get the selection key
+                         SelectionKey selKey = (SelectionKey)it.next();
+                         //remove it from list
+                         it.remove();
+                         processSelectionKey(selKey);
 
             }
                 
