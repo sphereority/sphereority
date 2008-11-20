@@ -6,8 +6,6 @@ import common.messages.*;
 import java.net.*;
 import java.io.*;
 
-import javax.print.attribute.standard.Severity;
-
 public class NetConnection implements Constants
 {
 	protected static String failReason = null;
@@ -33,7 +31,7 @@ public class NetConnection implements Constants
 		}
 	}
 	
-	public static NetConnection connectToServer(String host, String password)
+	public static NetConnection connectToServer(String host, String name, String password)
 	{
 		try
 		{
@@ -47,6 +45,16 @@ public class NetConnection implements Constants
 			ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(tcpSocket.getInputStream()));
 			ObjectOutputStream out = new ObjectOutputStream(tcpSocket.getOutputStream());
 			
+			// Send login information
+			out.writeObject(LoginMessage.getLoginMessage(name, password));
+			
+			// Get response
+			Object response = in.readObject();
+			System.out.printf("Result object is of type '%s'.\n", response.getClass().getName());
+		}
+		catch (ClassNotFoundException er)
+		{
+			return null;
 		}
 		catch (IOException er)
 		{
