@@ -99,6 +99,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceY();
 			velocity.setY(velocity.getY() - BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -109,6 +110,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceX();
 			velocity.setX(velocity.getX() + BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -119,6 +121,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceX();
 			velocity.setX(velocity.getX() - BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -129,6 +132,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceY();
 			velocity.setY(velocity.getY() + BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}

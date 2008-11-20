@@ -6,7 +6,7 @@ package client;
  */
 
 import common.*;
-import common.messages.*;
+//import common.messages.*;
 import client.audio.*;
 import client.gui.*;
 
@@ -23,6 +23,8 @@ import javax.swing.Timer;
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
+	public static GameEngine gameEngine;
+	
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -70,6 +72,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	private void setup(Map m)
 	{
+		gameEngine = this;
 		gameOver = false;
 		gameMap = m;
 		mapListeners = new Vector<MapChangeListener>();
@@ -365,7 +368,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameViewArea.repaint();
 		
 		// TODO: send this message
-		PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
+		//PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
 	} // end updateWorld()
 	
 	public void actionPerformed(ActionEvent e)

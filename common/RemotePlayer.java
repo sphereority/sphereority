@@ -1,6 +1,7 @@
 package	common;
 
 import common.messages.PlayerMotionMessage;
+import java.util.Vector;
 
 /**
  * This class describes a player who is playing the game via the network
@@ -18,6 +19,8 @@ public class RemotePlayer extends Player
 	 */
 	public static final float OLDEST_SAVED_MESSAGE = 10;
 	
+	protected Vector<PlayerMotionMessage> messageList;
+	
 	/**
 	 * Creates a RemotePlayer with the specified id and name
 	 * @param playerID	The id of this player
@@ -26,6 +29,8 @@ public class RemotePlayer extends Player
 	public RemotePlayer(byte playerID, String name)
 	{
 		super(playerID, name);
+		
+		messageList = new Vector<PlayerMotionMessage>();
 	}
 	
 	public void addMotionPacket(PlayerMotionMessage msg)
