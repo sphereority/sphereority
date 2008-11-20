@@ -1,10 +1,5 @@
 package client;
 
-/**
- * This class describes the game loop for this game
- * @author smaboshe
- */
-
 import common.*;
 import client.audio.*;
 import client.gui.*;
