@@ -8,7 +8,6 @@ import java.net.*;
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
-import java.nio.charset.Charset;
 import java.util.*;
 
 class Connection extends Thread {
@@ -27,13 +26,11 @@ class Connection extends Thread {
      * hence, Connection.java must acknowledge login
      */
 
-    // this will be read in from a file later
-    // the filename will be stored in constants (or in a settings file somewhere)
-    public static String [] TEST_UNAMES = {"user1","user2","user3"};
-    public static String [] TEST_UPASSWDS = {"firstpass","secondpass","thirdpass"};
-    
-    private int			bytesperchar = 8;
-    private Charset		charset = Charset.forName("UTF-8");
+     // handle to the ServerGameEngine
+    ServerGameEngine           gameengine;
+
+    String                      username;
+
     private Selector		selector;
     private SelectionKey	readwritesockkey;
 
@@ -43,36 +40,42 @@ class Connection extends Thread {
 
     private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
+    private ObjectOutputStream  dsockoutputstream;
 
-    Connection(SocketChannel sc, ObjectInputStream ois){
-	sockchannel = sc;
-	oistream = ois;
+    private SocketChannel       gamechannel;
+
+
+    Connection(String uname, ServerGameEngine sge, SocketChannel sc, ObjectInputStream ois){
+        username = uname;
+        gameengine = sge;
+	    sockchannel = sc;
+	    oistream = ois;
     }
     public void run(){
-	System.out.println("Connection.run()");
-	try {
-	    /*
-	     * Setup
-	     *     first create a udp socket
-	     */
-	    // create a udp socket
-	    dsockchannel = DatagramChannel.open();
-	    dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
+	    System.out.println("Connection.run()");
+        try {
+	        /*
+	         * Setup
+	         *     first create a udp socket
+	         */
+	        // create a udp socket
+	        dsockchannel = DatagramChannel.open();
+	        dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
 
-	    // send login success mesage + udp port number
-	    int localport = dsockchannel.socket().getLocalPort();
-	    byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
-	    ObjectOutputStream ostream = new ObjectOutputStream(sockchannel.socket().getOutputStream());
-	    ostream.writeObject(bytes);
+	        // send login success mesage + udp port number
+	        int localport = dsockchannel.socket().getLocalPort();
+	        byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
+	        ObjectOutputStream sockoutputstream = new ObjectOutputStream(sockchannel.socket().getOutputStream());
+	        sockoutputstream.writeObject(bytes);
 
-	    // get response to success message
-	    Object obj = oistream.readObject();
-	    int numBytes = Array.getLength(obj);
-	    bytes = new byte[numBytes];
-	    for (int i=0; i<numBytes; i++)
-		bytes[i] = Array.getByte(obj,i);
-	    String message = LoginMessage.getMessageString(bytes);
-	    System.out.println(message);
+	        // get response to success message
+	        Object obj = oistream.readObject();
+	        int numBytes = Array.getLength(obj);
+	        bytes = new byte[numBytes];
+	        for (int i=0; i<numBytes; i++)
+		    bytes[i] = Array.getByte(obj,i);
+	        String message = LoginMessage.getMessageString(bytes);
+	        System.out.println(message);
 
             // connect udp socket to client
             if (!LoginMessage.isLoginSuccessMessage(bytes)){
@@ -81,45 +84,46 @@ class Connection extends Thread {
             else {
                 int udp_remoteport = LoginMessage.getPort(bytes);
                 dsockchannel.socket().connect(new InetSocketAddress(sockchannel.socket().getInetAddress(),udp_remoteport));
+
+                // register the client with the game engine
+                // gived it handles to the outputs streams of the sockets so it can send on it's own
+                gameengine.newClient(username,sockoutputstream,dsockchannel);
+
+                // create the selector for polling the channels
+                selector = Selector.open();
+                // set channels to non-blocking and register them
+        	    sockchannel.configureBlocking(false);
+        	    readwritesockkey = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    dsockchannel.configureBlocking(false);
+        	    dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+
+                /*
+                 * Everything is set up
+                 * Sleep on the selector
+                 */
+                 while (true) {
+                     // wait for an event
+                     selector.select();
+                     // get list of selection keys with pending events
+                     Iterator it = selector.selectedKeys().iterator();
+                     // process each key at a time
+                     while (it.hasNext()){
+                         // get the selection key
+                         SelectionKey selKey = (SelectionKey)it.next();
+                         //remove it from list
+                         it.remove();
+                         processSelectionKey(selKey);
+
             }
                 
-	    // the selector is how we poll the sockets
-	    selector = Selector.open();
-	    // add the tcp socket to the selector
-	    sockchannel.configureBlocking(false);
-	    readwritesockkey = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
-
-	    dsockchannel.configureBlocking(false);
-	    readwritesockkey = dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
-	    
-	    /*
-            byte[] buf = new byte[256];
-            DatagramPacket packet;
-	    String input = new String();
-	    while (input.length() == 0){
-	        packet = new DatagramPacket(buf, buf.length);
-                dsockchannel.socket().receive(packet);
-		input = new String(packet.getData());
-	    }
-	    System.out.println(input);
-	    */
-	    
-	    dsockchannel.close();
+            dsockchannel.close();
             sockchannel.close();
-	}
-	catch (Exception e){
-	    System.out.println("Connection.java: Damn! ");
-	    e.printStackTrace();
-	    System.exit(1);
-	}
+        }
+        catch (Exception e){
+	        System.out.println("Connection.java: Damn! ");
+	        e.printStackTrace();
+	        System.exit(1);
+	    }
     }
-    /*
-    public static void main (String [] args) throws Exception{
-	SocketChannel ch = SocketChannel.open();
-	ObjectInputStream ois = new ObjectInputStream();
-	Connection c = new Connection(ch,ois);
-	c.start();
-    }
-    */
 }
 	

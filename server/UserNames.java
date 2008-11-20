@@ -8,6 +8,7 @@ class UserNames {
     Hashtable userNames;
     UserNames (){
 	userNames = new Hashtable(3);
+        /*
 	try {
 	    userNames.put("user1","password1");
 	    userNames.put("user2","password2");
@@ -16,13 +17,22 @@ class UserNames {
 	catch (NullPointerException npe){
 	    System.out.println("You tried to insert a user name that was null into the hashtable");
 	}
+        */
     }
     boolean checkUserPass(String username,String passwd){
 	return userNames.containsKey(username) && (userNames.get(username)).equals(passwd);
     }
-    void adduser(String username, String passwd){
-	if (!userNames.containsKey(username))
+    // PRE:  assigned(username) & String(username) & username != ""
+    //       & assigned(passwd) & String(passwd)
+    // POST: <username, passwd> is part of self.UserNames
+    //       & FCTVAL == (username was not previously in self.userNames)
+    boolean addUser(String username, String passwd){
+	if (!userNames.containsKey(username)) {
 	    userNames.put(username,passwd);
+            return true;
+        }
+        else
+            return false;
     }
     public static void main (String [] args){
 	UserNames un = new UserNames();
