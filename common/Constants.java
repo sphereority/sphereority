@@ -49,7 +49,7 @@ public interface Constants
 	/**
 	 * The speed at which a player accelerates due to keypresses
 	 */
-	public static final float PLAYER_ACCELERATION = 2.0f;
+	public static final float PLAYER_ACCELERATION = 2.5f;
 
 	/**
 	 * The size of a player in world units

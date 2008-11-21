@@ -11,8 +11,15 @@ public class NetConnection implements Constants
 	protected static String failReason = null;
 	
 	protected int gameId;
+	
+	// Sockets
 	protected Socket tcpSocket;
-	protected DatagramSocket udpSocket; 
+	protected DatagramSocket udpSocket;
+	// The address of the server's UDP socket
+	protected SocketAddress serverUdp;
+	// The TCP communication streams
+	protected ObjectOutputStream tcpOut;
+	protected ObjectInputStream tcpIn;
 	
 	private NetConnection()
 	{
@@ -23,13 +30,37 @@ public class NetConnection implements Constants
 	{
 		if (msg instanceof PlayerMotionMessage)
 		{
-			
+			try
+			{
+				byte[] message = msg.getByteMessage();
+				udpSocket.send(new DatagramPacket(message, message.length, serverUdp));
+			}
+			catch (IOException er)
+			{
+				System.out.printf("client.net.NetConnection.sendMessage(): Error sending PlayerMotionMessage to server!\n");
+			}
+			catch (Exception er)
+			{
+				System.out.printf("client.net.NetConnection.sendMessage(): Unknown error sending PlayerMotionMessage to server!\n");
+			}
 		}
 		else
 		{
-			
+			try
+			{
+				byte[] message = msg.getByteMessage();
+				tcpOut.writeObject(message);
+			}
+			catch (IOException er)
+			{
+				System.out.printf("client.netNetConnection.sendMessage(): Error sending TCP message to server!\n");
+			}
+			catch (Exception er)
+			{
+				System.out.printf("client.net.NetConnection.sendMessage(): Unknown error sending TCP message to server!\n");
+			}
 		}
-	}
+	} // end sendMessage()
 	
 	public static NetConnection connectToServer(String host, String name, String password)
 	{

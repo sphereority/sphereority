@@ -61,7 +61,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		localPlayer = new LocalPlayer(localInputListener);
 		gameMap.placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
-		
 		addActor(localPlayer);
 	} // end GameEngine() constructor
 	
@@ -411,6 +410,10 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	 */
 	private void playSound(float volume, SoundEffect sound)
 	{
+		// If we failed to find any audio lines, all sounds will be null
+		if (sound == null)
+			return;
+		
 		if (sound.isPlaying())
 		{
 			if (sound.getVolume() < volume)

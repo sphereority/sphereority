@@ -38,7 +38,7 @@ public class TrackingObject extends WeightedPosition
 		return target;
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		// If we're tracking something/someone
 		if (target != null)
