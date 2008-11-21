@@ -1,6 +1,7 @@
 package client;
 
 import common.*;
+//import common.messages.*;
 import client.audio.*;
 import client.gui.*;
 
@@ -17,6 +18,8 @@ import javax.swing.Timer;
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
+	public static GameEngine gameEngine;
+	
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -31,6 +34,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public Vector<Actor> miscList; // This contains stuff that doesn't fit in any of the other
 	
 	public long lastTime;
+	public float currentTime;
 	public Timer timer;
 	
 	public Vector<MapChangeListener> mapListeners;
@@ -40,7 +44,30 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public SoundEffect soundBump;
 
 	// CONSTRUCTORS
-	public GameEngine(Map m) {
+	public GameEngine(Map m, byte playerID, String name)
+	{
+		setup(m);
+		
+		localPlayer = new LocalPlayer(localInputListener, playerID, name);
+		gameMap.placePlayer(localPlayer);
+		gameViewArea.setLocalPlayer(localPlayer);
+		addActor(localPlayer);
+	}
+	
+	public GameEngine(Map m)
+	{
+		setup(m);
+		
+		localPlayer = new LocalPlayer(localInputListener);
+		gameMap.placePlayer(localPlayer);
+		gameViewArea.setLocalPlayer(localPlayer);
+		
+		addActor(localPlayer);
+	} // end GameEngine() constructor
+	
+	private void setup(Map m)
+	{
+		gameEngine = this;
 		gameOver = false;
 		gameMap = m;
 		mapListeners = new Vector<MapChangeListener>();
@@ -55,19 +82,13 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
-		localPlayer = new LocalPlayer(localInputListener);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
-		
-		addActor(localPlayer);
 		
 		triggerMapListeners();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
-	} // end GameEngine() constructor
-	
+	}
 	
 	// GETTERS
 	public LocalPlayer getLocalPlayer() {
@@ -114,6 +135,19 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 			miscList.add(a);
 	}
 	
+	public void removeActor(Actor a)
+	{
+		actorList.remove(a);
+		if (a instanceof Stone)
+			stoneList.remove(a);
+		else if (a instanceof Projectile)
+			bulletList.remove(a);
+		else if (a instanceof Player)
+			playerList.remove(a);
+		else
+			miscList.remove(a);
+	}
+	
 	public boolean isGameOver() {
 		return this.gameOver;
 	}
@@ -123,7 +157,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		if (timer != null)
 			timer.stop();
 		
-		// This code finds the Frame (or JFrame) that contains the gameViewArea and tells it to disapear
+		// This code finds the Window that contains the gameViewArea and tells it to disapear
 		Component c = gameViewArea.getParent();
 		while (!(c instanceof Window) && c != null)
 			c = c.getParent();
@@ -178,7 +212,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 				}
 			}
 			
-		lastTime = System.currentTimeMillis();					
+		lastTime = System.currentTimeMillis();
+		currentTime = 0;
 	} // end initialize()
 	
 	public void checkCollisions() {
@@ -317,6 +352,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		}
 		
 		lastTime = thisTime;
+		currentTime += dTime;
 		if (repaint)
 		{
 			/*
@@ -324,7 +360,10 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 			 * If you bump or fire then stop moving, it won't repaint
 			 */
 		}
-			gameViewArea.repaint();
+		gameViewArea.repaint();
+		
+		// TODO: send this message
+		//PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
 	} // end updateWorld()
 	
 	public void actionPerformed(ActionEvent e)

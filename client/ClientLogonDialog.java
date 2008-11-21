@@ -23,10 +23,6 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 	protected String serverPassword;
 	protected boolean result;
 	
-	/*
-	 * TODO: Fix key-detection code!
-	 */
-	
 	public ClientLogonDialog(Frame owner)
 	{
 		dialog = new JDialog(owner, true);
@@ -80,10 +76,6 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 		else if (source.equals(buttonOkay) || source instanceof JTextField)
 		{
 			login();
-		}
-		else
-		{
-			dialog.transferFocus();
 		}
 	}
 	

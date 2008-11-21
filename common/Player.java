@@ -1,5 +1,6 @@
 package	common;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import client.gui.GuiUtils;
@@ -13,6 +14,7 @@ import client.gui.GuiUtils;
 public abstract class Player extends WeightedPosition {
 	protected float timeSinceLastSound;
 	protected int playerID;
+	protected String name;
 	// INSTANCE METHODS
 	
 	
@@ -22,8 +24,14 @@ public abstract class Player extends WeightedPosition {
 		//timeSinceLastShot = Float.MAX_VALUE;
 		timeSinceLastSound = 0;
 		playerID = RANDOM.nextInt(255);
+	}
+	
+	public Player(byte playerID, String name)
+	{
+		this();
 		
-		System.out.printf("Created new Player. New ID is %d\n", playerID);
+		this.playerID = playerID;
+		this.name = name;
 	}
 	
 	// GETTERS
@@ -34,9 +42,6 @@ public abstract class Player extends WeightedPosition {
 	
 	public boolean equals(Object o)
 	{
-//		if (!(o instanceof Player))
-//			return false;
-		
 		try
 		{
 			return ((Player)o).playerID == this.playerID;
@@ -68,16 +73,25 @@ public abstract class Player extends WeightedPosition {
 		GuiUtils.drawFilledOctagon(g, Math.round(position.getX()*scale), Math.round(position.getY()*scale), scale*PLAYER_SIZE);
 	}
 	
+	public void drawLabel(Graphics2D g, float scale)
+	{
+		if (name != null)
+		{
+			g.setColor(Color.yellow);
+			g.drawString(name, Math.round(position.getX()*scale), Math.round(position.getY()*scale - scale*PLAYER_SIZE*0.6f));
+		}
+	}
+	
 	public void fire()
 	{
 		timeSinceLastSound = 0;
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		timeSinceLastSound += dTime;
 		
-		boolean result = super.animate(dTime);
+		boolean result = super.animate(dTime, currentTime);
 		if (! result && (timeSinceLastSound <= BLIP_TIME))
 			return true;
 		return result;

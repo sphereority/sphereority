@@ -199,6 +199,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 				}
 		} // end draw map
 		
+		// Draw everybody's labels
+		for (Player p : gameEngine.playerList)
+			p.drawLabel(g2, scale);
+		
 		// Restore the view so the widgets are in the right spot
 		g2.setTransform(oldTransform);
 		

@@ -9,7 +9,7 @@ import client.*;
 
 public class MapRadar extends Widget implements MapChangeListener, Constants
 {
-	public static final Color RADAR_COLOR = new Color(180, 180, 180);
+	public static final Color RADAR_COLOR = new Color(120, 120, 120);
 	public static final Color RADAR_BACKGROUND_COLOR = new Color(200, 200, 200, 60);
 	
 	protected int scale;

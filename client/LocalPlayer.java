@@ -1,9 +1,9 @@
 package client;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+
 import common.*;
+import common.messages.*;
 
 /**
  * This class describes a human player who has local access to the keyboard and
@@ -15,7 +15,6 @@ import common.*;
 public class LocalPlayer extends Player
 {
 	protected InputListener inputDevice;
-	private int bump_count;
 	protected Rectangle2D bounds = null;
 	
 	/**
@@ -28,7 +27,13 @@ public class LocalPlayer extends Player
 	public LocalPlayer(InputListener input)
 	{
 		inputDevice = input;
-		bump_count = 0;
+		width = height = PLAYER_SIZE;
+	}
+	
+	public LocalPlayer(InputListener input, byte playerID, String name)
+	{
+		super(playerID, name);
+		inputDevice = input;
 		width = height = PLAYER_SIZE;
 	}
 	
@@ -38,7 +43,6 @@ public class LocalPlayer extends Player
 		if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
 		if (inputDevice.isUpKeyPressed()) accelerate(0, -PLAYER_ACCELERATION*dTime);
 		if (inputDevice.isDownKeyPressed()) accelerate(0, PLAYER_ACCELERATION*dTime);
-		bump_count--;
 		
 		boolean result = super.animate(dTime);
 		if (result && bounds != null)
@@ -48,14 +52,14 @@ public class LocalPlayer extends Player
 		return result;
 	}
 	
-	public void draw(Graphics2D g, float scale)
+	/**
+	 * Create a player motion packet
+	 * @param currentTime	The current game time
+	 * @return	The motion packet
+	 */
+	public PlayerMotionMessage getMotionPacket(float currentTime)
 	{
-		super.draw(g, scale);
-		if (bump_count > 0)
-		{
-			g.setColor(Color.yellow);
-			g.drawRect(Math.round((getX() - 0.5f * width) * scale), Math.round((getY() - 0.5f * height) * scale), Math.round(width * scale), Math.round(height * scale));
-		}
+		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
 	}
 	
 	public void collision(Actor a)
@@ -67,7 +71,6 @@ public class LocalPlayer extends Player
 		}
 		if (a instanceof Stone)
 		{
-			bump_count = 2;
 			Position difference = a.getPosition().subtract(position);
 			if (Math.abs(difference.getX()) > Math.abs(difference.getY()))
 			{
@@ -96,6 +99,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceY();
 			velocity.setY(velocity.getY() - BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -106,6 +110,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceX();
 			velocity.setX(velocity.getX() + BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -116,6 +121,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceX();
 			velocity.setX(velocity.getX() - BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}
@@ -126,6 +132,7 @@ public class LocalPlayer extends Player
 		{
 			velocity.bounceY();
 			velocity.setY(velocity.getY() + BUMP_FORCE);
+			GameEngine.gameEngine.playBump(1.0f);
 			timeSinceLastSound = 0;
 		}
 	}

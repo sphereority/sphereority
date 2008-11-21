@@ -22,7 +22,7 @@ public class Projectile extends Actor
 		this.owner = owner;
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		position.move(direction, dTime * BULLET_SPEED);
 		
