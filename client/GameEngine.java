@@ -335,19 +335,19 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		for (Actor a : playerList)
 		{
-			if (a.animate(dTime))
+			if (a.animate(dTime, currentTime))
 				repaint = true;
 		}
 		
 		for (Actor a : bulletList)
 		{
-			if (a.animate(dTime))
+			if (a.animate(dTime, currentTime))
 				repaint = true;
 		}
 		
 		for (Actor a : miscList)
 		{
-			if (a.animate(dTime))
+			if (a.animate(dTime, currentTime))
 				repaint = true;
 		}
 		

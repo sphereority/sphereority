@@ -37,14 +37,14 @@ public class LocalPlayer extends Player
 		width = height = PLAYER_SIZE;
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		if (inputDevice.isLeftKeyPressed()) accelerate(-PLAYER_ACCELERATION*dTime, 0);
 		if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
 		if (inputDevice.isUpKeyPressed()) accelerate(0, -PLAYER_ACCELERATION*dTime);
 		if (inputDevice.isDownKeyPressed()) accelerate(0, PLAYER_ACCELERATION*dTime);
 		
-		boolean result = super.animate(dTime);
+		boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)
 		{
 			bounds.setRect(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height); 
