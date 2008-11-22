@@ -1,6 +1,7 @@
 package server;
 
 import common.*;
+import common.messages.*;
 import common.messages.LoginMessage;
 
 import java.lang.reflect.Array;
@@ -32,15 +33,17 @@ class Connection extends Thread {
     String                      username;
 
     private Selector		selector;
-    private SelectionKey	readwritesockkey;
+    private SelectionKey	readsocket_key;
 
     private Socket		sock;
     private SocketChannel	sockchannel;
     private ObjectInputStream	oistream;
+    private SelectionKey        socket_key;
 
     private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
     private ObjectOutputStream  dsockoutputstream;
+    private SelectionKey        dgram_socket_key;
 
     private SocketChannel       gamechannel;
 
@@ -93,9 +96,11 @@ class Connection extends Thread {
                 selector = Selector.open();
                 // set channels to non-blocking and register them
         	    sockchannel.configureBlocking(false);
-        	    readwritesockkey = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    socket_key = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+                socket_key.attach(oistream);
         	    dsockchannel.configureBlocking(false);
-        	    dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+                dgram_socket_key.attach(new String("datagram"));
 
                 /*
                  * Everything is set up
@@ -128,6 +133,18 @@ class Connection extends Thread {
 	    }
     }
     private void processSelectionKey(SelectionKey selKey){
+        if (selKey.isValid() && selKey.isReadable()){
+            if (selKey.channel() == sockchannel){
+                try {
+                    Message messaage = (Message) oistream.readObject();
+                    System.out.println("selKey.getChannel() == sockchannel");
+                    System.exit(0);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
 	

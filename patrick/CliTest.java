@@ -1,7 +1,7 @@
 package patrick;
 
 import common.*;
-import common.LoginMessage;
+import common.messages.*;
 
 import java.lang.reflect.Array;
 import java.net.*;
@@ -54,9 +54,10 @@ class CliTest {
 		// send success message to send port number to server
 		bytes = LoginMessage.getLoginSuccessMessage(localport);
 		ostream.writeObject(bytes);
-		for (int i=0; i<bytes.length; i++){
-		    System.out.println(bytes[i]);
-		}
+        ostream.writeObject((new DeathMessage( (byte) 1, (byte) 1, (byte) 1 )).getByteMessage());
+        ostream.writeObject((new DeathMessage( (byte) 2, (byte) 2, (byte) 2 )).getByteMessage());
+        ostream.writeObject((new DeathMessage( (byte) 3, (byte) 3, (byte) 3 )).getByteMessage());
+        ostream.writeObject((new DeathMessage( (byte) 4, (byte) 4, (byte) 4 )).getByteMessage());
 	    }
 	    else{
 		System.out.println("Message was not LOGIN Success");
