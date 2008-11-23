@@ -15,11 +15,11 @@ public interface Constants
 	 * Default port for TCP network listener
 	 */
 	public static final int DEFAULT_PORT = 44000;
-	
-	/**
-	 * Default port for Game engine IPC listener
-	*/
-	public static final int SERVER_GAME_ENGINE_PORT = 44001;
+
+    /**
+     * Address for UDP Mutlicast
+     */
+    public static final String MCAST_ADDRESS = "224.0.0.1";
 	
 	/**
 	 * The fastest an object can move in units per second

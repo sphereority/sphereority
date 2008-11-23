@@ -11,7 +11,7 @@ import java.nio.channels.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
-class CliTest {
+class RemCliTest {
     public static final int PORT = 44000;
     public static void main (String [] args){
 	try {
@@ -19,7 +19,7 @@ class CliTest {
 	    // create TCP socket channel
 	    SocketChannel channel = SocketChannel.open();
 	    //System.out.println("CliTest.java: channel created");
-	    channel.connect(new InetSocketAddress("localhost",PORT));
+	    channel.connect(new InetSocketAddress(InetAddress.getByName("fraser.sfu.ca"),PORT));
 	    //System.out.println("CliTest.java: channel socket connected");
 	    // create objectoutputstream & objectinputstream for TCP channel
 	    ObjectOutputStream ostream = new ObjectOutputStream(channel.socket().getOutputStream());

@@ -40,7 +40,7 @@ class NetworkListener extends Thread {
 
         try {
     	    channel = ServerSocketChannel.open();
-    	    inetsockadd = new InetSocketAddress("localhost",remoteport);
+    	    inetsockadd = new InetSocketAddress(remoteport);
     	    channel.socket().bind(inetsockadd);
     
     	    int next = 0;

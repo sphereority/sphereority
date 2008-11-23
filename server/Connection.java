@@ -106,13 +106,17 @@ class Connection extends Thread {
                  * Everything is set up
                  * Sleep on the selector
                  */
+                 int blah = 1;
                  while (true) {
+                     System.out.printf("Connection.java: about to wait: %d\n",blah);
+                     blah++;
                      // wait for an event
                      selector.select();
                      // get list of selection keys with pending events
                      Iterator it = selector.selectedKeys().iterator();
                      // process each key at a time
                      while (it.hasNext()){
+                         System.out.println("HERE");
                          // get the selection key
                          SelectionKey selKey = (SelectionKey)it.next();
                          //remove it from list
@@ -134,16 +138,36 @@ class Connection extends Thread {
     }
     private void processSelectionKey(SelectionKey selKey){
         if (selKey.isValid() && selKey.isReadable()){
+            try {
+                SocketChannel channel = (SocketChannel) selKey.channel();
+                ByteBuffer buf = ByteBuffer.allocate(255);
+                byte [] bytes = new byte[255];
+                int numread = channel.read(buf);
+                buf.rewind();
+                buf.get(bytes);
+                Message message = MessageAnalyzer.getMessage(bytes);
+                if (channel == sockchannel)
+                    gameengine.newTCPMessage(message);
+                else
+                    gameengine.newUDPMessage(message);
+                return;
+                //System.exit(0);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+            /*
             if (selKey.channel() == sockchannel){
                 try {
-                    Message messaage = (Message) oistream.readObject();
+                    Message message = (Message) oistream.readObject();
                     System.out.println("selKey.getChannel() == sockchannel");
                     System.exit(0);
                 }
                 catch (Exception e){
                     e.printStackTrace();
                 }
-            }
+            }*/
         }
     }
 }
