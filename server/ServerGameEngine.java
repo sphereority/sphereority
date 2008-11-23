@@ -1,6 +1,7 @@
 package server;
 
 import common.Constants;
+import common.messages.*;
 import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
@@ -23,4 +24,11 @@ class ServerGameEngine extends Thread {
     public synchronized void newClient(String username, ObjectOutputStream tcpstream, DatagramChannel udpchan){
         System.out.println("ServerGameEngine: new client: " + username);
     }
+    public synchronized void newTCPMessage(Message message){
+        System.out.println("ServerGameEngine: TCP message received");
+    }
+    public synchronized void newUDPMessage(Message message){
+        System.out.println("ServerGameEngine: UDP message received");
+    }
+
 }

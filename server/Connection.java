@@ -1,11 +1,11 @@
 package server;
 
 import common.*;
+import common.messages.*;
 import common.messages.LoginMessage;
-
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
-import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
@@ -28,15 +28,17 @@ class Connection extends Thread {
     String                      username;
 
     private Selector		selector;
-    private SelectionKey	readwritesockkey;
+    private SelectionKey	readsocket_key;
 
     private Socket		sock;
     private SocketChannel	sockchannel;
     private ObjectInputStream	oistream;
+    private SelectionKey        socket_key;
 
     private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
     private ObjectOutputStream  dsockoutputstream;
+    private SelectionKey        dgram_socket_key;
 
     private SocketChannel       gamechannel;
 
@@ -94,15 +96,24 @@ class Connection extends Thread {
                 selector = Selector.open();
                 // set channels to non-blocking and register them
         	    sockchannel.configureBlocking(false);
-        	    readwritesockkey = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    socket_key = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+                socket_key.attach(oistream);
         	    dsockchannel.configureBlocking(false);
-        	    dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+                dgram_socket_key.attach(new String("datagram"));
 
                 /*
 				 * Everything is set up Sleep on the selector
 				 */
                  while (true)
                  {
+                 * Everything is set up
+                 * Sleep on the selector
+                 */
+                 int blah = 1;
+                 while (true) {
+                     System.out.printf("Connection.java: about to wait: %d\n",blah);
+                     blah++;
                      // wait for an event
                      selector.select();
                      // get list of selection keys with pending events
@@ -110,6 +121,8 @@ class Connection extends Thread {
                      // process each key at a time
                      while (it.hasNext())
                      {
+                     while (it.hasNext()){
+                         System.out.println("HERE");
                          // get the selection key
                          SelectionKey selKey = (SelectionKey)it.next();
                          // remove it from list
@@ -130,6 +143,38 @@ class Connection extends Thread {
 	    }
     }
     private void processSelectionKey(SelectionKey selKey){
+        if (selKey.isValid() && selKey.isReadable()){
+            try {
+                SocketChannel channel = (SocketChannel) selKey.channel();
+                ByteBuffer buf = ByteBuffer.allocate(255);
+                byte [] bytes = new byte[255];
+                int numread = channel.read(buf);
+                buf.rewind();
+                buf.get(bytes);
+                Message message = MessageAnalyzer.getMessage(bytes);
+                if (channel == sockchannel)
+                    gameengine.newTCPMessage(message);
+                else
+                    gameengine.newUDPMessage(message);
+                return;
+                //System.exit(0);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+            /*
+            if (selKey.channel() == sockchannel){
+                try {
+                    Message message = (Message) oistream.readObject();
+                    System.out.println("selKey.getChannel() == sockchannel");
+                    System.exit(0);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }*/
+        }
     }
 }
 	
