@@ -199,4 +199,9 @@ public interface Constants
 	 * The number of copies of the radar widget that can be displayed either horizontally or vertically
 	 */
 	public static final int RADAR_SIZE = 3;
+	
+	/**
+	 * The amount of time in seconds that must pass between shots fired
+	 */
+	public static final float RELOAD_TIME = 0.5f;
 }

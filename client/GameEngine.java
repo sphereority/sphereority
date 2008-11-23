@@ -82,6 +82,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
+		localInputListener.attachListeners(gameViewArea);
 		
 		triggerMapListeners();
 		

@@ -153,6 +153,18 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	}
 	
 	/**
+	 * Asks if the user has hit the fire button recently
+	 * @return
+	 */
+	public boolean isButtonFired()
+	{
+		boolean result = mouseFired;
+		mouseFired = false;
+		
+		return result;
+	}
+	
+	/**
 	 * This method attaches all required event listeners to the specified component 
 	 * @param c		The component to attach listeners to
 	 */
@@ -191,37 +203,49 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	
 	public void mouseClicked(MouseEvent e)
 	{
+		if (e.getButton() == mouseFire)
+			mouseFired = true;
 		
+		updateMousePosition(e);
 	}
 
 	public void mouseEntered(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mouseExited(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mousePressed(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mouseReleased(MouseEvent e)
 	{
+		if (e.getButton() == mouseFire)
+			mouseFired = true;
 		
+		updateMousePosition(e);
 	}
 
 	public void mouseDragged(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mouseMoved(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
+	}
+	
+	private void updateMousePosition(MouseEvent e)
+	{
+		mouseX = e.getX();
+		mouseY = e.getY();
 	}
 	
 	/* ******************* *
