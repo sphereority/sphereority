@@ -1,6 +1,7 @@
 package common.messages;
 
 import java.nio.ByteBuffer;
+import common.messages.LoginMessage;
 
 /**
  *  MessageAnalyzer translates from the enumerated
