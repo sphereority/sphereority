@@ -42,7 +42,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	// Sound stuff
 	public GameSoundSystem soundSystem;
-	public SoundEffect soundBump;
+	public SoundEffect soundBump, soundDeath, soundFire;
 
 	// CONSTRUCTORS
 	public GameEngine(Map m, byte playerID, String name)
@@ -88,6 +88,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
+		soundDeath = soundSystem.loadSoundEffect(SOUND_DEATH);
+		soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
 	}
 	
 	// GETTERS
@@ -401,6 +403,24 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public void playBump(float volume)
 	{
 		playSound(volume, soundBump);
+	}
+	
+	/**
+	 * Plays a player death sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playDeath(float volume)
+	{
+		playSound(volume, soundDeath);
+	}
+	
+	/**
+	 * Plays a gun fire sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playFire(float volume)
+	{
+		playSound(volume, soundFire);
 	}
 	
 	/**

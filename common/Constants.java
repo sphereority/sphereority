@@ -75,6 +75,16 @@ public interface Constants
 	 * The name of the file that contains the "wall bump" sound
 	 */
 	public static final String SOUND_BUMP = RESOURCES_FOLDER + "wall_bump.wav";
+	
+	/**
+	 * The name of the file that contains the death sound
+	 */
+	public static final String SOUND_DEATH = RESOURCES_FOLDER + "explosion.wav";
+	
+	/**
+	 * The name of the file that contains the fire sound
+	 */
+	public static final String SOUND_FIRE = RESOURCES_FOLDER + "photon.wav";
 
 	/**
 	 * The team ID of the first team (Spheres)
