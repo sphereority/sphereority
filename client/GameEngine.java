@@ -438,7 +438,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		if (sound.isPlaying())
 		{
-			if (sound.getVolume() < volume)
+			if (sound.getVolume() <= volume)
 				sound.stop();
 			else
 				return;

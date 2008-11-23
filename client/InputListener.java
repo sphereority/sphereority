@@ -159,7 +159,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	public boolean isButtonFired()
 	{
 		boolean result = mouseFired;
-		mouseFired = false;
+		//mouseFired = false;
 		
 		return result;
 	}
@@ -203,9 +203,6 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	
 	public void mouseClicked(MouseEvent e)
 	{
-		if (e.getButton() == mouseFire)
-			mouseFired = true;
-		
 		updateMousePosition(e);
 	}
 
@@ -221,13 +218,16 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 
 	public void mousePressed(MouseEvent e)
 	{
+		if (e.getButton() == mouseFire)
+			mouseFired = true;
+		
 		updateMousePosition(e);
 	}
 
 	public void mouseReleased(MouseEvent e)
 	{
 		if (e.getButton() == mouseFire)
-			mouseFired = true;
+			mouseFired = false;
 		
 		updateMousePosition(e);
 	}

@@ -10,7 +10,7 @@ import javax.swing.*;
  */
 public class Sphereority extends Thread implements Constants {
 	public static final String[] MAP_LIST = new String[]
-		{ "circles", "mercury", "random_1", "round", "sample-map", "widefield" };
+		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
 	
 	private GameEngine game;
 	private static JDialog gameWindow;
