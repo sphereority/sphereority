@@ -19,6 +19,8 @@ public abstract class MessageAnalyzer {
 	public static final byte HEALTH_UPDATE  = 3;
 	public static final byte CHAT_MESSAGE   = 4;
 	public static final byte DEATH_MESSAGE  = 5;
+    public static final byte LOGIN_MESSAGE  = 6;
+    public static final byte MULTI_MESSAGE  = 7;
     public static final byte UNDEFINED      = -1;
     public static final int  MESSAGE_TYPE   = 0;	
 
@@ -49,6 +51,12 @@ public abstract class MessageAnalyzer {
 			case DEATH_MESSAGE:
 				message = MessageType.DeathMessage;
 				break;
+            case LOGIN_MESSAGE:
+                message = MessageType.LoginMessage;
+                break;
+            case MULTI_MESSAGE:
+                message = MessageType.MulticastGroupMessage;
+                break;
 			default:
 				message = MessageType.Undefined;
 		}
@@ -63,6 +71,7 @@ public abstract class MessageAnalyzer {
 	 */
     public static byte getMessageType(MessageType type) {
 		byte message;
+
 		switch (type) {
 			case PlayerMotion:
 				message = PLAYER_MOTION;
@@ -82,6 +91,12 @@ public abstract class MessageAnalyzer {
 			case DeathMessage:
 				message = DEATH_MESSAGE;
 				break;
+            case LoginMessage:
+                message = LOGIN_MESSAGE;
+                break;
+            case MulticastGroupMessage:
+                message = MULTI_MESSAGE;
+                break;
 			default:
 				message = UNDEFINED;
 		}
@@ -125,6 +140,12 @@ public abstract class MessageAnalyzer {
 			case DeathMessage:
                 receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
+            case LoginMessage:
+                receivedMessage = new LoginMessage(byteHeader,byteData);
+                break;
+            case MulticastGroupMessage:
+                receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
+                break;
 		}
 		return receivedMessage;
     }

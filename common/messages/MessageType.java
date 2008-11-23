@@ -6,5 +6,5 @@ package common.messages;
  */
 public enum MessageType {
 	PlayerMotion,MapChange,ScoreUpdate,HealthUpdate,ChatMessage,
-	DeathMessage, Undefined
+	DeathMessage, LoginMessage, MulticastGroupMessage, Undefined
 }
