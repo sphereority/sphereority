@@ -48,8 +48,6 @@ public class LocalPlayer extends Player
 		super.fire();
 		timeSinceLastShot = 0;
 		GameEngine.gameEngine.playFire(1.0f);
-		
-		System.out.println("Firing a shot.");
 	}
 	
 	public boolean animate(float dTime, float currentTime)

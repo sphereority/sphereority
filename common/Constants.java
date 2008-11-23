@@ -203,5 +203,5 @@ public interface Constants
 	/**
 	 * The amount of time in seconds that must pass between shots fired
 	 */
-	public static final float RELOAD_TIME = 1.0f;
+	public static final float RELOAD_TIME = 0.5f;
 }
