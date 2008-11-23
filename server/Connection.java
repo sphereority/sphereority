@@ -107,6 +107,7 @@ class Connection extends Thread {
 				 */
                  while (true)
                  {
+                 /*
                  * Everything is set up
                  * Sleep on the selector
                  */

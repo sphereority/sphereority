@@ -109,13 +109,20 @@ public abstract class MessageAnalyzer {
      */
     public static Message getMessage(byte[] message) throws Exception {
         ByteBuffer buffer = ByteBuffer.wrap(message);
-        
+        return getMessage(buffer);
+    }
+
+    /**
+     * Retrieves a message given its header and the data portion of the message.
+     * @return The message that the byte array represeneted.
+     */
+    public static Message getMessage(ByteBuffer buffer) throws Exception {
         // Store the header information
         byte[] byteHeader = new byte[Header.HEADER_MAX];
         buffer.get(byteHeader,INIT,Header.HEADER_MAX);
    
         // Store the data information
-        int dataLength = message.length - Header.HEADER_MAX;
+        int dataLength = buffer.array().length - Header.HEADER_MAX;
         byte[] byteData = new byte[dataLength];
         buffer.get(byteData,INIT,dataLength);       
 

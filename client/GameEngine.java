@@ -455,7 +455,11 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      * =====================================
      */
     public void processPlayerMotion(PlayerMotionMessage message) {
-        playerList.get(getPlayerIndex(message.getPlayerId())).setPosition(message.getPosition());
+        // Check to see this is a remote player
+        Player player = playerList.get(getPlayerIndex(message.getPlayerId()));
+
+        if(player instanceof RemotePlayer)
+            ((RemotePlayer)player).addMotionPacket(message);
     }
 
     public void processScoreUpdate(ScoreUpdateMessage message) {
