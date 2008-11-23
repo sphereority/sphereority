@@ -19,10 +19,10 @@ public abstract class MessageAnalyzer {
 	public static final byte HEALTH_UPDATE  = 3;
 	public static final byte CHAT_MESSAGE   = 4;
 	public static final byte DEATH_MESSAGE  = 5;
-	public static final byte LOGIN_MESSAGE  = 6;
-	public static final byte MULTI_MESSAGE  = 7;
-	public static final byte UNDEFINED      = -1;
-	public static final int  MESSAGE_TYPE   = 0;	
+    public static final byte LOGIN_MESSAGE  = 6;
+    public static final byte MULTI_MESSAGE  = 7;
+    public static final byte UNDEFINED      = -1;
+    public static final int  MESSAGE_TYPE   = 0;
 
 	/**
 	 * Translates from a byte to its corresponding
@@ -141,7 +141,7 @@ public abstract class MessageAnalyzer {
                 receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
             case LoginMessage:
-                // receivedMessage = new LoginMessage(byteHeader,byteData);
+                receivedMessage = new LoginMessage(byteHeader,byteData);
                 break;
             case MulticastGroupMessage:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
