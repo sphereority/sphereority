@@ -15,11 +15,11 @@ public interface Constants
 	 * Default port for TCP network listener
 	 */
 	public static final int DEFAULT_PORT = 44000;
-	
-	/**
-	 * Default port for Game engine IPC listener
-	*/
-	public static final int SERVER_GAME_ENGINE_PORT = 44001;
+
+    /**
+     * Address for UDP Mutlicast
+     */
+    public static final String MCAST_ADDRESS = "224.0.0.1";
 	
 	/**
 	 * The fastest an object can move in units per second
@@ -75,6 +75,16 @@ public interface Constants
 	 * The name of the file that contains the "wall bump" sound
 	 */
 	public static final String SOUND_BUMP = RESOURCES_FOLDER + "wall_bump.wav";
+	
+	/**
+	 * The name of the file that contains the death sound
+	 */
+	public static final String SOUND_DEATH = RESOURCES_FOLDER + "explosion.wav";
+	
+	/**
+	 * The name of the file that contains the fire sound
+	 */
+	public static final String SOUND_FIRE = RESOURCES_FOLDER + "photon.wav";
 
 	/**
 	 * The team ID of the first team (Spheres)
@@ -189,4 +199,9 @@ public interface Constants
 	 * The number of copies of the radar widget that can be displayed either horizontally or vertically
 	 */
 	public static final int RADAR_SIZE = 3;
+	
+	/**
+	 * The amount of time in seconds that must pass between shots fired
+	 */
+	public static final float RELOAD_TIME = 0.5f;
 }

@@ -1,7 +1,7 @@
 package patrick;
 
 import common.*;
-import common.messages.LoginMessage;
+import common.messages.*;
 
 import java.lang.reflect.Array;
 import java.net.*;
@@ -37,15 +37,14 @@ class CliTest
 			ostream.writeObject(bytes);
 
 			// read reply message
-			ObjectInputStream istream = new ObjectInputStream(channel.socket().getInputStream());
+			ObjectInputStream istream = new ObjectInputStream(channel.socket()
+					.getInputStream());
 			System.out.println("CliTest.java: ObjectInputStream created");
-			
 			Object obj = istream.readObject();
 			int numBytes = Array.getLength(obj);
 			byte[] inputbytes = new byte[numBytes];
 			for (int i = 0; i < numBytes; i++)
 				inputbytes[i] = Array.getByte(obj, i);
-			
 			// if login was successful
 			if (LoginMessage.isLoginSuccessMessage(inputbytes))
 			{
@@ -56,19 +55,24 @@ class CliTest
 				DatagramChannel dchannel = DatagramChannel.open();
 				// dchannel.socket().bind(new
 				// InetSocketAddress("localhost",44001));
-				dchannel.socket().connect(new InetSocketAddress(channel.socket().getInetAddress(), port));
+				dchannel.socket().connect(
+						new InetSocketAddress(
+								channel.socket().getInetAddress(), port));
 				// get localport of datagram socket
 				int localport = dchannel.socket().getLocalPort();
 				System.out.printf("UDP local port: %d\n", localport);
 				// send success message to send port number to server
 				bytes = LoginMessage.getLoginSuccessMessage(localport);
 				ostream.writeObject(bytes);
-				for (int i = 0; i < bytes.length; i++)
-				{
-					System.out.println(bytes[i]);
-				}
-			}
-			else
+				// ostream.writeObject((new DeathMessage( (byte) 1, (byte) 1,
+				// (byte) 1 )).getByteMessage());
+				// ostream.writeObject((new DeathMessage( (byte) 2, (byte) 2,
+				// (byte) 2 )).getByteMessage());
+				// ostream.writeObject((new DeathMessage( (byte) 3, (byte) 3,
+				// (byte) 3 )).getByteMessage());
+				// ostream.writeObject((new DeathMessage( (byte) 4, (byte) 4,
+				// (byte) 4 )).getByteMessage());
+			} else
 			{
 				System.out.println("Message was not LOGIN Success");
 			}
