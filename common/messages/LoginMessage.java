@@ -13,7 +13,7 @@ public class LoginMessage {
 	private static final String SEPERATOR = "~";
 	
 	// Constructors
-	
+
 	
 	
 	// Getters
