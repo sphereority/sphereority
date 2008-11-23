@@ -20,7 +20,7 @@ public abstract class MessageAnalyzer {
 	public static final byte CHAT_MESSAGE   = 4;
 	public static final byte DEATH_MESSAGE  = 5;
     public static final byte UNDEFINED      = -1;
-    public static final int  MESSAGE_TYPE   = 0;	
+    public static final int  MESSAGE_TYPE   = 0;
 
 	/**
 	 * Translates from a byte to its corresponding
