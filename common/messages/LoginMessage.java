@@ -24,7 +24,6 @@ public class LoginMessage {
 	
 	
 	
-	
 	// Operations
 	
 	/*
@@ -60,54 +59,59 @@ public class LoginMessage {
 		int end = message.indexOf(SEPERATOR,start);
 		return message.substring(start,end);
 	}
+	
+	public static String getUserPass(byte [] messagedata){
+		String message = getMessageString(messagedata);
+		int start = message.indexOf(PASS_HEADER) + PASS_HEADER.length();
+		int end = message.indexOf(SEPERATOR,start);
+		return message.substring(start,end);
+	}
+	
+	/*
+	 * Login Success Message
+	 */
+	public static boolean isLoginSuccessMessage(byte [] messagedata){
+		String message = getMessageString(messagedata);
+		return message.startsWith("SUCCESS" + SEPERATOR);
+	}
 
-public static String getUserPass(byte [] messagedata){
-String message = getMessageString(messagedata);
-int start = message.indexOf(PASS_HEADER) + PASS_HEADER.length();
-int end = message.indexOf(SEPERATOR,start);
+	public static byte [] getLoginSuccessMessage(int port){
+		Charset charset = Charset.forName(CHARSET_NAME);
+		String message = new String("SUCCESS" + SEPERATOR + PORT_HEADER + Integer.toString(port) + SEPERATOR);
+		return charset.encode(message).array();
+	}
+	
+	public static int getPort(byte [] messagedata){
+		Charset charset = Charset.forName(CHARSET_NAME);
+		ByteBuffer buffer = ByteBuffer.allocate(messagedata.length);
+		buffer.put(messagedata);
+		buffer.rewind();
+		String message = new String(charset.decode(buffer).array());
 
-return message.substring(start,end);
-}
-/*
-* Login Success Message
-*/
-public static boolean isLoginSuccessMessage(byte [] messagedata){
-String message = getMessageString(messagedata);
-return message.startsWith("SUCCESS" + SEPERATOR);
-}
-public static byte [] getLoginSuccessMessage(int port){
-Charset charset = Charset.forName(CHARSET_NAME);
-String message = new String("SUCCESS" + SEPERATOR + PORT_HEADER + Integer.toString(port) + SEPERATOR);
-return charset.encode(message).array();
-}
-public static int getPort(byte [] messagedata){
-Charset charset = Charset.forName(CHARSET_NAME);
-ByteBuffer buffer = ByteBuffer.allocate(messagedata.length);
-buffer.put(messagedata);
-buffer.rewind();
-String message = new String(charset.decode(buffer).array());
+		int start = message.indexOf(PORT_HEADER) + PORT_HEADER.length();
+		int end = message.indexOf(SEPERATOR,start);
 
-int start = message.indexOf(PORT_HEADER) + PORT_HEADER.length();
-int end = message.indexOf(SEPERATOR,start);
-
-return Integer.parseInt(message.substring(start,end));
-}
-/*
-*  LOGIN FAILURE
-*/
-public static boolean isLoginFailureMessage(byte [] messagedata){
-String message = getMessageString(messagedata);
-return message.startsWith("FAILURE" + SEPERATOR);
-}
-public static byte [] getLoginFailreMessage(String reason){
-Charset charset = Charset.forName(CHARSET_NAME);
-String message = new String("FAILURE" + SEPERATOR + FAIL_REASON_HEADER + reason + SEPERATOR);
-return charset.encode(message).array();
-}
-public static String getFailureReason(byte [] messagedata){
-String message = getMessageString(messagedata);
-int start = message.indexOf(FAIL_REASON_HEADER) + FAIL_REASON_HEADER.length();
-int end = message.indexOf(SEPERATOR,start);
-return message.substring(start,end);
-}
+		return Integer.parseInt(message.substring(start,end));
+	}
+	
+	/*
+	 * LOGIN FAILURE
+	 */
+	public static boolean isLoginFailureMessage(byte [] messagedata){
+		String message = getMessageString(messagedata);
+		return message.startsWith("FAILURE" + SEPERATOR);
+	}
+	
+	public static byte [] getLoginFailreMessage(String reason){
+		Charset charset = Charset.forName(CHARSET_NAME);
+		String message = new String("FAILURE" + SEPERATOR + FAIL_REASON_HEADER + reason + SEPERATOR);
+		return charset.encode(message).array();
+	}
+	
+	public static String getFailureReason(byte [] messagedata){
+		String message = getMessageString(messagedata);
+		int start = message.indexOf(FAIL_REASON_HEADER) + FAIL_REASON_HEADER.length();
+		int end = message.indexOf(SEPERATOR,start);
+		return message.substring(start,end);
+	}
 }
