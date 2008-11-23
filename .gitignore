@@ -2,6 +2,8 @@
 *.classpath
 *.prefs
 *.project
-*.swp
 *.swo
+*.swp
 *~
+crun
+run
