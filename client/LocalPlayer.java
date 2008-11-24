@@ -58,7 +58,7 @@ public class LocalPlayer extends Player
 		if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
 		if (inputDevice.isUpKeyPressed())    accelerate(0, -PLAYER_ACCELERATION*dTime);
 		if (inputDevice.isDownKeyPressed())  accelerate(0, PLAYER_ACCELERATION*dTime);
-		if (inputDevice.isButtonFired())     fire();
+		if (inputDevice.isButtonFiring())     fire();
 		
 		boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)

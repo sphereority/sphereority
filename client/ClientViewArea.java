@@ -37,6 +37,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected Map map;
 	protected int mapWidth, mapHeight;
 	protected GameEngine gameEngine;
+	protected InputListener inputListener;
 	
 	// Temporary testing stuff:
 	protected long lastTime;
@@ -146,6 +147,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	public void paint(Graphics g)
 	{
+		if (inputListener == null && gameEngine.localInputListener != null)
+			inputListener = gameEngine.localInputListener;
+		
 		Graphics2D g2 = (Graphics2D) g;
 		if (antialiasing)
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -155,6 +159,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		int offset_x=0, offset_y=0;
 		offset_x = getWidth() / 2;
 		offset_y = getHeight() / 2;
+		
+		if (inputListener != null)
+		{
+			offset_x -= (inputListener.getMousePosX() - getWidth()/2);
+			offset_y -= (inputListener.getMousePosY() - getHeight()/2);
+		}
 		
 		// Save temporary copies of parameters changed
 		Color oldColor = g2.getColor();
