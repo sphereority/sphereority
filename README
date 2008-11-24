@@ -12,6 +12,10 @@ SERVER
 To compile the server:
 $ javac server/SphereorityServer.java
 
+Optionally, you may need to compile the server with -Xlint:unchecked:
+$ javac -Xlint:unchecked server/SphereorityServer.java
+
+
 To run the server:
 $ java server/SphereorityServer
 
