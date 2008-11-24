@@ -15,23 +15,31 @@ public class DoubleTracker extends Actor
 	{
 		firstActor = first;
 		secondActor = second;
+		
+		animate(0, 0);
 	}
 	
 	public boolean animate(float dTime, float currentTime)
 	{
-		if (firstActor == null)
+		if (firstActor == null || firstActor.position == null)
 		{
-			if (secondActor == null)
-				return false;
+			if (secondActor == null || secondActor.position == null)
 			{
+				System.out.println("common.DoubleTracker.animate(): Both actors are null!");
+				return false;
+			}
+			else
+			{
+				System.out.println("common.DoubleTracker.animate(): First actor is null.");
 				position.x = secondActor.position.x;
 				position.y = secondActor.position.y;
 			}
 		}
-		else
+		else // Both firstActor and its position are NOT null
 		{
-			if (secondActor == null)
+			if (secondActor == null || secondActor.position == null)
 			{
+				System.out.println("common.DoubleTracker.animate(): Second actor is null.");
 				position.x = firstActor.position.x;
 				position.y = firstActor.position.y;
 			}

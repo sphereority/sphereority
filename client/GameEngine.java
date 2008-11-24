@@ -47,25 +47,23 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	// CONSTRUCTORS
 	public GameEngine(Map m, byte playerID, String name)
 	{
-		setup(m);
+		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener, playerID, name);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
-		addActor(localPlayer);
+		
+		postSetup();
 	}
 	
 	public GameEngine(Map m)
 	{
-		setup(m);
+		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
-		addActor(localPlayer);
+		
+		postSetup();
 	} // end GameEngine() constructor
 	
-	private void setup(Map m)
+	private void preSetup(Map m)
 	{
 		gameEngine = this;
 		gameOver = false;
@@ -86,13 +84,31 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		triggerMapListeners();
 		
-		addActor(new MouseTracker(localInputListener, gameViewArea));
-		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
 		soundDeath = soundSystem.loadSoundEffect(SOUND_DEATH);
 		soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
+	}
+	
+	private void postSetup()
+	{
+		gameMap.placePlayer(localPlayer);
+		
+		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+		
+		DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
+		
+		TrackingObject playerTracker = new TrackingObject(doubleTracker);
+		
+		gameViewArea.viewTracker = playerTracker;
+		gameViewArea.setLocalPlayer(localPlayer);
+		
+		addActor(localPlayer);
+		addActor(mouseTracker);
+		addActor(doubleTracker);
+		addActor(playerTracker);
+		
 	}
 	
 	// GETTERS

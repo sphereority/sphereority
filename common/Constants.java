@@ -34,7 +34,7 @@ public interface Constants
 	/**
 	 * The speed at which objects track each other (this affects the "slow parent" of objects)
 	 */
-	public static final float TRACKING_SPEED = 3.0f;
+	public static final float TRACKING_SPEED = 5.0f;
 
 	/**
 	 * The amount of speed you have after bumping into a wall

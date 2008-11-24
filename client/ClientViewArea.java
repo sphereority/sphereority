@@ -38,7 +38,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected Map map;
 	protected int mapWidth, mapHeight;
 	protected GameEngine gameEngine;
-	protected InputListener inputListener;
 	
 	// Temporary testing stuff:
 	
@@ -91,13 +90,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void setLocalPlayer(LocalPlayer p)
 	{
 		localPlayer = p;
-		if (viewTracker == null)
-		{
-			viewTracker = new TrackingObject(localPlayer.getPosition());
-		}
-		viewTracker.setTarget(localPlayer);
-		if (!gameEngine.actorList.contains(viewTracker))
-			gameEngine.addActor(viewTracker);
+		
+//		if (viewTracker == null)
+//		{
+//			viewTracker = new TrackingObject(localPlayer);
+//			gameEngine.addActor(viewTracker);
+//		}
 		
 		repaint();
 	}
@@ -152,9 +150,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	public void paint(Graphics g)
 	{
-		if (inputListener == null && gameEngine.localInputListener != null)
-			inputListener = gameEngine.localInputListener;
-		
 		Graphics2D g2 = (Graphics2D) g;
 		if (antialiasing)
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -177,12 +172,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		{
 			offset_x -= Math.round(viewTracker.getPosition().getX()*scale);
 			offset_y -= Math.round(viewTracker.getPosition().getY()*scale);
-		}
-		
-		if (inputListener != null)
-		{
-			offset_x -= (inputListener.getMousePosX() - getWidth()/2)/2;
-			offset_y -= (inputListener.getMousePosY() - getHeight()/2)/2;
 		}
 		
 		lastOffset.x = offset_x;

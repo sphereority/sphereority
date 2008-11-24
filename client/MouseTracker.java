@@ -1,6 +1,5 @@
 package client;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.Graphics2D;
 
@@ -17,6 +16,7 @@ public class MouseTracker extends Actor
 		this.clientViewArea = clientViewArea;
 		
 		width = height = 0;
+		position = null;
 	}
 
 	public boolean animate(float dTime, float currentTime)
@@ -24,6 +24,9 @@ public class MouseTracker extends Actor
 		// We don't change the velocity as we don't use it
 		Point offset = clientViewArea.getLastOffset();
 		float scale = clientViewArea.getScale();
+		
+		if (position == null)
+			position = new Position();
 		
 		position.setX(((float)inputListener.getMousePosX() - offset.x)/scale);
 		position.setY(((float)inputListener.getMousePosY() - offset.y)/scale);
