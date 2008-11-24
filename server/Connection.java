@@ -153,24 +153,10 @@ class Connection extends Thread {
                     gameengine.newTCPMessage(message);
                 else
                     gameengine.newUDPMessage(message);
-                return;
-                //System.exit(0);
             }
             catch (Exception e){
                 e.printStackTrace();
             }
-
-            /*
-            if (selKey.channel() == sockchannel){
-                try {
-                    Message message = (Message) oistream.readObject();
-                    System.out.println("selKey.getChannel() == sockchannel");
-                    System.exit(0);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }*/
         }
     }
 }
