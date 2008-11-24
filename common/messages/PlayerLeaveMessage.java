@@ -1,38 +1,31 @@
 package common.messages;
 
 import java.nio.ByteBuffer;
+import java.net.InetSocketAddress;
+import java.net.InetAddress;
 
 /**
- * ScoreUpdateMessage - Notifies that a player's score has changed.
+ * PlayerLeaveMessage - Notifies that a player is leaving a game.
  * @author rlagman
  */
-public class ScoreUpdateMessage extends Message implements MessageConstants {
-    private int newScore;
+public class PlayerLeaveMessage extends Message implements MessageConstants {
     
     /**
-     * Constructor - Creates a new ScoreUpdateMessage.
+     * Constructor - Creates a new PlayerLeaveMessage.
      * @param playerId The id of the player sending the message.
-     * @param newScore The new score for the player
      */
-    public ScoreUpdateMessage(byte playerId, int newScore) {
-        super(MessageType.ScoreUpdate, playerId, ScoreUpdateLength);
-        this.newScore = newScore;
+    public PlayerLeaveMessage(byte playerId) {
+        super(MessageType.PlayerLeave, playerId, PlayerLeaveLength);
     }
 
     /**
-     * Constructor - Creates a new ScoreUpdateMessage.
+     * Constructor - Creates a new PlayerLeaveMessage.
      * @param header Representation of a Header in bytes.
      * @param data Representation of the data portion in bytes.
      */
-    public ScoreUpdateMessage(byte[] header, byte[] data) {
+    public PlayerLeaveMessage(byte[] header, byte[] data) {
         // Create the Message superclass
-        super(header,ScoreUpdateLength);
-        
-        // Wrap the stream of bytes into a buffer       
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-		
-		// Process the information to create the object.
-        this.newScore = buffer.getInt();
+        super(header,PlayerLeaveLength);    
     }
     
     /**
@@ -49,10 +42,7 @@ public class ScoreUpdateMessage extends Message implements MessageConstants {
         ByteBuffer buffer = ByteBuffer.wrap(message);
         buffer.put(header);
         
-        // Place the contents of this data
-        buffer.putInt(newScore);
-       
         // Return the fully created message
         return message;
-	}	
+	}
 }

@@ -14,6 +14,8 @@ public interface MessageConstants {
                      ChatMessageLength  = 258,
 	                 DeathMessageLength = 2,
                      LoginMessageLength = 255,
+                     PlayerLeaveLength = 0,
+                     PlayerJoinLength  = 40,
                      MulticastGroupLength = 40;
     
     public final int MessageCap = 255;

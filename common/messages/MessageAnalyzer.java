@@ -12,14 +12,16 @@ import java.nio.ByteBuffer;
  * 
  */
 public abstract class MessageAnalyzer {
+	public static final byte PLAYER_MOTION  = 0;
+	public static final byte MAP_CHANGE     = 1;
+	public static final byte SCORE_UPDATE   = 2;
+	public static final byte HEALTH_UPDATE  = 3;
 	public static final byte CHAT_MESSAGE   = 4;
 	public static final byte DEATH_MESSAGE  = 5;
-	public static final byte HEALTH_UPDATE  = 3;
 	public static final byte LOGIN_MESSAGE  = 6;
-	public static final byte MAP_CHANGE     = 1;
-	public static final byte MULTI_MESSAGE  = 7;
-	public static final byte PLAYER_MOTION  = 0;
-	public static final byte SCORE_UPDATE   = 2;
+    public static final byte PLAYER_JOIN    = 7;
+    public static final byte PLAYER_LEAVE   = 8;
+	public static final byte MULTI_MESSAGE  = 9;
 	public static final byte UNDEFINED      = -1;
 	public static final int  INIT           = 0;
 	public static final int  MESSAGE_TYPE   = 0;
@@ -46,16 +48,22 @@ public abstract class MessageAnalyzer {
 				message = MessageType.HealthUpdate;
 				break;
 			case CHAT_MESSAGE:
-				message = MessageType.ChatMessage;
+				message = MessageType.Chat;
 				break;
 			case DEATH_MESSAGE:
-				message = MessageType.DeathMessage;
+				message = MessageType.Death;
 				break;
             case LOGIN_MESSAGE:
-                message = MessageType.LoginMessage;
+                message = MessageType.Login;
+                break;
+            case PLAYER_JOIN:
+                message = MessageType.PlayerJoin;
+                break;
+            case PLAYER_LEAVE:
+                message = MessageType.PlayerLeave;
                 break;
             case MULTI_MESSAGE:
-                message = MessageType.MulticastGroupMessage;
+                message = MessageType.MulticastGroup;
                 break;
 			default:
 				message = MessageType.Undefined;
@@ -85,16 +93,22 @@ public abstract class MessageAnalyzer {
 			case HealthUpdate:
 				message = HEALTH_UPDATE;
 				break;
-			case ChatMessage:
+			case Chat:
 				message = CHAT_MESSAGE;
 				break;
-			case DeathMessage:
+			case Death:
 				message = DEATH_MESSAGE;
 				break;
-            case LoginMessage:
+            case Login:
                 message = LOGIN_MESSAGE;
                 break;
-            case MulticastGroupMessage:
+            case PlayerJoin:
+                message = PLAYER_JOIN;
+                break;
+            case PlayerLeave:
+                message = PLAYER_LEAVE;
+                break;
+            case MulticastGroup:
                 message = MULTI_MESSAGE;
                 break;
 			default:
@@ -141,16 +155,16 @@ public abstract class MessageAnalyzer {
 			case HealthUpdate:
                 receivedMessage = new HealthUpdateMessage(byteHeader,byteData);
 				break;
-			case ChatMessage:
+			case Chat:
                 receivedMessage = new ChatMessage(byteHeader,byteData);
 				break;
-			case DeathMessage:
+			case Death:
                 receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
-            case LoginMessage:
+            case Login:
                 //receivedMessage = new LoginMessage(byteHeader,byteData);
                 break;
-            case MulticastGroupMessage:
+            case MulticastGroup:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
                 break;
 		}

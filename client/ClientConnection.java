@@ -19,14 +19,14 @@ public class ClientConnection {
     private SocketChannel sockChannel;
     private DatagramChannel serverUDPChannel;
     private MulticastSocket myMcastSocket;
-    private TreeMap<Integer,MulticastSocket> clientMcastSockets;
+    private Vector<MulticastSocket> clientMcastSockets;
     
 	public ClientConnection(GameEngine engine, String serverName, int port, String userName)  {
         try {
             this.engine = engine;
             this.sockChannel = SocketChannel.open();
             selector = Selector.open();
-            clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
+            clientMcastSockets = new Vector<MulticastSocket>();
             loginToServer(serverName, port, userName);
         } catch (Exception ex) {
             System.err.println("Could not connect to server!");
@@ -99,14 +99,14 @@ public class ClientConnection {
         ByteBuffer receivedBuffer = ByteBuffer.allocate(4096);
         
         // Do a max of 20 messages at a time for efficiency reasons
-        for(int i = 0; i < 20 && it.hasNext(); i++) {
+        for(int i = 0; it.hasNext() && i < 20; i++) {
             SelectionKey selKey = it.next();
             
             // Remove it to indicate it is processed
             it.remove();
             
             try {
-                //processMessage(selKey,receivedBuffer);
+                processMessage(selKey,receivedBuffer);
             }
             catch (Exception ex) {
                 System.err.println(ex.getMessage());
@@ -136,6 +136,17 @@ public class ClientConnection {
             // Handle the messages
             if(message instanceof PlayerMotionMessage) {
                 engine.processPlayerMotion((PlayerMotionMessage)message);
+            }
+            // Register a client with another client's multicast group
+            else if(message instanceof MulticastGroupMessage) {
+                MulticastGroupMessage mcastMsg = (MulticastGroupMessage) message;
+                if(mcastMsg.joinGroup()) {
+                    MulticastSocket newPlayer = new MulticastSocket();
+                    newPlayer.joinGroup(mcastMsg.getAddress().getAddress());
+                    DatagramChannel channel = newPlayer.getChannel();
+                    channel.configureBlocking(false);
+                    channel.register(selector,channel.validOps());
+                }
             }
         }
     }
