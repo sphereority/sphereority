@@ -113,7 +113,8 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedY() > 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			//GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			GameEngine.gameEngine.playBump(1.0f);
 			velocity.bounceY();
 			velocity.setY(velocity.getY() - BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -124,7 +125,8 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedX() < 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			//GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			GameEngine.gameEngine.playBump(1.0f);
 			velocity.bounceX();
 			velocity.setX(velocity.getX() + BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -135,7 +137,8 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedX() > 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			//GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			GameEngine.gameEngine.playBump(1.0f);
 			velocity.bounceX();
 			velocity.setX(velocity.getX() - BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -146,7 +149,8 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedY() < 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			//GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			GameEngine.gameEngine.playBump(1.0f);
 			velocity.bounceY();
 			velocity.setY(velocity.getY() + BUMP_FORCE);
 			timeSinceLastSound = 0;

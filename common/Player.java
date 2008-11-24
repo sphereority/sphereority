@@ -15,6 +15,7 @@ public abstract class Player extends WeightedPosition {
 	protected float timeSinceLastSound;
 	protected int playerID;
 	protected String name;
+	protected Position aim = new Position(0, 1);
 	// INSTANCE METHODS
 	
 	

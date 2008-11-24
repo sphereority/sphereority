@@ -13,16 +13,16 @@ import java.awt.event.*;
 public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher
 {
 	// Key event-related variables
-	protected boolean[] keysPressed;
-	protected int numKeysPressed;
+	private boolean[] keysPressed;
+	private int numKeysPressed;
 	
 	// Mouse-related variables
-	protected int mouseX, mouseY;
-	protected boolean mouseFiring;
+	private int mouseX, mouseY;
+	private boolean mouseFiring;
 	
 	// Configuration-related variables
-	protected int keyLeft, keyRight, keyUp, keyDown;
-	protected int mouseFire;
+	private int keyLeft, keyRight, keyUp, keyDown;
+	private int mouseFireButton;
 	
 	public InputListener()
 	{
@@ -38,7 +38,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		keyRight = KeyEvent.VK_RIGHT;
 		keyUp = KeyEvent.VK_UP;
 		keyDown = KeyEvent.VK_DOWN;
-		mouseFire = MouseEvent.BUTTON1;
+		mouseFireButton = MouseEvent.BUTTON1;
 	}
 	
 	/**
@@ -158,10 +158,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	 */
 	public boolean isButtonFiring()
 	{
-		boolean result = mouseFiring;
-		//mouseFired = false;
-		
-		return result;
+		return mouseFiring;
 	}
 	
 	public int getMousePosX()
@@ -228,7 +225,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 
 	public void mousePressed(MouseEvent e)
 	{
-		if (e.getButton() == mouseFire)
+		if (e.getButton() == mouseFireButton)
 			mouseFiring = true;
 		
 		updateMousePosition(e);
@@ -236,7 +233,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 
 	public void mouseReleased(MouseEvent e)
 	{
-		if (e.getButton() == mouseFire)
+		if (e.getButton() == mouseFireButton)
 			mouseFiring = false;
 		
 		updateMousePosition(e);

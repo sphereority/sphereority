@@ -32,7 +32,7 @@ public class SoundEffect implements LineListener
 			volumeControl = (FloatControl)soundClip.getControl(FloatControl.Type.VOLUME);
 		else
 		{
-			System.out.println("Warning: No volume control available!");
+			//System.out.println("Warning: No volume control available!");
 			volumeControl = null;
 		}
 		if (soundClip.isControlSupported(FloatControl.Type.MASTER_GAIN))
@@ -142,7 +142,7 @@ public class SoundEffect implements LineListener
 			volumeControl.setValue(volume);
 		else if (gainControl != null)
 		{
-			gainControl.setValue(-15*(1 - v));
+			gainControl.setValue(-10*(1 - v));
 		}
 	}
 }

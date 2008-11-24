@@ -86,6 +86,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		triggerMapListeners();
 		
+		addActor(new MouseTracker(localInputListener, gameViewArea));
+		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
