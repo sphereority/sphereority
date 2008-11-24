@@ -4,6 +4,7 @@ import common.*;
 //import common.messages.*;
 import client.audio.*;
 import client.gui.*;
+import common.messages.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -41,30 +42,28 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	// Sound stuff
 	public GameSoundSystem soundSystem;
-	public SoundEffect soundBump;
+	public SoundEffect soundBump, soundDeath, soundFire;
 
 	// CONSTRUCTORS
 	public GameEngine(Map m, byte playerID, String name)
 	{
-		setup(m);
+		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener, playerID, name);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
-		addActor(localPlayer);
+		
+		postSetup();
 	}
 	
 	public GameEngine(Map m)
 	{
-		setup(m);
+		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
-		addActor(localPlayer);
+		
+		postSetup();
 	} // end GameEngine() constructor
 	
-	private void setup(Map m)
+	private void preSetup(Map m)
 	{
 		gameEngine = this;
 		gameOver = false;
@@ -81,12 +80,35 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
+		localInputListener.attachListeners(gameViewArea);
 		
 		triggerMapListeners();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
+		soundDeath = soundSystem.loadSoundEffect(SOUND_DEATH);
+		soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
+	}
+	
+	private void postSetup()
+	{
+		gameMap.placePlayer(localPlayer);
+		
+		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+		
+		DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
+		
+		TrackingObject playerTracker = new TrackingObject(doubleTracker);
+		
+		gameViewArea.viewTracker = playerTracker;
+		gameViewArea.setLocalPlayer(localPlayer);
+		
+		addActor(localPlayer);
+		addActor(mouseTracker);
+		addActor(doubleTracker);
+		addActor(playerTracker);
+		
 	}
 	
 	// GETTERS
@@ -403,6 +425,24 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	}
 	
 	/**
+	 * Plays a player death sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playDeath(float volume)
+	{
+		playSound(volume, soundDeath);
+	}
+	
+	/**
+	 * Plays a gun fire sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playFire(float volume)
+	{
+		playSound(volume, soundFire);
+	}
+	
+	/**
 	 * A slightly more generic sound playing method so we don't have to duplicate code all over the place.
 	 * This actually handles playing or not playing the sound.
 	 * @param volume
@@ -416,7 +456,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		if (sound.isPlaying())
 		{
-			if (sound.getVolume() < volume)
+			if (sound.getVolume() <= volume)
 				sound.stop();
 			else
 				return;
@@ -447,4 +487,51 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	{
 		localInputListener.detachListeners(w);
 	}
+
+
+    /* =====================================
+     * Methods for processing messages
+     * =====================================
+     */
+    public void processPlayerMotion(PlayerMotionMessage message) {
+        playerList.get(getPlayerIndex(message.getPlayerId())).setPosition(message.getPosition());
+    }
+
+    public void processScoreUpdate(ScoreUpdateMessage message) {
+        
+    }
+    
+    
+    public void processMulticastGroup(MulticastGroupMessage message) {
+
+    }
+
+    public void processMapChange(MapChangeMessage message) {
+    }
+    
+    public void processHealthUpdateMessage(HealthUpdateMessage message) {
+    }
+
+    public void processDeathMessage(DeathMessage message) {
+    }
+
+    public void processChatMessage(ChatMessage message) {
+
+    }
+
+    /**
+     * Retrieve a player given their ID.
+     */
+    public int getPlayerIndex(int playerId) {
+        int index = -1;
+        for (int i = 0; i < playerList.size(); i++) {
+            if(playerList.get(i).getPlayerID() == playerId) {
+                index = i;
+                break;
+            }
+        }
+        return index;    
+    }
+
+
 } // end class GameEngine

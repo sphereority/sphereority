@@ -37,7 +37,7 @@ public class Projectile extends Actor
 
 	public void draw(Graphics2D g, float scale)
 	{
-		// TODO Auto-generated method stub
+		// TODO Add some drawing code for the projectiles
 		
 	}
 

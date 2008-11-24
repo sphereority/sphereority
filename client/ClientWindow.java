@@ -1,12 +1,11 @@
 package client;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 import client.gui.*;
 
-public class ClientWindow implements WindowListener, ActionCallback
+public class ClientWindow implements ActionCallback
 {
 	protected JFrame mainWindow;
 	protected ClientLogonDialog loginDialog;
@@ -16,7 +15,6 @@ public class ClientWindow implements WindowListener, ActionCallback
 	{
 		mainWindow = new JFrame("Sphereority");
 		mainWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		mainWindow.addWindowListener(this);
 		
 		viewArea = new ClientViewArea(null);
 		
@@ -46,19 +44,6 @@ public class ClientWindow implements WindowListener, ActionCallback
 	{
 		mainWindow.setVisible(false);
 	}
-	
-	public void windowClosing(WindowEvent e)
-	{
-		// TODO Perform any close operations we need to do here
-		
-	}
-	
-	public void windowActivated(WindowEvent e) { }
-	public void windowClosed(WindowEvent e) { }
-	public void windowDeactivated(WindowEvent e) { }
-	public void windowDeiconified(WindowEvent e) { }
-	public void windowIconified(WindowEvent e) { }
-	public void windowOpened(WindowEvent e) { }
 	
 	public static void main(String[] args)
 	{

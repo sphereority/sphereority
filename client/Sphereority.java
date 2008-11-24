@@ -10,7 +10,7 @@ import javax.swing.*;
  */
 public class Sphereority extends Thread implements Constants {
 	public static final String[] MAP_LIST = new String[]
-		{ "circles", "mercury", "random_1", "round", "sample-map", "widefield" };
+		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
 	
 	private GameEngine game;
 	private static JDialog gameWindow;
@@ -34,7 +34,6 @@ public class Sphereority extends Thread implements Constants {
 		GameEngine game;
 		do
 		{
-			// TODO: Technically, the GameEngine creation code should be here...
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
 			game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName);
