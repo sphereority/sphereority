@@ -1,4 +1,4 @@
-cd client
+cd ../client
 rm *.class
 cd ..
 javac client/*.java
