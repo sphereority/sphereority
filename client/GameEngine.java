@@ -21,6 +21,7 @@ import javax.swing.Timer;
 public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public static GameEngine gameEngine;
 	
+    public ClientConnection cliConnect;
 	public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
@@ -53,6 +54,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameMap.placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
 		addActor(localPlayer);
+        cliConnect = new ClientConnection(this, "localhost", 44000, "Bob");
 	}
 	
 	public GameEngine(Map m)
@@ -63,6 +65,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameMap.placePlayer(localPlayer);
 		gameViewArea.setLocalPlayer(localPlayer);
 		addActor(localPlayer);
+	    cliConnect = new ClientConnection(this, "localhost", 44000, "Bob");
 	} // end GameEngine() constructor
 	
 	private void setup(Map m)
@@ -171,6 +174,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	public void gameStep()
 	{
+        cliConnect.checkReceivedMessages();
 		checkCollisions();
 		updateWorld();
 		
@@ -489,7 +493,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     
     
     public void processMulticastGroup(MulticastGroupMessage message) {
-
+        
     }
 
     public void processMapChange(MapChangeMessage message) {

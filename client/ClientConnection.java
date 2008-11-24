@@ -21,18 +21,24 @@ public class ClientConnection {
     private MulticastSocket myMcastSocket;
     private TreeMap<Integer,MulticastSocket> clientMcastSockets;
     
-	public ClientConnection(GameEngine engine, String serverName, int port, String userName) throws Exception {
-        this.engine = engine;
-        this.sockChannel = SocketChannel.open();
-        selector = Selector.open();
-        clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
-        loginToServer(serverName, port, userName);        
+	public ClientConnection(GameEngine engine, String serverName, int port, String userName)  {
+        try {
+            this.engine = engine;
+            this.sockChannel = SocketChannel.open();
+            selector = Selector.open();
+            clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
+            loginToServer(serverName, port, userName);
+        } catch (Exception ex) {
+            System.err.println("Could not connect to server!");
+            ex.printStackTrace();
+        }        
     }
 
     /**
      * Logs into the specified server using the userName.
      */
-    public void loginToServer(String serverName, int serverPort, String userName) throws Exception{
+    public int loginToServer(String serverName, int serverPort, String userName) throws Exception{
+        int playerId = -1;
         // Create a ByteBuffer
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         buffer.rewind();
@@ -56,7 +62,9 @@ public class ClientConnection {
 
             // create datagram channel & connect to rem port
             serverUDPChannel = DatagramChannel.open();
-            serverUDPChannel.socket().connect(new InetSocketAddress(sockChannel.socket().getInetAddress(),port));
+            serverUDPChannel.configureBlocking(false);
+            serverUDPChannel.connect(new InetSocketAddress(serverName,port));
+
             // get localport of datagram socket
             int localport = serverUDPChannel.socket().getLocalPort();
             System.out.printf("UDP local port: %d\n", localport);
@@ -66,7 +74,12 @@ public class ClientConnection {
             // send success message to send port number to server
 		    loginSuccess = LoginMessage.getLoginSuccessMessage(localport);
 		    sockChannel.write(ByteBuffer.wrap(loginSuccess));
-        }    
+        }
+        else {
+            System.err.println("Unable to log in!");
+        }
+
+        return playerId;
     }
 
     /**
@@ -74,7 +87,6 @@ public class ClientConnection {
      */
     public void checkReceivedMessages() {
         // Wait to receive a message
-        // If no messages just exit out
         try {
         	selector.select(10);
         }
@@ -94,7 +106,7 @@ public class ClientConnection {
             it.remove();
             
             try {
-                processMessage(selKey,receivedBuffer);
+                //processMessage(selKey,receivedBuffer);
             }
             catch (Exception ex) {
                 System.err.println(ex.getMessage());
