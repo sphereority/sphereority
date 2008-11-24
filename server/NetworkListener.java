@@ -62,6 +62,8 @@ class NetworkListener extends Thread {
 	try {
 		ByteBuffer buf = ByteBuffer.allocate(4096);
 		int numread = connchannel.read(buf);
+		System.out.printf("NetworkListener.java: first message, number of bytes read: %d\n", numread);
+		buf.flip();
 		bytes = new byte[numread];
 		buf.get(bytes);
 		

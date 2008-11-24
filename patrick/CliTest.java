@@ -18,61 +18,56 @@ class CliTest {
 	    System.out.println("CliTest.java");
 	    // create TCP socket channel
 	    SocketChannel channel = SocketChannel.open();
-	    //System.out.println("CliTest.java: channel created");
+	    System.out.println("CliTest.java: channel created");
 	    channel.connect(new InetSocketAddress("localhost",PORT));
-	    //System.out.println("CliTest.java: channel socket connected");
-	    // create objectoutputstream & objectinputstream for TCP channel
-	    //ObjectOutputStream ostream = new ObjectOutputStream(channel.socket().getOutputStream());
-	    //System.out.println("CliTest.java: ObjectOutputStream created");
-
+	    System.out.println("CliTest.java: channel socket connected");
+	    
 	    // create  & send a login message
 	    byte [] bytes = LoginMessage.getLoginMessage("user1","password1");
+	    System.out.printf("CliTest.java: First message length: %d\n", bytes.length);
 	    ByteBuffer buf = ByteBuffer.allocate(4096);
-	    //System.out.println("CliTest.java: login message created");
+	    buf.put(bytes);
+	    System.out.println("CliTest.java: login message created");
 	    System.out.println(LoginMessage.getMessageString(bytes));
-	    buf.rewind();
+	    buf.flip();
+	    System.out.printf("CliTest.java: buf.remaining before channel.write(): %d\n", buf.remaining()); 
 	    int numwritten = channel.write(buf);
-	    //ostream.writeObject(bytes);
-
+	    System.out.printf("CliTest.java: first mesage number of bytes written: %d\n", numwritten);
+	    
 	    // read reply message
-	    //ObjectInputStream istream = new ObjectInputStream(channel.socket().getInputStream());
-	    //System.out.println("CliTest.java: ObjectInputStream created");
-	    //Object obj = istream.readObject();
+	    buf.clear();
 	    int numread = channel.read(buf);
-	    //int numBytes = Array.getLength(obj);
+	    System.out.printf("CliTest.java: first read: number of bytes read: %d\n", numread);
 	    bytes = new byte[numread];
-	    buf.rewind();
+	    buf.flip();
 	    buf.get(bytes);
-	    //byte [] inputbytes = new byte[numBytes];
-	    //for (int i=0; i< numBytes; i++)
-			//inputbytes[i] = Array.getByte(obj,i);
-	    // if login was successful
 	    if (LoginMessage.isLoginSuccessMessage(bytes)){
-		// get remote port number from success message
+	    	// get remote port number from success message
 	        int port = LoginMessage.getPort(bytes);
 	        System.out.printf("Port Number: %d\n", port);
-		// create datagram channel & connect to rem port
-		DatagramChannel dchannel = DatagramChannel.open();
-                //dchannel.socket().bind(new InetSocketAddress("localhost",44001));
-		dchannel.socket().connect(new InetSocketAddress(channel.socket().getInetAddress(),port));
-		// get localport of datagram socket
-		int localport = dchannel.socket().getLocalPort();
-		System.out.printf("UDP local port: %d\n", localport);
-		// send success message to send port number to server
-		bytes = LoginMessage.getLoginSuccessMessage(localport);
-		buf.clear();
-		buf.put(bytes);
-		channel.read(buf);
-		//ostream.writeObject(bytes);
-        //ostream.writeObject((new DeathMessage( (byte) 1, (byte) 1, (byte) 1 )).getByteMessage());
-//        ostream.writeObject((new DeathMessage( (byte) 2, (byte) 2, (byte) 2 )).getByteMessage());
-//        ostream.writeObject((new DeathMessage( (byte) 3, (byte) 3, (byte) 3 )).getByteMessage());
-//        ostream.writeObject((new DeathMessage( (byte) 4, (byte) 4, (byte) 4 )).getByteMessage());
-	    }
+	        // create datagram channel & connect to rem port
+	        DatagramChannel dchannel = DatagramChannel.open();
+            dchannel.socket().connect(new InetSocketAddress(channel.socket().getInetAddress(),port));
+	        // get localport of datagram socket
+	        int localport = dchannel.socket().getLocalPort();
+	        System.out.printf("UDP local port: %d\n", localport);
+	        // send success message to send port number to server
+	        bytes = LoginMessage.getLoginSuccessMessage(localport);
+	        buf.clear();
+	        buf.put(bytes);
+	        buf.flip();
+	        channel.write(buf);
+	        
+	        DeathMessage dm = new DeathMessage((byte) 1,(byte) 1,(byte) 1);
+	        bytes = dm.getByteMessage();
+	        buf.clear();
+	        buf.put(bytes);
+	        buf.flip();
+	        channel.write(buf);	        
+	 	}
 	    else{
-		System.out.println("Message was not LOGIN Success");
+	    	System.out.println("Message was not LOGIN Success");
 	    }
-
 	    channel.close();
 	}
 	catch (Exception e){

@@ -4,9 +4,7 @@ import common.*;
 import common.messages.*;
 import common.messages.LoginMessage;
 
-import java.lang.reflect.Array;
 import java.net.*;
-import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
@@ -35,15 +33,15 @@ class Connection extends Thread {
     private Selector		selector;
     private SelectionKey	readsocket_key;
 
-    private Socket		sock;
+    private Socket			sock;
     private SocketChannel	sockchannel;
-    private SelectionKey        socket_key;
+    private SelectionKey    socket_key;
 
     private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
-    private SelectionKey        dgram_socket_key;
+    private SelectionKey    dgram_socket_key;
 
-    private SocketChannel       gamechannel;
+    private SocketChannel   gamechannel;
 
 
     Connection(String uname, ServerGameEngine sge, SocketChannel sc){
@@ -67,12 +65,15 @@ class Connection extends Thread {
 	        byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
 	        ByteBuffer buf = ByteBuffer.allocate(4096);
 	        buf.put(bytes);
+	        buf.flip();
 	        int numwritten = sockchannel.write(buf);
-
+	        System.out.printf("Connection.java: first write: number of bytes written: %d\n", numwritten);
 	        // get response to success message
 	        buf.clear();
-	        int numread = sockchanel.read(buf);
+	        int numread = sockchannel.read(buf);
+	        System.out.printf("Connection.java: first read: bytes read: %d\n", numread);
 	        bytes = new byte[numread];
+	        buf.flip();
 	        buf.get(bytes);
 	        String message = LoginMessage.getMessageString(bytes);
 	        System.out.println(message);
@@ -87,14 +88,14 @@ class Connection extends Thread {
 
                 // register the client with the game engine
                 // gived it handles to the outputs streams of the sockets so it can send on it's own
-                gameengine.newClient(username,sockoutputstream,dsockchannel);
+                gameengine.newClient(username,sockchannel,dsockchannel);
 
                 // create the selector for polling the channels
                 selector = Selector.open();
                 // set channels to non-blocking and register them
         	    sockchannel.configureBlocking(false);
         	    socket_key = sockchannel.register( selector, SelectionKey.OP_READ );
-                socket_key.attach(oistream);
+                //socket_key.attach(oistream);
         	    dsockchannel.configureBlocking(false);
         	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ );
                 dgram_socket_key.attach(new String("datagram"));
@@ -143,7 +144,7 @@ class Connection extends Thread {
                 SocketChannel channel = (SocketChannel) selKey.channel();
                 ByteBuffer buf = ByteBuffer.allocate(1024);
                 byte [] bytes = new byte[1024];
-                numread = channel.read(buf);
+                int numread = channel.read(buf);
                 System.out.printf("Number of bytes read: %d\n", numread);
                 buf.rewind();
                 buf.get(bytes);
