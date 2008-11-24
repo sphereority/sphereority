@@ -22,27 +22,34 @@ class CliTest {
 	    channel.connect(new InetSocketAddress("localhost",PORT));
 	    //System.out.println("CliTest.java: channel socket connected");
 	    // create objectoutputstream & objectinputstream for TCP channel
-	    ObjectOutputStream ostream = new ObjectOutputStream(channel.socket().getOutputStream());
+	    //ObjectOutputStream ostream = new ObjectOutputStream(channel.socket().getOutputStream());
 	    //System.out.println("CliTest.java: ObjectOutputStream created");
 
 	    // create  & send a login message
 	    byte [] bytes = LoginMessage.getLoginMessage("user1","password1");
+	    ByteBuffer buf = ByteBuffer.allocate(4096);
 	    //System.out.println("CliTest.java: login message created");
 	    System.out.println(LoginMessage.getMessageString(bytes));
-	    ostream.writeObject(bytes);
+	    buf.rewind();
+	    int numwritten = channel.write(buf);
+	    //ostream.writeObject(bytes);
 
 	    // read reply message
-	    ObjectInputStream istream = new ObjectInputStream(channel.socket().getInputStream());
-	    System.out.println("CliTest.java: ObjectInputStream created");
-	    Object obj = istream.readObject();
-	    int numBytes = Array.getLength(obj);
-	    byte [] inputbytes = new byte[numBytes];
-	    for (int i=0; i< numBytes; i++)
-		inputbytes[i] = Array.getByte(obj,i);
+	    //ObjectInputStream istream = new ObjectInputStream(channel.socket().getInputStream());
+	    //System.out.println("CliTest.java: ObjectInputStream created");
+	    //Object obj = istream.readObject();
+	    int numread = channel.read(buf);
+	    //int numBytes = Array.getLength(obj);
+	    bytes = new byte[numread];
+	    buf.rewind();
+	    buf.get(bytes);
+	    //byte [] inputbytes = new byte[numBytes];
+	    //for (int i=0; i< numBytes; i++)
+			//inputbytes[i] = Array.getByte(obj,i);
 	    // if login was successful
-	    if (LoginMessage.isLoginSuccessMessage(inputbytes)){
+	    if (LoginMessage.isLoginSuccessMessage(bytes)){
 		// get remote port number from success message
-	        int port = LoginMessage.getPort(inputbytes);
+	        int port = LoginMessage.getPort(bytes);
 	        System.out.printf("Port Number: %d\n", port);
 		// create datagram channel & connect to rem port
 		DatagramChannel dchannel = DatagramChannel.open();
@@ -53,7 +60,10 @@ class CliTest {
 		System.out.printf("UDP local port: %d\n", localport);
 		// send success message to send port number to server
 		bytes = LoginMessage.getLoginSuccessMessage(localport);
-		ostream.writeObject(bytes);
+		buf.clear();
+		buf.put(bytes);
+		channel.read(buf);
+		//ostream.writeObject(bytes);
         //ostream.writeObject((new DeathMessage( (byte) 1, (byte) 1, (byte) 1 )).getByteMessage());
 //        ostream.writeObject((new DeathMessage( (byte) 2, (byte) 2, (byte) 2 )).getByteMessage());
 //        ostream.writeObject((new DeathMessage( (byte) 3, (byte) 3, (byte) 3 )).getByteMessage());

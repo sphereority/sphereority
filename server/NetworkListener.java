@@ -60,12 +60,17 @@ class NetworkListener extends Thread {
     private boolean login(SocketChannel connchannel, int next){
 	boolean log = false;
 	try {
-	    istream = new ObjectInputStream(connchannel.socket().getInputStream());
-	    obj = istream.readObject();
-	    numBytes = Array.getLength(obj);
-	    bytes = new byte[numBytes];
-	    for (int i=0; i<numBytes; i++)
-		bytes[i] = Array.getByte(obj,i);
+		ByteBuffer buf = ByteBuffer.allocate(4096);
+		int numread = connchannel.read(buf);
+		bytes = new byte[numread];
+		buf.get(bytes);
+		
+	    //istream = new ObjectInputStream(connchannel.socket().getInputStream());
+	    //obj = istream.readObject();
+	    //numBytes = Array.getLength(obj);
+	    //bytes = new byte[numBytes];
+	    //for (int i=0; i<numBytes; i++)
+	    	//bytes[i] = Array.getByte(obj,i);
 
 	    // get user name and password
             String uname;
@@ -82,7 +87,7 @@ class NetworkListener extends Thread {
 		if (usernames.addUser(uname,upass)){
 		    log = true;
             System.out.println("about to start connection");
-	            connections[next] = new Connection(uname,gameengine,connchannel,istream);
+	            connections[next] = new Connection(uname,gameengine,connchannel);
 	            connections[next].start();
 		}
 	    }

@@ -37,7 +37,7 @@ public class NetConnection implements Constants
 	{
 		try
 		{
-			Socket tcpSocket = new Socket(host, SERVER_GAME_ENGINE_PORT);
+			Socket tcpSocket = new Socket(host, DEFAULT_PORT);
 			if (!tcpSocket.isConnected())
 			{
 				System.err.printf("Failed to connect to server '%s'\n", host);

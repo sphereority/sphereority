@@ -37,22 +37,19 @@ class Connection extends Thread {
 
     private Socket		sock;
     private SocketChannel	sockchannel;
-    private ObjectInputStream	oistream;
     private SelectionKey        socket_key;
 
     private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
-    private ObjectOutputStream  dsockoutputstream;
     private SelectionKey        dgram_socket_key;
 
     private SocketChannel       gamechannel;
 
 
-    Connection(String uname, ServerGameEngine sge, SocketChannel sc, ObjectInputStream ois){
+    Connection(String uname, ServerGameEngine sge, SocketChannel sc){
         username = uname;
         gameengine = sge;
 	    sockchannel = sc;
-	    oistream = ois;
     }
     public void run(){
 	    System.out.println("Connection.run()");
@@ -68,15 +65,15 @@ class Connection extends Thread {
 	        // send login success mesage + udp port number
 	        int localport = dsockchannel.socket().getLocalPort();
 	        byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
-	        ObjectOutputStream sockoutputstream = new ObjectOutputStream(sockchannel.socket().getOutputStream());
-	        sockoutputstream.writeObject(bytes);
+	        ByteBuffer buf = ByteBuffer.allocate(4096);
+	        buf.put(bytes);
+	        int numwritten = sockchannel.write(buf);
 
 	        // get response to success message
-	        Object obj = oistream.readObject();
-	        int numBytes = Array.getLength(obj);
-	        bytes = new byte[numBytes];
-	        for (int i=0; i<numBytes; i++)
-		    bytes[i] = Array.getByte(obj,i);
+	        buf.clear();
+	        int numread = sockchanel.read(buf);
+	        bytes = new byte[numread];
+	        buf.get(bytes);
 	        String message = LoginMessage.getMessageString(bytes);
 	        System.out.println(message);
 
@@ -96,10 +93,10 @@ class Connection extends Thread {
                 selector = Selector.open();
                 // set channels to non-blocking and register them
         	    sockchannel.configureBlocking(false);
-        	    socket_key = sockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    socket_key = sockchannel.register( selector, SelectionKey.OP_READ );
                 socket_key.attach(oistream);
         	    dsockchannel.configureBlocking(false);
-        	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE );
+        	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ );
                 dgram_socket_key.attach(new String("datagram"));
 
                 /*
@@ -107,13 +104,16 @@ class Connection extends Thread {
                  * Sleep on the selector
                  */
                  int blah = 1;
-                 while (true) {
+                 while (blah < 3) {
                      System.out.printf("Connection.java: about to wait: %d\n",blah);
                      blah++;
                      // wait for an event
-                     selector.select();
+                     int numkeys = selector.select();
+                     System.out.print("NUmber of keys ready: ");
+                     System.out.println(numkeys);
                      // get list of selection keys with pending events
-                     Iterator it = selector.selectedKeys().iterator();
+                     Set keySet = selector.selectedKeys();
+                     Iterator it = keySet.iterator();
                      // process each key at a time
                      while (it.hasNext()){
                          System.out.println("HERE");
@@ -123,6 +123,7 @@ class Connection extends Thread {
                          it.remove();
                          processSelectionKey(selKey);
                      }
+                     keySet.clear();
                  }
 
             }
@@ -140,9 +141,10 @@ class Connection extends Thread {
         if (selKey.isValid() && selKey.isReadable()){
             try {
                 SocketChannel channel = (SocketChannel) selKey.channel();
-                ByteBuffer buf = ByteBuffer.allocate(255);
-                byte [] bytes = new byte[255];
-                int numread = channel.read(buf);
+                ByteBuffer buf = ByteBuffer.allocate(1024);
+                byte [] bytes = new byte[1024];
+                numread = channel.read(buf);
+                System.out.printf("Number of bytes read: %d\n", numread);
                 buf.rewind();
                 buf.get(bytes);
                 Message message = MessageAnalyzer.getMessage(bytes);
