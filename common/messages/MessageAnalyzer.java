@@ -22,10 +22,6 @@ public abstract class MessageAnalyzer {
 	public static final byte SCORE_UPDATE   = 2;
 	public static final byte UNDEFINED      = -1;
 	public static final int  INIT           = 0;
-	public static final int  MESSAGE_TYPE   = 0;	
-	public static final byte LOGIN_MESSAGE  = 6;
-	public static final byte MULTI_MESSAGE  = 7;
-	public static final byte UNDEFINED      = -1;
 	public static final int  MESSAGE_TYPE   = 0;
 
 	/**
