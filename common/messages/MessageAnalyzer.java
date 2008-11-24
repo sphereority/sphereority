@@ -12,17 +12,17 @@ import java.nio.ByteBuffer;
  * 
  */
 public abstract class MessageAnalyzer {
-	public static final int  INIT           = 0;
-	public static final byte PLAYER_MOTION  = 0;
-	public static final byte MAP_CHANGE     = 1;
-	public static final byte SCORE_UPDATE   = 2;
-	public static final byte HEALTH_UPDATE  = 3;
 	public static final byte CHAT_MESSAGE   = 4;
 	public static final byte DEATH_MESSAGE  = 5;
-    public static final byte LOGIN_MESSAGE  = 6;
-    public static final byte MULTI_MESSAGE  = 7;
-    public static final byte UNDEFINED      = -1;
-    public static final int  MESSAGE_TYPE   = 0;
+	public static final byte HEALTH_UPDATE  = 3;
+	public static final byte LOGIN_MESSAGE  = 6;
+	public static final byte MAP_CHANGE     = 1;
+	public static final byte MULTI_MESSAGE  = 7;
+	public static final byte PLAYER_MOTION  = 0;
+	public static final byte SCORE_UPDATE   = 2;
+	public static final byte UNDEFINED      = -1;
+	public static final int  INIT           = 0;
+	public static final int  MESSAGE_TYPE   = 0;
 
 	/**
 	 * Translates from a byte to its corresponding
