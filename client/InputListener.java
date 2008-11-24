@@ -12,21 +12,33 @@ import java.awt.event.*;
  */
 public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher
 {
+	// Key event-related variables
 	protected boolean[] keysPressed;
 	protected int numKeysPressed;
 	
+	// Mouse-related variables
+	protected int mouseX, mouseY;
+	protected boolean mouseFired;
+	
+	// Configuration-related variables
 	protected int keyLeft, keyRight, keyUp, keyDown;
+	protected int mouseFire;
 	
 	public InputListener()
 	{
+		// Set up keyboard variables
 		keysPressed = new boolean[256];
 		numKeysPressed = 0;
 		
-		// Default key bindings:
+		// Set up mouse variables
+		mouseFired = false;
+		
+		// Default bindings:
 		keyLeft = KeyEvent.VK_LEFT;
 		keyRight = KeyEvent.VK_RIGHT;
 		keyUp = KeyEvent.VK_UP;
 		keyDown = KeyEvent.VK_DOWN;
+		mouseFire = MouseEvent.BUTTON1;
 	}
 	
 	/**
@@ -84,6 +96,10 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		return keysPressed[keyDown];
 	}
 	
+	/**
+	 * Find out which key is currently being used for the Down movement
+	 * @return	The keycode for Down from KeyEvent.VK_* 
+	 */
 	public int getKeyDown()
 	{
 		return keyDown;
@@ -94,6 +110,10 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		this.keyDown = keyDown;
 	}
 
+	/**
+	 * Find out which key is currently being used for the Left movement
+	 * @return	The keycode for Left from KeyEvent.VK_* 
+	 */
 	public int getKeyLeft()
 	{
 		return keyLeft;
@@ -104,6 +124,10 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		this.keyLeft = keyLeft;
 	}
 
+	/**
+	 * Find out which key is currently being used for the Right movement
+	 * @return	The keycode for Right from KeyEvent.VK_* 
+	 */
 	public int getKeyRight()
 	{
 		return keyRight;
@@ -114,6 +138,10 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		this.keyRight = keyRight;
 	}
 
+	/**
+	 * Find out which key is currently being used for the Up movement
+	 * @return	The keycode for Up from KeyEvent.VK_* 
+	 */
 	public int getKeyUp()
 	{
 		return keyUp;
@@ -122,6 +150,18 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	public void setKeyUp(int keyUp)
 	{
 		this.keyUp = keyUp;
+	}
+	
+	/**
+	 * Asks if the user has hit the fire button recently
+	 * @return
+	 */
+	public boolean isButtonFired()
+	{
+		boolean result = mouseFired;
+		//mouseFired = false;
+		
+		return result;
 	}
 	
 	/**
@@ -163,37 +203,49 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	
 	public void mouseClicked(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mouseEntered(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mouseExited(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mousePressed(MouseEvent e)
 	{
+		if (e.getButton() == mouseFire)
+			mouseFired = true;
 		
+		updateMousePosition(e);
 	}
 
 	public void mouseReleased(MouseEvent e)
 	{
+		if (e.getButton() == mouseFire)
+			mouseFired = false;
 		
+		updateMousePosition(e);
 	}
 
 	public void mouseDragged(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
 	}
 
 	public void mouseMoved(MouseEvent e)
 	{
-		
+		updateMousePosition(e);
+	}
+	
+	private void updateMousePosition(MouseEvent e)
+	{
+		mouseX = e.getX();
+		mouseY = e.getY();
 	}
 	
 	/* ******************* *

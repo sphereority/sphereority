@@ -42,7 +42,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	// Sound stuff
 	public GameSoundSystem soundSystem;
-	public SoundEffect soundBump;
+	public SoundEffect soundBump, soundDeath, soundFire;
 
 	// CONSTRUCTORS
 	public GameEngine(Map m, byte playerID, String name)
@@ -82,12 +82,15 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
+		localInputListener.attachListeners(gameViewArea);
 		
 		triggerMapListeners();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
+		soundDeath = soundSystem.loadSoundEffect(SOUND_DEATH);
+		soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
 	}
 	
 	// GETTERS
@@ -404,6 +407,24 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	}
 	
 	/**
+	 * Plays a player death sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playDeath(float volume)
+	{
+		playSound(volume, soundDeath);
+	}
+	
+	/**
+	 * Plays a gun fire sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playFire(float volume)
+	{
+		playSound(volume, soundFire);
+	}
+	
+	/**
 	 * A slightly more generic sound playing method so we don't have to duplicate code all over the place.
 	 * This actually handles playing or not playing the sound.
 	 * @param volume
@@ -417,7 +438,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		if (sound.isPlaying())
 		{
-			if (sound.getVolume() < volume)
+			if (sound.getVolume() <= volume)
 				sound.stop();
 			else
 				return;
