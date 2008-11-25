@@ -19,7 +19,12 @@ public interface Constants
     /**
      * Address for UDP Mutlicast
      */
-    public static final String MCAST_ADDRESS = "224.0.0.1";
+    public static final String MCAST_ADDRESS = "224.1.1.10";
+    
+    /**
+     * Port for multicas socket
+     */
+    public static final int MCAST_PORT = 50000;
 	
 	/**
 	 * The fastest an object can move in units per second

@@ -73,6 +73,9 @@ public abstract class Player extends WeightedPosition {
 		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
 	}
 	
+    public String getPlayerName() {
+        return name;
+    }	
 
 	// SETTERS
 	
