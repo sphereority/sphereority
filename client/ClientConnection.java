@@ -72,6 +72,7 @@ public class ClientConnection implements ActionListener, Constants {
         // Check if we successfully logged in
         if(LoginMessage.isLoginSuccessMessage(loginSuccess)) {
             int port = LoginMessage.getPort(loginSuccess);
+            playerId = LoginMessage.getPlayerId(loginSuccess);
             System.out.printf("Port: %d\n", port);
 
             // create datagram channel & connect to rem port
@@ -85,12 +86,12 @@ public class ClientConnection implements ActionListener, Constants {
             serverUDPChannel.register(selector,serverUDPChannel.validOps());
 		    
             // send success message to send port number to server
-		    loginSuccess = LoginMessage.getLoginSuccessMessage(localport);
+		    loginSuccess = LoginMessage.getLoginSuccessMessage((byte)playerId,MCAST_ADDRESS,localport);
 		    sockChannel.write(ByteBuffer.wrap(loginSuccess));
 
             // Get your multicast address and port
-            myMCastGroup = InetAddress.getByName("239.0.0.1");
-            myMCastPort = 5000;
+            myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
+            myMCastPort = MCAST_PORT;
 
             mcastChannel.configureBlocking(false);
             mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));

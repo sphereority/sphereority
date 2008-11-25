@@ -1,15 +1,15 @@
 package server;
- 
+
 import common.*;
 import common.messages.*;
 import common.messages.LoginMessage;
- 
+
 import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
- 
-class Connection extends Thread {
+
+class Connection extends Thread implements Constants{
     /*
      * login was handled by NetworkListener.java
      * since this thread was created, NetworkListener.java:
@@ -24,82 +24,83 @@ class Connection extends Thread {
      * it sent no responses to the client
      * hence, Connection.java must acknowledge login
      */
- 
+
      // handle to the ServerGameEngine
-    ServerGameEngine           gameengine;
- 
-    String                      username;
- 
-    private Selector    selector;
-    private SelectionKey  readsocket_key;
- 
-    private Socket      sock;
-    private SocketChannel  sockchannel;
+    private ServerGameEngine        gameengine;
+
+    private String                  username;
+
+    private Selector		selector;
+    private SelectionKey	readsocket_key;
+
+    private Socket			sock;
+    private SocketChannel	sockchannel;
     private SelectionKey    socket_key;
- 
-    private DatagramSocket  dsock;
-    private DatagramChannel  dsockchannel;
+
+    private MulticastSocket	mcastsocket;
+    //private DatagramSocket	dsock;
+    private DatagramChannel	dsockchannel;
     private SelectionKey    dgram_socket_key;
- 
+
     private SocketChannel   gamechannel;
- 
- 
+
+
     Connection(String uname, ServerGameEngine sge, SocketChannel sc){
         username = uname;
         gameengine = sge;
-      sockchannel = sc;
+	    sockchannel = sc;
     }
     public void run(){
-      System.out.println("Connection.run()");
+	    System.out.println("Connection.run()");
         try {
-          /*
-           * Setup
-           *     first create a udp socket
-           */
-          // create a udp socket
-          dsockchannel = DatagramChannel.open();
-          dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
- 
-          // send login success mesage + udp port number
-          int localport = dsockchannel.socket().getLocalPort();
-          byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
-          ByteBuffer buf = ByteBuffer.allocate(4096);
-          buf.put(bytes);
-          buf.flip();
-          int numwritten = sockchannel.write(buf);
-          System.out.printf("Connection.java: first write: number of bytes written: %d\n", numwritten);
-          // get response to success message
-          buf.clear();
-          int numread = sockchannel.read(buf);
-          System.out.printf("Connection.java: first read: bytes read: %d\n", numread);
-          bytes = new byte[numread];
-          buf.flip();
-          buf.get(bytes);
-          String message = LoginMessage.getMessageString(bytes);
-          System.out.println(message);
- 
-            // connect udp socket to client
+	        /*
+	         * Setup
+	         */
+        	//register client with game engine
+        	byte playerid = gameengine.newClient(username);
+	        // create a muticast socket
+        	dsockchannel = DatagramChannel.open();
+	        dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
+
+	        // send login success mesage + udp port number
+	        int localport = dsockchannel.socket().getLocalPort();
+	        byte [] bytes = LoginMessage.getLoginSuccessMessage(playerid,MCAST_ADDRESS,localport);
+	        ByteBuffer buf = ByteBuffer.allocate(4096);
+	        buf.put(bytes);
+	        buf.flip();
+	        int numwritten = sockchannel.write(buf);
+	        System.out.printf("Connection.java: first write: number of bytes written: %d\n", numwritten);
+	        // get response to success message
+	        buf.clear();
+	        int numread = sockchannel.read(buf);
+	        System.out.printf("Connection.java: first read: bytes read: %d\n", numread);
+	        bytes = new byte[numread];
+	        buf.flip();
+	        buf.get(bytes);
+	        String message = LoginMessage.getMessageString(bytes);
+	        System.out.println(message);
+
             if (!LoginMessage.isLoginSuccessMessage(bytes)){
                 System.out.println("Client could not connect");
             }
             else {
                 int udp_remoteport = LoginMessage.getPort(bytes);
                 dsockchannel.socket().connect(new InetSocketAddress(sockchannel.socket().getInetAddress(),udp_remoteport));
- 
+
                 // register the client with the game engine
                 // gived it handles to the outputs streams of the sockets so it can send on it's own
-                gameengine.newClient(username,sockchannel,dsockchannel);
- 
+                gameengine.clientChannels(playerid, sockchannel,dsockchannel);
+
                 // create the selector for polling the channels
                 selector = Selector.open();
                 // set channels to non-blocking and register them
-              sockchannel.configureBlocking(false);
-              socket_key = sockchannel.register( selector, SelectionKey.OP_READ );
+        	    sockchannel.configureBlocking(false);
+        	    socket_key = sockchannel.register( selector, SelectionKey.OP_READ );
                 //socket_key.attach(oistream);
-              dsockchannel.configureBlocking(false);
-              dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ );
-                dgram_socket_key.attach(new String("datagram"));
- 
+        	    dsockchannel.configureBlocking(false);
+        	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ );
+                //dgram_socket_key.attach(new String("datagram"));
+
                 /*
                  * Everything is set up
                  * Sleep on the selector
@@ -110,7 +111,7 @@ class Connection extends Thread {
                      blah++;
                      // wait for an event
                      int numkeys = selector.select();
-                     System.out.print("NUmber of keys ready: ");
+                     System.out.print("Number of keys ready: ");
                      System.out.println(numkeys);
                      // get list of selection keys with pending events
                      Set keySet = selector.selectedKeys();
@@ -126,17 +127,16 @@ class Connection extends Thread {
                      }
                      keySet.clear();
                  }
- 
             }
                 
             dsockchannel.close();
             sockchannel.close();
         }
         catch (Exception e){
-          System.out.println("Connection.java: Damn! ");
-          e.printStackTrace();
-          System.exit(1);
-      }
+	        System.out.println("Connection.java: Damn! ");
+	        e.printStackTrace();
+	        System.exit(1);
+	    }
     }
     private void processSelectionKey(SelectionKey selKey){
         if (selKey.isValid() && selKey.isReadable()){
