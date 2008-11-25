@@ -208,6 +208,9 @@ public class ClientConnection implements ActionListener, Constants {
             // Get the message from the buffer
             Message message = MessageAnalyzer.getMessage(buffer);
             
+            if (message == null)
+            	return;
+            
             if(message.getPlayerId() == engine.localPlayer.getPlayerID())
                 return;
 

@@ -77,7 +77,7 @@ public class Sphereority extends Thread implements Constants {
 			
 			// Show the login dialog again
 		}
-		while (loginWindow.show());
+		while (loginWindow != null && loginWindow.show());
 		// If quit, don't loop
 		
 		// TEMP: this is for testing only:

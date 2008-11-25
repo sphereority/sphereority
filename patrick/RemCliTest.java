@@ -52,8 +52,8 @@ class RemCliTest {
 		int localport = dchannel.socket().getLocalPort();
 		System.out.printf("UDP local port: %d\n", localport);
 		// send success message to send port number to server
-		bytes = LoginMessage.getLoginSuccessMessage(localport);
-		ostream.writeObject(bytes);
+		//bytes = LoginMessage.getLoginSuccessMessage(localport);
+		//ostream.writeObject(bytes);
         //ostream.writeObject((new DeathMessage( (byte) 1, (byte) 1, (byte) 1 )).getByteMessage());
 //        ostream.writeObject((new DeathMessage( (byte) 2, (byte) 2, (byte) 2 )).getByteMessage());
 //        ostream.writeObject((new DeathMessage( (byte) 3, (byte) 3, (byte) 3 )).getByteMessage());

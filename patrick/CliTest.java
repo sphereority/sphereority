@@ -59,7 +59,7 @@ class CliTest {
 	        buf.flip();
 	        channel.write(buf);
 	        
-	        DeathMessage dm = new DeathMessage((byte) 1,(byte) 1,(byte) 1);
+	        DeathMessage dm = new DeathMessage((byte) 1, (byte) 1);
 	        bytes = dm.getByteMessage();
 	        buf.clear();
 	        buf.put(bytes);
