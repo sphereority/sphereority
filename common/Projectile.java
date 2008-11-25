@@ -45,6 +45,9 @@ public class Projectile extends Actor
 
 	public void draw(Graphics2D g, float scale)
 	{
+		if (!isAlive())
+			return;
+		
 		if (team == TEAM_A)
 			g.setColor(TEAM_A_COLOR);
 		else if (team == TEAM_B)
