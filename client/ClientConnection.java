@@ -259,10 +259,11 @@ public class ClientConnection implements ActionListener, Constants {
             checkMessages();
 
             // Send motion message for this player
-            sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
-                                            engine.localPlayer.getPosition(),
-                                            engine.localPlayer.getVelocity(),
-                                            (float)System.currentTimeMillis()));
+//            sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
+//                                            engine.localPlayer.getPosition(),
+//                                            engine.localPlayer.getVelocity(),
+//                                            (float)System.currentTimeMillis()));
+            sendMessage(engine.localPlayer.getMotionPacket(engine.currentTime));
         }
         catch (Exception ex) {
             ex.printStackTrace();
