@@ -25,13 +25,18 @@ public class Sphereority extends Thread implements Constants {
 	
 	public static void main(String[] args) {
 		// Create and display the LoginDialog
-		loginWindow = new ClientLogonDialog(null);
+		//loginWindow = new ClientLogonDialog(null);
 		
 		// If the user quit the dialog, we must quit
-		if (!loginWindow.show())
-			System.exit(0);
+		//if (!loginWindow.show())
+		//	System.exit(0);
 		// Else play the game
-		
+        String serverName = "localhost";
+
+        if (args.length == 1) {
+            serverName = args[0];
+        }		
+
 		Map map;
 		GameEngine game;
         ClientConnection connection;
@@ -39,7 +44,7 @@ public class Sphereority extends Thread implements Constants {
 		{
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
-			game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName, null);
+			game = new GameEngine(map, (byte)RANDOM.nextInt(256), "User" + ((int)Math.random()), null);
             connection = new ClientConnection(game);
 			
 			// Set up the game gameWindow
@@ -54,7 +59,7 @@ public class Sphereority extends Thread implements Constants {
 			
             Sphereority s = new Sphereority(game,connection);
             try {
-                connection.loginToServer("localhost","Bob");	
+                connection.loginToServer(serverName,"Bob");	
             }
             catch (Exception ex) {
             }
