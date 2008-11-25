@@ -36,6 +36,7 @@ public class MulticastReader extends Thread implements Constants {
         while(true) {
             try {
                 socket.receive(packet);
+                System.out.printf("Recieved packet of length %d\n", packet.getLength());
                 pipe.write(ByteBuffer.wrap(packet.getData()));
             }
             catch (Exception ex) {
