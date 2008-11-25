@@ -59,7 +59,7 @@ public class RemotePlayer extends Player
 			}
 			else
 			{
-				timeDiff = currentTime - m.getTime();
+				timeDiff = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
 				x += timeDiff * m.getVelocity().getX() + m.getPosition().getX();
 				y += timeDiff * m.getVelocity().getY() + m.getPosition().getY();
 				totalDiff += timeDiff;
