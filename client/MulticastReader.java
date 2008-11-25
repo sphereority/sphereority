@@ -40,6 +40,7 @@ public class MulticastReader extends Thread implements Constants {
             }
             catch (Exception ex) {
             }
+            Thread.yield();
         }
     }
 }

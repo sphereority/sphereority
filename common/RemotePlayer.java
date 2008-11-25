@@ -76,6 +76,7 @@ public class RemotePlayer extends Player
 				for (PlayerMotionMessage m : messageList)
 				{
 					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
+					weight = weight*weight;
 					x += weight * m.getVelocity().getX() + m.getPosition().getX();
 					y += weight * m.getVelocity().getY() + m.getPosition().getY();
 					totalWeight += weight;
