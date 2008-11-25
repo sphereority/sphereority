@@ -217,7 +217,7 @@ public class ClientConnection implements ActionListener, Constants {
             switch(message.getMessageType()) {
                 case PlayerMotion:
                     engine.processPlayerMotion((PlayerMotionMessage)message);
-                    //System.out.println("PlayerMotion: " + message.getPlayerId() + " moved");
+                    System.out.printf("PlayerMotion: %d moved to\t\t(%.2f,%.2f)\n", message.getPlayerId(), ((PlayerMotionMessage)message).getPosition().getX(), ((PlayerMotionMessage)message).getPosition().getY());
                     break;
                 case PlayerJoin:
                     PlayerJoinMessage msg = (PlayerJoinMessage) message;

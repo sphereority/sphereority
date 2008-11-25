@@ -49,6 +49,8 @@ public class RemotePlayer extends Player
 		{
 			lock.acquire();
 			messageList.add(msg);
+			while (messageList.size() > MAX_SAVED_MESSAGES)
+				messageList.removeElementAt(0);
 			lock.release();
 		}
 		catch (InterruptedException er)
@@ -61,26 +63,34 @@ public class RemotePlayer extends Player
 	{
 		this.currentTime = currentTime;
 		
-		float x, y, weight, totalWeight;
+		float x, y, totalWeight;
 		x = y = totalWeight = 0;
+		// float weight;
 		
 		do
 		{
 			try
 			{
 				//lock.acquire();
-				for (PlayerMotionMessage m : messageList)
-					if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
-						messageList.remove(m);
+//				for (PlayerMotionMessage m : messageList)
+//					if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
+//						messageList.remove(m);
 				
-				for (PlayerMotionMessage m : messageList)
-				{
-					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
-					weight = weight*weight;
-					x += weight * m.getVelocity().getX() + m.getPosition().getX();
-					y += weight * m.getVelocity().getY() + m.getPosition().getY();
-					totalWeight += weight;
-				}
+				if (messageList.size() < 1)
+					return false;
+				
+				x = messageList.get(messageList.size()-1).getPosition().getX();
+				y = messageList.get(messageList.size()-1).getPosition().getY();
+				totalWeight = 1;
+				
+//				for (PlayerMotionMessage m : messageList)
+//				{
+//					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
+//					weight = weight*weight;
+//					x += weight * m.getVelocity().getX() + m.getPosition().getX();
+//					y += weight * m.getVelocity().getY() + m.getPosition().getY();
+//					totalWeight += weight;
+//				}
 				//lock.release();
 			}
 //			catch (InterruptedException er)

@@ -32,6 +32,8 @@ public class LocalPlayer extends Player
 		width = height = PLAYER_SIZE;
 		
 		timeSinceLastShot = RELOAD_TIME; 
+		
+		System.out.printf("New player with ID %d\n", playerID);
 	}
 	
 	public LocalPlayer(InputListener input, byte playerID, String name)
@@ -39,6 +41,8 @@ public class LocalPlayer extends Player
 		super(playerID, name);
 		inputDevice = input;
 		width = height = PLAYER_SIZE;
+		
+		System.out.printf("New player with ID %d\n", playerID);
 	}
 	
 	public void fire()
