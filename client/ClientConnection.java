@@ -3,6 +3,7 @@ package client;
 import common.*;
 import common.messages.*;
 
+import javax.swing.Timer;
 import java.net.*;
 import java.io.*;
 import java.nio.*;
@@ -18,17 +19,25 @@ public class ClientConnection {
     private Selector selector;
     private SocketChannel sockChannel;
     private DatagramChannel serverUDPChannel;
-    private MulticastSocket mcastSocket;
+    private DatagramChannel mcastChannel;
     private TreeMap<Integer,MulticastSocket> clientMcastSockets;
     
     private InetAddress myMCastGroup;
     private int myMCastPort;
 
+    /**
+     * Creates a client connection to the server and other clients.
+     * @param engine
+     * @param serverName
+     * @param port
+     * @param userName
+     */
 	public ClientConnection(GameEngine engine, String serverName, int port, String userName)  {
         try {
             this.engine = engine;
             this.sockChannel = SocketChannel.open();
-            this.mcastSocket = new MulticastSocket();
+            this.serverUDPChannel = DatagramChannel.open();
+            this.mcastChannel = DatagramChannel.open();
             this.selector = Selector.open();
             this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
             loginToServer(serverName, port, userName);
@@ -65,7 +74,6 @@ public class ClientConnection {
             System.out.printf("Port: %d\n", port);
 
             // create datagram channel & connect to rem port
-            serverUDPChannel = DatagramChannel.open();
             serverUDPChannel.configureBlocking(false);
             serverUDPChannel.connect(new InetSocketAddress(serverName,port));
 
@@ -82,6 +90,10 @@ public class ClientConnection {
             // Get your multicast address and port
             myMCastGroup = InetAddress.getByName("239.0.0.1");
             myMCastPort = 5000;
+
+            mcastChannel.configureBlocking(false);
+            mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));
+            mcastChannel.register(selector,mcastChannel.validOps());
         }
         else {
             System.err.println("Unable to log in!");
@@ -163,17 +175,13 @@ public class ClientConnection {
      */
     public void sendMessage(Message message) throws Exception {
         byte[] byteMessage = message.getByteMessage();
-        DatagramPacket packet = new DatagramPacket(byteMessage, 
-                                                   byteMessage.length,
-                                                   myMCastGroup,
-                                                   myMCastPort);
-        mcastSocket.send(packet);
+        mcastChannel.write(ByteBuffer.wrap(byteMessage));
     }
 
     /**
      * 
      */
     protected void registerPlayer(int playerId, InetSocketAddress mcastAddress) {
-        
+      
     }
 }
