@@ -19,7 +19,7 @@ class NetworkListener extends Thread {
     private InetSocketAddress	inetsockadd;
 
     // to store connection thread objects
-    private int			numConnections = 5;
+    private int			numConnections = 255;
     private Connection	[]	connections = new Connection[numConnections];
 
     // for login
@@ -62,21 +62,14 @@ class NetworkListener extends Thread {
 	try {
 		ByteBuffer buf = ByteBuffer.allocate(4096);
 		int numread = connchannel.read(buf);
-		System.out.printf("NetworkListener.java: first message, number of bytes read: %d\n", numread);
+		System.out.printf("NetworkListener.java: login message, number of bytes read: %d\n", numread);
 		buf.flip();
 		bytes = new byte[numread];
 		buf.get(bytes);
 		
-	    //istream = new ObjectInputStream(connchannel.socket().getInputStream());
-	    //obj = istream.readObject();
-	    //numBytes = Array.getLength(obj);
-	    //bytes = new byte[numBytes];
-	    //for (int i=0; i<numBytes; i++)
-	    	//bytes[i] = Array.getByte(obj,i);
-
 	    // get user name and password
-            String uname;
-            String upass;
+        String uname;
+        String upass;
 	    if (LoginMessage.isLoginMessage(bytes)){
 		uname = LoginMessage.getUserName(bytes);
 		upass = LoginMessage.getUserPass(bytes);
