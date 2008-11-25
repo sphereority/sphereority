@@ -53,7 +53,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		localPlayer = new LocalPlayer(localInputListener, playerID, name);
 		//this.connection = connection;
 		
-		postSetup(connection != null);
+		postSetup(true);
 	}
 	
 	public GameEngine(Map m)
@@ -118,6 +118,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		if (fixed)
 		{
 	        for(byte i = 0; i < 5; i++) {
+                System.out.println("Was Added");
 	            if(i != localPlayer.getPlayerID()) {
 	                processPlayerJoin(
 	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
