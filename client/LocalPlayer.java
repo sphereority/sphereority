@@ -3,7 +3,6 @@ package client;
 import java.awt.geom.Rectangle2D;
 
 import common.*;
-import common.messages.*;
 
 /**
  * This class describes a human player who has local access to the keyboard and
