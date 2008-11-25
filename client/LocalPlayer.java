@@ -17,6 +17,7 @@ public class LocalPlayer extends Player
 	protected InputListener inputDevice;
 	protected Rectangle2D bounds = null;
 	protected float timeSinceLastShot;
+	protected Actor aimingTarget;
 	
 	/**
 	 * Due to the requirement that this type of Player needs information about
@@ -48,17 +49,26 @@ public class LocalPlayer extends Player
 		super.fire();
 		timeSinceLastShot = 0;
 		GameEngine.gameEngine.playFire(1.0f);
+		
+		Projectile p = new Projectile(new Position(position), new Position(aim), curTime, curTime, (byte)playerID, team);
+		GameEngine.gameEngine.addActor(p);
 	}
 	
 	public boolean animate(float dTime, float currentTime)
 	{
 		timeSinceLastShot += dTime;
 		
-		if (inputDevice.isLeftKeyPressed())  accelerate(-PLAYER_ACCELERATION*dTime, 0);
-		if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
-		if (inputDevice.isUpKeyPressed())    accelerate(0, -PLAYER_ACCELERATION*dTime);
-		if (inputDevice.isDownKeyPressed())  accelerate(0, PLAYER_ACCELERATION*dTime);
-		if (inputDevice.isButtonFiring())     fire();
+		if (inputDevice != null)
+		{
+			if (inputDevice.isLeftKeyPressed())  accelerate(-PLAYER_ACCELERATION*dTime, 0);
+			if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
+			if (inputDevice.isUpKeyPressed())    accelerate(0, -PLAYER_ACCELERATION*dTime);
+			if (inputDevice.isDownKeyPressed())  accelerate(0, PLAYER_ACCELERATION*dTime);
+			if (inputDevice.isButtonFiring())    fire();
+		}
+		
+		if (aimingTarget != null)
+			aimAt(aimingTarget);
 		
 		boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)
@@ -156,5 +166,15 @@ public class LocalPlayer extends Player
 	private void playBump()
 	{
 		GameEngine.gameEngine.playBump(velocity.getMagnitude());
+	}
+
+	public Actor getAimingTarget()
+	{
+		return aimingTarget;
+	}
+
+	public void setAimingTarget(Actor aimingTarget)
+	{
+		this.aimingTarget = aimingTarget;
 	}
 } // end class LocalPlayer

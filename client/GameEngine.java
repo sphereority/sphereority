@@ -98,6 +98,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameMap.placePlayer(localPlayer);
 		
 		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+		localPlayer.setAimingTarget(mouseTracker);
 		
 		DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
 		
