@@ -24,6 +24,11 @@ public class ClientConnection implements ActionListener, Constants {
     private TreeMap<Integer,MulticastSocket> clientMcastSockets;
     private javax.swing.Timer timer;
 
+    private MulticastSocket mSocket;
+    private MulticastReader reader;
+    private Pipe pipe;
+    private Pipe.SourceChannel source;
+    
     private InetAddress myMCastGroup;
     private int myMCastPort;
 
@@ -38,8 +43,9 @@ public class ClientConnection implements ActionListener, Constants {
         try {
             this.engine = engine;
             this.sockChannel = SocketChannel.open();
-            this.serverUDPChannel = DatagramChannel.open();
-            this.mcastChannel = DatagramChannel.open();
+            //this.serverUDPChannel = DatagramChannel.open();
+            //this.mcastChannel = DatagramChannel.open();
+            
             this.selector = Selector.open();
             this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
         } catch (Exception ex) {
@@ -55,7 +61,7 @@ public class ClientConnection implements ActionListener, Constants {
         int playerId = -1;
         // Create a ByteBuffer
         ByteBuffer buffer = ByteBuffer.allocate(4096);
-        buffer.rewind();
+        buffer.flip();
 
         /*
         // Connect to the specified server
@@ -106,54 +112,68 @@ public class ClientConnection implements ActionListener, Constants {
         }
         else {
             System.err.println("Unable to log in!");
-        }142.58.51.74*/
+        }*/
 
             // Get your multicast address and port
-            myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
+            /*myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
             myMCastPort = MCAST_PORT;
-
             mcastChannel.configureBlocking(false);
             mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));
+            
             mcastChannel.register(selector,mcastChannel.validOps());
     
             // Notify everyone that we have joined
             PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerID(),
                                                               new InetSocketAddress(myMCastGroup,myMCastPort),
                                                               engine.localPlayer.getPlayerName());
-            sendMessage(message);
+            sendMessage(message);*/
+        myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
+        myMCastPort  = MCAST_PORT;
+        mSocket = new MulticastSocket(MCAST_PORT);
+        mSocket.joinGroup(myMCastGroup);
         
+        pipe = Pipe.open();
+        source = pipe.source();
+
+        source.configureBlocking(false);
+        source.register(selector,SelectionKey.OP_READ);
+
+        reader = new MulticastReader(mSocket,pipe.sink());
+        reader.start();
+
         return playerId;
     }
 
     /**
      * Checks if messages have been sent to the client.
      */
-    public void checkReceivedMessages() {
+    public void checkMessages() {
         // Wait to receive a message
         try {
-        	selector.select(10);
+        	selector.select(20);
         }
         catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
         
         // Go through all the received messages
         Iterator<SelectionKey> it = selector.selectedKeys().iterator();
         ByteBuffer receivedBuffer = ByteBuffer.allocate(4096);
-        
+      
         // Do a max of 20 messages at a time for efficiency reasons
-        for(int i = 0; it.hasNext() && i < 20; i++) {
+        for(int i = 0; it.hasNext() ; i++) {
             SelectionKey selKey = it.next();
             
-            // Remove it to indicate it is processed
-            it.remove();
-            
             try {
+                receivedBuffer.clear();
                 processMessage(selKey,receivedBuffer);
             }
             catch (Exception ex) {
-                System.err.println(ex.getMessage());
+                ex.printStackTrace();
             }
+            // Remove it to indicate it is processed
+            it.remove();
+            
             // Reset the buffer for further use
             receivedBuffer.clear();
             receivedBuffer.flip();
@@ -168,24 +188,29 @@ public class ClientConnection implements ActionListener, Constants {
      */
     protected void processMessage(SelectionKey selKey, ByteBuffer buffer) throws Exception {
         // Since the ready operations are cumulative,
-        // need to check readiness for each operation
-        if (selKey.isValid() && selKey.isConnectable()) {
+        // need to check readiness for each operation    
+        if (selKey.isValid() && selKey.isReadable()) {
             // Get channel with connection request
-            DatagramChannel dChannel = (DatagramChannel)selKey.channel();
-            dChannel.read(buffer);
-            
+            source.read(buffer);
+            buffer.rewind();
             // Get the message from the buffer
             Message message = MessageAnalyzer.getMessage(buffer);
             
-            // Handle the messages
+            System.out.println(message.getMessageType());
+            
             switch(message.getMessageType()) {
                 case PlayerMotion:
-                    engine.processPlayerMotion((PlayerMotionMessage)message);
+                    //engine.processPlayerMotion((PlayerMotionMessage)message);
+                    System.out.println(message.getPlayerId() + " moved");
                     break;
                 case PlayerJoin:
                     PlayerJoinMessage msg = (PlayerJoinMessage) message;
+                    System.out.println(msg.getName() + " wants to join");
                     engine.processPlayerJoin(msg);
                     registerPlayer(msg.getPlayerId(),msg.getAddress());
+                    break;
+                default:
+                    System.out.println("Got Undefined Message");
                     break;
             }
         }
@@ -198,7 +223,9 @@ public class ClientConnection implements ActionListener, Constants {
      */
     public void sendMessage(Message message) throws Exception {
         byte[] byteMessage = message.getByteMessage();
-        mcastChannel.write(ByteBuffer.wrap(byteMessage));
+        DatagramPacket packet = new DatagramPacket(byteMessage,byteMessage.length,
+                                                   myMCastGroup,myMCastPort);
+        mSocket.send(packet);
     }
 
     /**
@@ -212,19 +239,16 @@ public class ClientConnection implements ActionListener, Constants {
      *  
      */
     public void actionPerformed(ActionEvent e) {
-        try
-        {
-        checkReceivedMessages();
+        try {
+            checkMessages();
 
-        // Send motion message for this player
-        sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
+            // Send motion message for this player
+            sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
                                             engine.localPlayer.getPosition(),
                                             engine.localPlayer.getVelocity(),
                                             0f));
-        System.out.println("Sent A Message");
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             ex.printStackTrace();
         }
         

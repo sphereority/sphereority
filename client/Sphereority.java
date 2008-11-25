@@ -3,6 +3,7 @@ package	client;
 import common.*;
 import java.awt.BorderLayout;
 import javax.swing.*;
+import java.util.Random;
 
 /**
  * This is the main client application
@@ -44,7 +45,10 @@ public class Sphereority extends Thread implements Constants {
 		{
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
-			game = new GameEngine(map, (byte)RANDOM.nextInt(256), "User" + ((int)Math.random()), null);
+            Random random = new Random();
+            byte playerId = (byte) random.nextInt(10);
+            System.out.println(playerId);
+			game = new GameEngine(map, playerId, "User" + playerId, null);
             connection = new ClientConnection(game);
 			
 			// Set up the game gameWindow
