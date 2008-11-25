@@ -34,10 +34,14 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		mouseFiring = false;
 		
 		// Default bindings:
-		keyLeft = KeyEvent.VK_LEFT;
-		keyRight = KeyEvent.VK_RIGHT;
-		keyUp = KeyEvent.VK_UP;
-		keyDown = KeyEvent.VK_DOWN;
+//		keyLeft = KeyEvent.VK_LEFT;
+//		keyRight = KeyEvent.VK_RIGHT;
+//		keyUp = KeyEvent.VK_UP;
+//		keyDown = KeyEvent.VK_DOWN;
+		keyLeft = KeyEvent.VK_A;
+		keyRight = KeyEvent.VK_D;
+		keyUp = KeyEvent.VK_W;
+		keyDown = KeyEvent.VK_S;
 		mouseFireButton = MouseEvent.BUTTON1;
 	}
 	
