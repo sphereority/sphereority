@@ -20,11 +20,13 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public static final int MAP_WIDTH = 16;
 	public static final int MAP_HEIGHT = 16;
 	public static final boolean DRAW_CENTER_DOT = false;
-	
+
+    public int framesPerSecond;	
 	// Drawing-related variables
 	protected boolean antialiasing;
 	protected float scale;
 	protected boolean drawMap;
+	protected Point lastOffset;
 	
 	// Colour-defining variables
 	
@@ -39,12 +41,12 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected GameEngine gameEngine;
 	
 	// Temporary testing stuff:
-	protected long lastTime;
 	
 	public ClientViewArea(GameEngine engine)
 	{
 		gameEngine = engine;
 		
+        framesPerSecond = 0;
 		Dimension d = new Dimension(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
 		setMinimumSize(d);
 		setPreferredSize(d);
@@ -60,10 +62,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		widgetList = new Vector<Widget>();
 		scale = 50;
 		
-		lastTime = System.currentTimeMillis();
-		
 		antialiasing = false;
-		drawMap = false;
+		drawMap = true;
 		
 		MapRadar radar = new MapRadar(5, -5, gameEngine, map);
 		addWidget(radar);
@@ -79,19 +79,25 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
 		
-		super.setFocusable(true);
+		lastOffset = new Point();
+		
+		setFocusable(true);
+	}
+	
+	public Point getLastOffset()
+	{
+		return lastOffset;
 	}
 	
 	public void setLocalPlayer(LocalPlayer p)
 	{
 		localPlayer = p;
-		if (viewTracker == null)
-		{
-			viewTracker = new TrackingObject(localPlayer.getPosition());
-		}
-		viewTracker.setTarget(localPlayer);
-		if (!gameEngine.actorList.contains(viewTracker))
-			gameEngine.addActor(viewTracker);
+		
+//		if (viewTracker == null)
+//		{
+//			viewTracker = new TrackingObject(localPlayer);
+//			gameEngine.addActor(viewTracker);
+//		}
 		
 		repaint();
 	}
@@ -170,10 +176,17 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			offset_y -= Math.round(viewTracker.getPosition().getY()*scale);
 		}
 		
+		lastOffset.x = offset_x;
+		lastOffset.y = offset_y;
+		
 		g2.translate(offset_x, offset_y);		
 		
 		// Draw all actors:
-		for (Actor a : gameEngine.actorList)
+//		for (Actor a : gameEngine.actorList)
+//			a.draw(g2, scale);
+		for (Actor a : gameEngine.bulletList)
+			a.draw(g2, scale);
+		for (Actor a : gameEngine.playerList)
 			a.draw(g2, scale);
 		
 		// Draw the walls
@@ -220,6 +233,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		// Restore all parameters changed
 		g2.setColor(oldColor);
+        
 	}
 	
 	// Called when the mouse is moved with at least one button down
@@ -337,5 +351,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void mapChanged(Map newMap)
 	{
 		setMap(newMap);
+	}
+
+	public float getScale()
+	{
+		return scale;
 	}
 } // end ClientViewArea clas

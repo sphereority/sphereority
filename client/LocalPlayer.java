@@ -3,7 +3,6 @@ package client;
 import java.awt.geom.Rectangle2D;
 
 import common.*;
-import common.messages.*;
 
 /**
  * This class describes a human player who has local access to the keyboard and
@@ -16,6 +15,8 @@ public class LocalPlayer extends Player
 {
 	protected InputListener inputDevice;
 	protected Rectangle2D bounds = null;
+	protected float timeSinceLastShot;
+	protected Actor aimingTarget;
 	
 	/**
 	 * Due to the requirement that this type of Player needs information about
@@ -28,6 +29,10 @@ public class LocalPlayer extends Player
 	{
 		inputDevice = input;
 		width = height = PLAYER_SIZE;
+		
+		timeSinceLastShot = RELOAD_TIME; 
+		
+		System.out.printf("New player with ID %d\n", playerID);
 	}
 	
 	public LocalPlayer(InputListener input, byte playerID, String name)
@@ -35,31 +40,45 @@ public class LocalPlayer extends Player
 		super(playerID, name);
 		inputDevice = input;
 		width = height = PLAYER_SIZE;
+		
+		System.out.printf("New player with ID %d\n", playerID);
 	}
 	
-	public boolean animate(float dTime)
+	public void fire()
 	{
-		if (inputDevice.isLeftKeyPressed()) accelerate(-PLAYER_ACCELERATION*dTime, 0);
-		if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
-		if (inputDevice.isUpKeyPressed()) accelerate(0, -PLAYER_ACCELERATION*dTime);
-		if (inputDevice.isDownKeyPressed()) accelerate(0, PLAYER_ACCELERATION*dTime);
+		if (timeSinceLastShot < RELOAD_TIME)
+			return;
 		
-		boolean result = super.animate(dTime);
+		super.fire();
+		timeSinceLastShot = 0;
+		GameEngine.gameEngine.playFire(1.0f);
+		
+		Projectile p = new Projectile(new Position(position), new Position(aim), curTime, curTime, (byte)playerID, team);
+		GameEngine.gameEngine.addActor(p);
+	}
+	
+	public boolean animate(float dTime, float currentTime)
+	{
+		timeSinceLastShot += dTime;
+		
+		if (inputDevice != null)
+		{
+			if (inputDevice.isLeftKeyPressed())  accelerate(-PLAYER_ACCELERATION*dTime, 0);
+			if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
+			if (inputDevice.isUpKeyPressed())    accelerate(0, -PLAYER_ACCELERATION*dTime);
+			if (inputDevice.isDownKeyPressed())  accelerate(0, PLAYER_ACCELERATION*dTime);
+			if (inputDevice.isButtonFiring())    fire();
+		}
+		
+		if (aimingTarget != null)
+			aimAt(aimingTarget);
+		
+		boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)
 		{
 			bounds.setRect(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height); 
 		}
 		return result;
-	}
-	
-	/**
-	 * Create a player motion packet
-	 * @param currentTime	The current game time
-	 * @return	The motion packet
-	 */
-	public PlayerMotionMessage getMotionPacket(float currentTime)
-	{
-		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
 	}
 	
 	public void collision(Actor a)
@@ -97,6 +116,7 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedY() > 0)
 		{
+			playBump();
 			velocity.bounceY();
 			velocity.setY(velocity.getY() - BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -107,6 +127,7 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedX() < 0)
 		{
+			playBump();
 			velocity.bounceX();
 			velocity.setX(velocity.getX() + BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -117,6 +138,7 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedX() > 0)
 		{
+			playBump();
 			velocity.bounceX();
 			velocity.setX(velocity.getX() - BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -127,9 +149,25 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedY() < 0)
 		{
+			playBump();
 			velocity.bounceY();
 			velocity.setY(velocity.getY() + BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
+	}
+	
+	private void playBump()
+	{
+		GameEngine.gameEngine.playBump(velocity.getMagnitude());
+	}
+
+	public Actor getAimingTarget()
+	{
+		return aimingTarget;
+	}
+
+	public void setAimingTarget(Actor aimingTarget)
+	{
+		this.aimingTarget = aimingTarget;
 	}
 } // end class LocalPlayer

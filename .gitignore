@@ -2,5 +2,7 @@
 *.classpath
 *.prefs
 *.project
+*.swo
 *.swp
 *~
+.DS_Store

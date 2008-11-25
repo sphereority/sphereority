@@ -49,7 +49,7 @@ public class WeightedPosition extends Actor implements Constants
 	/**
 	 * This method handles moving the object around
 	 */
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		// Apply some friction to our motion
 		velocity.scale(1 - ((1 - FRICTION_COEFFICIENT)*dTime));

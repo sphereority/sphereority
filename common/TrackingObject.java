@@ -14,6 +14,12 @@ public class TrackingObject extends WeightedPosition
 		this(0, 0);
 	}
 	
+	public TrackingObject(Actor a)
+	{
+		this(a.getPosition());
+		setTarget(a);
+	}
+	
 	public TrackingObject(float x, float y)
 	{
 		super();
@@ -38,7 +44,7 @@ public class TrackingObject extends WeightedPosition
 		return target;
 	}
 	
-	public boolean animate(float dTime)
+	public boolean animate(float dTime, float currentTime)
 	{
 		// If we're tracking something/someone
 		if (target != null)

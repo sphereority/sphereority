@@ -3,6 +3,7 @@ package	client;
 import common.*;
 import java.awt.BorderLayout;
 import javax.swing.*;
+import java.util.Random;
 
 /**
  * This is the main client application
@@ -10,45 +11,65 @@ import javax.swing.*;
  */
 public class Sphereority extends Thread implements Constants {
 	public static final String[] MAP_LIST = new String[]
-		{ "circles", "mercury", "random_1", "round", "sample-map", "widefield" };
+		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
 	
 	private GameEngine game;
+    private ClientConnection connection;
 	private static JDialog gameWindow;
 	private static ClientLogonDialog loginWindow;
 	
-	public Sphereority(GameEngine game)
+	public Sphereority(GameEngine game, ClientConnection connection)
 	{
 		this.game = game;
+        this.connection = connection;
 	}
 	
 	public static void main(String[] args) {
 		// Create and display the LoginDialog
-		loginWindow = new ClientLogonDialog(null);
+		//loginWindow = new ClientLogonDialog(null);
 		
 		// If the user quit the dialog, we must quit
-		if (!loginWindow.show())
-			System.exit(0);
+		//if (!loginWindow.show())
+		//	System.exit(0);
 		// Else play the game
-		
-		// This now grabs a random map on startup
-		Map map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
-		GameEngine game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName);
-		
-		// Set up the game gameWindow
-		gameWindow = new JDialog();
-		gameWindow.setTitle(CLIENT_WINDOW_NAME);
-		gameWindow.setModal(true);
-		
-		gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-		
-		gameWindow.pack();
-		gameWindow.setLocationRelativeTo(null);
-		
-		Sphereority s = new Sphereority(game);
-		s.start();
+        String serverName = "localhost";
+
+        if (args.length == 1) {
+            serverName = args[0];
+        }		
+
+		Map map;
+		GameEngine game;
+        ClientConnection connection;
 		do
 		{
-			// TODO: Technically, the GameEngine creation code should be here...
+			// This grabs a random map on startup
+			map = new Map(MAP_LIST[4]);
+            Random random = new Random();
+            byte playerId = (byte) random.nextInt(6);
+            System.out.println(playerId);
+            connection = new ClientConnection(null);
+			game = new GameEngine(map, playerId, "User" + playerId, connection);
+			connection.setGameEngine(game);
+			
+			// Set up the game gameWindow
+			gameWindow = new JDialog();
+			gameWindow.setTitle(CLIENT_WINDOW_NAME);
+			gameWindow.setModal(true);
+			
+			gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+			
+			gameWindow.pack();
+			gameWindow.setLocationRelativeTo(null);
+			
+            Sphereority s = new Sphereority(game,connection);
+            try {
+                connection.loginToServer(serverName,"Bob");	
+            }
+            catch (Exception ex) {
+            }
+
+            s.start();
 			
 			game.registerActionListeners(gameWindow);
 			// Play the game once:
@@ -57,7 +78,7 @@ public class Sphereority extends Thread implements Constants {
 			
 			// Show the login dialog again
 		}
-		while (loginWindow.show());
+		while (loginWindow != null && loginWindow.show());
 		// If quit, don't loop
 		
 		// TEMP: this is for testing only:
@@ -69,5 +90,6 @@ public class Sphereority extends Thread implements Constants {
 	public void run()
 	{
 		game.play();
+        connection.start();
 	}
 }

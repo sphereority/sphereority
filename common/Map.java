@@ -7,23 +7,23 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Map implements Constants {
-	public static final String DEFAULT_MAP = "10 10\n"+
-    "++++++++++\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "+        +\n" +
-    "++++++++++\n"; 
+	public static final String DEFAULT_MAP = "10 10\r\n"+
+    "++++++++++\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "+        +\r\n" +
+    "++++++++++\r\n"; 
 
 	
     String name;       // map name
     String data;       // map raw data **pending for deletion (waste of space)**
     int height;        // map y size
-    int width;        // map x size
+    int width;         // map x size
     char[][] mapping;  // two dimensional array of char for mapping
     boolean[][] wall;  // two dimensional array of boolean for walls (if wall unit exists on [y][x] true, otherwise false)
     Vector<SpawnPoint> spawnPoints; // vector of spawn points on map
@@ -39,7 +39,7 @@ public class Map implements Constants {
     }
     
     /**
-     * Map constructor which reads in a map name
+     * Map constructor which reads in a map name.
      * @param mapname the name of the map to be read (default filepath is maps directory)
      */
     public Map(String mapname) {
@@ -49,12 +49,24 @@ public class Map implements Constants {
             File file = new File("maps" + File.separator + name + ".map");
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                data = data + scanner.nextLine() + "\n";
+                data = data + scanner.nextLine() + "\r\n";
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        parseData();
+    }
+    
+    /**
+     * Map constructor which reads in a map name and raw data to be parsed.
+     * Note: currently the String mapname parameter doesn't do anything, but pass it anyways.
+     * @param mapname the name of the map
+     * @param contents the raw map data
+     */
+    public Map(String mapname, String contents) {
+        name = mapname.toString();
+        data = contents.toString();
         parseData();
     }
     
@@ -173,6 +185,10 @@ public class Map implements Constants {
         {
             p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
         }
+    }
+
+    public void placePlayer(Player p, SpawnPoint sp) {
+        p.setPosition(spawnPoints.get(2).getPosition());
     }
     
     /**

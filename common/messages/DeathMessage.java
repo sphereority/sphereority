@@ -16,9 +16,9 @@ public class DeathMessage extends Message implements MessageConstants {
      * @param killed  The id of the player who was killed.
      * @param killedBy The id of the player who killed the other player.
      */
-    public DeathMessage(byte playerId, byte killed, byte killedBy) {
-        super(MessageType.ChatMessage, playerId, DeathMessageLength);
-        this.killed   = killed;
+    public DeathMessage(byte playerId, byte killedBy) {
+        super(MessageType.Death, playerId, DeathMessageLength);
+        this.killed    = playerId;
         this.killedBy  = killedBy;
     }
 

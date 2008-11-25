@@ -1,14 +1,10 @@
 package client;
 
-/**
- * This class describes the game loop for this game
- * @author smaboshe
- */
-
 import common.*;
-import common.messages.*;
+//import common.messages.*;
 import client.audio.*;
 import client.gui.*;
+import common.messages.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -23,7 +19,9 @@ import javax.swing.Timer;
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
-	public boolean gameOver;
+	public static GameEngine gameEngine;
+	
+    public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
 	public LocalPlayer localPlayer;
@@ -41,35 +39,35 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public Timer timer;
 	
 	public Vector<MapChangeListener> mapListeners;
+	public ClientConnection connection;
 	
 	// Sound stuff
 	public GameSoundSystem soundSystem;
-	public SoundEffect soundBump;
+	public SoundEffect soundBump, soundDeath, soundFire;
 
 	// CONSTRUCTORS
-	public GameEngine(Map m, byte playerID, String name)
+	public GameEngine(Map m, byte playerID, String name, ClientConnection connection)
 	{
-		setup(m);
+		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener, playerID, name);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
-		addActor(localPlayer);
+		this.connection = connection;
+		
+		postSetup(connection != null);
 	}
 	
 	public GameEngine(Map m)
 	{
-		setup(m);
+		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener);
-		gameMap.placePlayer(localPlayer);
-		gameViewArea.setLocalPlayer(localPlayer);
 		
-		addActor(localPlayer);
+		postSetup(false);
 	} // end GameEngine() constructor
 	
-	private void setup(Map m)
+	private void preSetup(Map m)
 	{
+		gameEngine = this;
 		gameOver = false;
 		gameMap = m;
 		mapListeners = new Vector<MapChangeListener>();
@@ -84,13 +82,49 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addButton(-5, -5, 45, 15, "Quit", Color.red);
 		
 		localInputListener = new InputListener();
+		localInputListener.attachListeners(gameViewArea);
 		
 		triggerMapListeners();
 		
 		// Sound engine stuff:
 		soundSystem = new GameSoundSystem();
 		soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
+		soundDeath = soundSystem.loadSoundEffect(SOUND_DEATH);
+		soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
 	}
+	
+	private void postSetup(boolean fixed)
+	{
+		if (fixed)
+			gameMap.placePlayer(localPlayer, null);
+		else
+			gameMap.placePlayer(localPlayer);
+		
+		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+		localPlayer.setAimingTarget(mouseTracker);
+		
+		DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
+		
+		TrackingObject playerTracker = new TrackingObject(doubleTracker);
+		
+		gameViewArea.viewTracker = playerTracker;
+		gameViewArea.setLocalPlayer(localPlayer);
+		
+		addActor(localPlayer);
+		addActor(mouseTracker);
+		addActor(doubleTracker);
+		addActor(playerTracker);
+        
+		if (fixed)
+		{
+	        for(byte i = 0; i < 5; i++) {
+	            if(i != localPlayer.getPlayerID()) {
+	                processPlayerJoin(
+	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
+	            }
+	        }
+		}
+    }
 	
 	// GETTERS
 	public LocalPlayer getLocalPlayer() {
@@ -173,6 +207,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		checkCollisions();
 		updateWorld();
 		
+		if (connection != null)
+			connection.actionPerformed(null);
+
 		Thread.yield();
 	}
 	
@@ -228,6 +265,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		for (int i=0; i < playerList.size(); i ++)
 		{
 			p = playerList.get(i);
+			if (!p.isAlive())
+			{
+				removeActor(p);
+				continue;
+			}
+			
 			float px = p.getX(), py = p.getY();
 			int ix = (int)px, iy = (int)py;
 			if (px < 0 || py < 0)
@@ -268,6 +311,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		for (int i=0; i < bulletList.size(); i ++)
 		{
 			actor1 = bulletList.get(i);
+			if (!actor1.isAlive())
+			{
+				removeActor(actor1);
+				continue;
+			}
+			
 			bounds1 = actor1.getBounds();
 			
 			for (int j=0; j < playerList.size(); j ++)
@@ -337,19 +386,19 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		for (Actor a : playerList)
 		{
-			if (a.animate(dTime))
+			if (a.animate(dTime, currentTime))
 				repaint = true;
 		}
 		
 		for (Actor a : bulletList)
 		{
-			if (a.animate(dTime))
+			if (a.animate(dTime, currentTime))
 				repaint = true;
 		}
 		
 		for (Actor a : miscList)
 		{
-			if (a.animate(dTime))
+			if (a.animate(dTime, currentTime))
 				repaint = true;
 		}
 		
@@ -365,7 +414,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameViewArea.repaint();
 		
 		// TODO: send this message
-		PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
+		//PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
 	} // end updateWorld()
 	
 	public void actionPerformed(ActionEvent e)
@@ -406,6 +455,24 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	}
 	
 	/**
+	 * Plays a player death sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playDeath(float volume)
+	{
+		playSound(volume, soundDeath);
+	}
+	
+	/**
+	 * Plays a gun fire sound effect at the specified volume
+	 * @param volume	The volume at which to play
+	 */
+	public void playFire(float volume)
+	{
+		playSound(volume, soundFire);
+	}
+	
+	/**
 	 * A slightly more generic sound playing method so we don't have to duplicate code all over the place.
 	 * This actually handles playing or not playing the sound.
 	 * @param volume
@@ -413,16 +480,20 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	 */
 	private void playSound(float volume, SoundEffect sound)
 	{
+		// If we failed to find any audio lines, all sounds will be null
+		if (sound == null)
+			return;
+		
 		if (sound.isPlaying())
 		{
-			if (sound.getVolume() < volume)
+			if (sound.getVolume() <= volume)
 				sound.stop();
 			else
 				return;
 		}
 		
-		sound.setVolume(volume);
-		sound.play();
+		//sound.setVolume(volume);
+		//sound.play();
 	}
 	
 	public void registerActionListeners(Component c)
@@ -446,4 +517,67 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	{
 		localInputListener.detachListeners(w);
 	}
+
+
+    /* =====================================
+     * Methods for processing messages
+     * =====================================
+     */
+    public void processPlayerMotion(PlayerMotionMessage message) {
+        // Check to see this is a remote player
+        int playerIndex = getPlayerIndex(message.getPlayerId());
+        if(playerIndex == -1)
+            return;
+
+        Player player = playerList.get(playerIndex);
+        if(player instanceof RemotePlayer)
+            ((RemotePlayer)player).addMotionPacket(message);
+    }
+
+    public void processScoreUpdate(ScoreUpdateMessage message) {
+        
+    }
+    
+    public void processPlayerJoin(PlayerJoinMessage message) {
+        Player player = new RemotePlayer(message.getPlayerId(),message.getName());
+        gameMap.placePlayer(player,null);
+        addActor(player);
+    }
+
+    public void processPlayerLeave(PlayerLeaveMessage message) {
+        
+    }
+    
+    public void processMulticastGroup(MulticastGroupMessage message) {
+        
+    }
+
+    public void processMapChange(MapChangeMessage message) {
+    }
+    
+    public void processHealthUpdateMessage(HealthUpdateMessage message) {
+    }
+
+    public void processDeathMessage(DeathMessage message) {
+    }
+
+//    public void processChatMessage(ChatMessage message) {
+//
+//    }
+
+    /**
+     * Retrieve a player given their ID.
+     */
+    public int getPlayerIndex(int playerId) {
+        int index = -1;
+        for (int i = 0; i < playerList.size(); i++) {
+            if(playerList.get(i).getPlayerID() == playerId) {
+                index = i;
+                break;
+            }
+        }
+        return index;    
+    }
+
+
 } // end class GameEngine

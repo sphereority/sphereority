@@ -5,6 +5,6 @@ package common.messages;
  *                   within Sphereority.
  */
 public enum MessageType {
-	PlayerMotion,MapChange,ScoreUpdate,HealthUpdate,ChatMessage,
-	DeathMessage, Undefined
+	PlayerMotion,MapChange,ScoreUpdate,HealthUpdate,Chat,
+	Death, Login, PlayerJoin, PlayerLeave, MulticastGroup, Undefined
 }

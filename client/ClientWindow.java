@@ -1,68 +1,79 @@
 package client;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.util.Random;
+
 import javax.swing.*;
 
-import client.gui.*;
+import common.*;
 
-public class ClientWindow implements WindowListener, ActionCallback
+public class ClientWindow extends Thread implements Constants
 {
-	protected JFrame mainWindow;
-	protected ClientLogonDialog loginDialog;
-	protected ClientViewArea viewArea;
-	
-	public ClientWindow()
+	public static final String[] MAP_LIST = new String[]
+		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
+
+	private GameEngine game;
+	private static JDialog gameWindow;
+	private static ClientLogonDialog loginWindow;
+
+	public ClientWindow(GameEngine engine)
 	{
-		mainWindow = new JFrame("Sphereority");
-		mainWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		mainWindow.addWindowListener(this);
-		
-		viewArea = new ClientViewArea(null);
-		
-		mainWindow.getContentPane().add(viewArea, BorderLayout.CENTER);
-		mainWindow.pack();
-		mainWindow.setLocationRelativeTo(null);
-		
-		loginDialog = new ClientLogonDialog(mainWindow);
-		if (!loginDialog.show())
-		{
-			System.out.println("User quit before logging into any server.");
-			System.exit(0);
-		}
+		this.game = engine;
 	}
-	
-	public void actionCallback(InteractiveWidget source, int buttons)
+
+	public void start()
 	{
-		
+		game.play();
 	}
-	
-	public void show()
-	{
-		mainWindow.setVisible(true);
-	}
-	
-	public void hide()
-	{
-		mainWindow.setVisible(false);
-	}
-	
-	public void windowClosing(WindowEvent e)
-	{
-		// TODO Perform any close operations we need to do here
-		
-	}
-	
-	public void windowActivated(WindowEvent e) { }
-	public void windowClosed(WindowEvent e) { }
-	public void windowDeactivated(WindowEvent e) { }
-	public void windowDeiconified(WindowEvent e) { }
-	public void windowIconified(WindowEvent e) { }
-	public void windowOpened(WindowEvent e) { }
 	
 	public static void main(String[] args)
 	{
-		ClientWindow win = new ClientWindow();
-		win.show();
+		// Create and display the LoginDialog
+		loginWindow = new ClientLogonDialog(null);
+		
+		// If the user quit the dialog, we must quit
+		if (!loginWindow.show())
+			System.exit(0);
+		// Else play the game
+
+		Map map;
+		GameEngine game;
+		do
+		{
+			// This grabs a random map on startup
+			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
+            Random random = new Random();
+            byte playerId = (byte) random.nextInt(6);
+            //System.out.println(playerId);
+			game = new GameEngine(map, playerId, loginWindow.getUserName(), null);
+			
+			// Set up the game gameWindow
+			gameWindow = new JDialog();
+			gameWindow.setTitle(CLIENT_WINDOW_NAME);
+			gameWindow.setModal(true);
+			
+			gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+			
+			gameWindow.pack();
+			gameWindow.setLocationRelativeTo(null);
+			
+            ClientWindow s = new ClientWindow(game);
+
+            s.start();
+			
+			game.registerActionListeners(gameWindow);
+			// Play the game once:
+			gameWindow.setVisible(true);
+			game.unregisterActionListeners(gameWindow);
+			
+			// Show the login dialog again
+		}
+		while (loginWindow != null && loginWindow.show());
+		// If quit, don't loop
+		
+		// TEMP: this is for testing only:
+		gameWindow.dispose();
+		
+		System.exit(0);
 	}
 }
