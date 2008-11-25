@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 import java.util.Random;
 
+import java.net.InetAddress;
+
 /**
  * This is the main client application
  * @author smaboshe
@@ -40,7 +42,7 @@ public class Sphereority extends Thread implements Constants {
 
 		Map map;
 		GameEngine game;
-        ClientConnection connection;
+        ClientConnection connection = null;
 		do
 		{
 			// This grabs a random map on startup
@@ -48,10 +50,15 @@ public class Sphereority extends Thread implements Constants {
             Random random = new Random();
             byte playerId = (byte) random.nextInt(6);
             System.out.println(playerId);
-            connection = new ClientConnection(null);
-			game = new GameEngine(map, playerId, "User" + playerId, connection);
-			connection.setGameEngine(game);
-			
+            game = new GameEngine(map, playerId, "User" + playerId, null);
+            try {
+                connection = new ClientConnection(InetAddress.getByName(MCAST_ADDRESS),MCAST_PORT,game);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+            
 			// Set up the game gameWindow
 			gameWindow = new JDialog();
 			gameWindow.setTitle(CLIENT_WINDOW_NAME);
@@ -64,7 +71,7 @@ public class Sphereority extends Thread implements Constants {
 			
             Sphereority s = new Sphereority(game,connection);
             try {
-                connection.loginToServer(serverName,"Bob");	
+                //connection.loginToServer(serverName,"Bob");	
             }
             catch (Exception ex) {
             }
@@ -90,6 +97,11 @@ public class Sphereority extends Thread implements Constants {
 	public void run()
 	{
 		game.play();
-        connection.start();
+        try {
+            connection.Start();
+            connection.StartSendingMessages();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 	}
 }
