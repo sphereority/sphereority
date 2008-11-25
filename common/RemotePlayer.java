@@ -20,7 +20,7 @@ public class RemotePlayer extends Player
 	/**
 	 * The oldest message we want to consider, in seconds
 	 */
-	public static final float OLDEST_SAVED_MESSAGE = 2;
+	public static final float OLDEST_SAVED_MESSAGE = 5;
 	
 	protected float currentTime;
 	protected Vector<PlayerMotionMessage> messageList;
@@ -111,8 +111,7 @@ public class RemotePlayer extends Player
 			// TODO: Add hook for missing packets here
 			return false;
 		}
-		else
-			System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
+//		else System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
 		
 		x /= totalWeight;
 		y /= totalWeight;
