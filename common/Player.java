@@ -61,7 +61,10 @@ public abstract class Player extends WeightedPosition {
 		return playerID;
 	}
 	
-	
+    public String getPlayerName() {
+        return name;
+    }	
+
 	// SETTERS
 	
 	

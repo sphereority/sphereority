@@ -57,6 +57,7 @@ public class ClientConnection implements ActionListener, Constants {
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         buffer.rewind();
 
+        /*
         // Connect to the specified server
         sockChannel.connect(new InetSocketAddress(serverName,DEFAULT_PORT));
         
@@ -96,11 +97,31 @@ public class ClientConnection implements ActionListener, Constants {
             mcastChannel.configureBlocking(false);
             mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));
             mcastChannel.register(selector,mcastChannel.validOps());
+    
+            // Notify everyone that we have joined
+            PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerId(),
+                                                              myMCastGroup,
+                                                              engine.localPlayer.getPlayerName());
+            sendMessage(message);
         }
         else {
             System.err.println("Unable to log in!");
-        }
+        }142.58.51.74*/
 
+            // Get your multicast address and port
+            myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
+            myMCastPort = MCAST_PORT;
+
+            mcastChannel.configureBlocking(false);
+            mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));
+            mcastChannel.register(selector,mcastChannel.validOps());
+    
+            // Notify everyone that we have joined
+            PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerID(),
+                                                              new InetSocketAddress(myMCastGroup,myMCastPort),
+                                                              engine.localPlayer.getPlayerName());
+            sendMessage(message);
+        
         return playerId;
     }
 
