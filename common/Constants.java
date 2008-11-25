@@ -60,6 +60,11 @@ public interface Constants
 	 * The size of a player in world units
 	 */
 	public static final float PLAYER_SIZE = 0.5f;
+	
+	/**
+	 * The length of a player's barrle in world units
+	 */
+	public static final float AIM_LENGTH = 0.4f;
 
 	/**
 	 * The width of the player window
