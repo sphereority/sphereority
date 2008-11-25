@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
+import common.messages.PlayerMotionMessage;
+
 import client.gui.GuiUtils;
 
 /**
@@ -61,7 +63,17 @@ public abstract class Player extends WeightedPosition {
 		return playerID;
 	}
 	
+	/**
+	 * Create a player motion packet
+	 * @param currentTime	The current game time
+	 * @return	The motion packet
+	 */
+	public PlayerMotionMessage getMotionPacket(float currentTime)
+	{
+		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
+	}
 	
+
 	// SETTERS
 	
 	

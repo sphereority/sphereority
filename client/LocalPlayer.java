@@ -78,16 +78,6 @@ public class LocalPlayer extends Player
 		return result;
 	}
 	
-	/**
-	 * Create a player motion packet
-	 * @param currentTime	The current game time
-	 * @return	The motion packet
-	 */
-	public PlayerMotionMessage getMotionPacket(float currentTime)
-	{
-		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
-	}
-	
 	public void collision(Actor a)
 	{
 		super.collision(a);
