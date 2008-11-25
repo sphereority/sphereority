@@ -63,7 +63,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		scale = 50;
 		
 		antialiasing = false;
-		drawMap = false;
+		drawMap = true;
 		
 		MapRadar radar = new MapRadar(5, -5, gameEngine, map);
 		addWidget(radar);
@@ -182,7 +182,11 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		g2.translate(offset_x, offset_y);		
 		
 		// Draw all actors:
-		for (Actor a : gameEngine.actorList)
+//		for (Actor a : gameEngine.actorList)
+//			a.draw(g2, scale);
+		for (Actor a : gameEngine.bulletList)
+			a.draw(g2, scale);
+		for (Actor a : gameEngine.playerList)
 			a.draw(g2, scale);
 		
 		// Draw the walls

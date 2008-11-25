@@ -96,6 +96,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameMap.placePlayer(localPlayer);
 		
 		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+		localPlayer.setAimingTarget(mouseTracker);
 		
 		DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
 		
@@ -247,6 +248,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		for (int i=0; i < playerList.size(); i ++)
 		{
 			p = playerList.get(i);
+			if (!p.isAlive())
+			{
+				removeActor(p);
+				continue;
+			}
+			
 			float px = p.getX(), py = p.getY();
 			int ix = (int)px, iy = (int)py;
 			if (px < 0 || py < 0)
@@ -287,6 +294,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		for (int i=0; i < bulletList.size(); i ++)
 		{
 			actor1 = bulletList.get(i);
+			if (!actor1.isAlive())
+			{
+				removeActor(actor1);
+				continue;
+			}
+			
 			bounds1 = actor1.getBounds();
 			
 			for (int j=0; j < playerList.size(); j ++)
