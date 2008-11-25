@@ -4,12 +4,12 @@ import common.*;
 import common.messages.*;
 
 import java.awt.event.*;
-import javax.swing.*;
+//import javax.swing.*;
 import java.net.*;
-import java.io.*;
+//import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
-import java.nio.charset.Charset;
+//import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -19,9 +19,9 @@ public class ClientConnection implements ActionListener, Constants {
     private GameEngine engine;
     private Selector selector;
     private SocketChannel sockChannel;
-    private DatagramChannel serverUDPChannel;
-    private DatagramChannel mcastChannel;
-    private TreeMap<Integer,MulticastSocket> clientMcastSockets;
+//    private DatagramChannel serverUDPChannel;
+//    private DatagramChannel mcastChannel;
+//    private TreeMap<Integer,MulticastSocket> clientMcastSockets;
     private javax.swing.Timer timer;
 
     private MulticastSocket mSocket;
@@ -47,7 +47,7 @@ public class ClientConnection implements ActionListener, Constants {
             //this.mcastChannel = DatagramChannel.open();
             
             this.selector = Selector.open();
-            this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
+//            this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
         } catch (Exception ex) {
             System.err.println("Could not connect to server!");
             ex.printStackTrace();
@@ -280,8 +280,8 @@ public class ClientConnection implements ActionListener, Constants {
      *
      */
     public void start() {
-        timer = new javax.swing.Timer(TIMER_TICK, this);
-        timer.start();
-		timer.setCoalesce(true);
+//        timer = new javax.swing.Timer(TIMER_TICK, this);
+//        timer.start();
+//		timer.setCoalesce(true);
     }
 }

@@ -39,6 +39,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public Timer timer;
 	
 	public Vector<MapChangeListener> mapListeners;
+	public ClientConnection connection;
 	
 	// Sound stuff
 	public GameSoundSystem soundSystem;
@@ -50,6 +51,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		preSetup(m);
 		
 		localPlayer = new LocalPlayer(localInputListener, playerID, name);
+		this.connection = connection;
 		
 		postSetup(connection != null);
 	}
@@ -204,6 +206,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	{
 		checkCollisions();
 		updateWorld();
+		
+		if (connection != null)
+			connection.actionPerformed(null);
 
 		Thread.yield();
 	}

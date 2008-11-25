@@ -20,7 +20,7 @@ public class RemotePlayer extends Player
 	/**
 	 * The oldest message we want to consider, in seconds
 	 */
-	public static final float OLDEST_SAVED_MESSAGE = 2;
+	public static final float OLDEST_SAVED_MESSAGE = 5;
 	
 	protected float currentTime;
 	protected Vector<PlayerMotionMessage> messageList;
