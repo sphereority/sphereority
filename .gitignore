@@ -1,5 +1,6 @@
 *.class
 *.classpath
+*.log
 *.prefs
 *.project
 *.swo
