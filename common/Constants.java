@@ -172,7 +172,7 @@ public interface Constants
 	/**
 	 * The speed at which a bullet travels
 	 */
-	public static final float BULLET_SPEED = 10;
+	public static final float BULLET_SPEED = 15;
 	
 	/**
 	 * The name of the client application window

@@ -35,6 +35,11 @@ public class Projectile extends Actor
 	public void collision(Actor a)
 	{
 		// If we bump into anything, we vanish
+		if (a instanceof Player)
+		{
+			if ((team == TEAM_A || team == TEAM_B) && team == a.getTeam() || ((Player)a).getPlayerID() == owner)
+				return;
+		}
 		kill();
 	}
 
