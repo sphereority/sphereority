@@ -64,7 +64,7 @@ class Connection extends Thread implements Constants{
 
 	        // send login success mesage + udp port number
 	        int localport = dsockchannel.socket().getLocalPort();
-	        byte [] bytes = LoginMessage.getLoginSuccessMessage(playerid,MCAST_ADDRESS,localport);
+	        byte [] bytes = LoginMessage.getLoginSuccessMessage(playerid,MCAST_ADDRESS,MCAST_PORT);
 	        System.out.print("Connection.java: First Success Message:");
 	        System.out.println(LoginMessage.getMessageString(bytes));
 	        ByteBuffer buf = ByteBuffer.allocate(4096);
