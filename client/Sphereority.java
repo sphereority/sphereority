@@ -48,8 +48,9 @@ public class Sphereority extends Thread implements Constants {
             Random random = new Random();
             byte playerId = (byte) random.nextInt(6);
             System.out.println(playerId);
-			game = new GameEngine(map, playerId, "User" + playerId, null);
-            connection = new ClientConnection(game);
+            connection = new ClientConnection(null);
+			game = new GameEngine(map, playerId, "User" + playerId, connection);
+			connection.setGameEngine(game);
 			
 			// Set up the game gameWindow
 			gameWindow = new JDialog();

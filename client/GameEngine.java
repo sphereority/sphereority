@@ -51,7 +51,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		localPlayer = new LocalPlayer(localInputListener, playerID, name);
 		
-		postSetup();
+		postSetup(connection != null);
 	}
 	
 	public GameEngine(Map m)
@@ -60,7 +60,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		
 		localPlayer = new LocalPlayer(localInputListener);
 		
-		postSetup();
+		postSetup(false);
 	} // end GameEngine() constructor
 	
 	private void preSetup(Map m)
@@ -91,9 +91,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
 	}
 	
-	private void postSetup()
+	private void postSetup(boolean fixed)
 	{
-		gameMap.placePlayer(localPlayer, null);
+		if (fixed)
+			gameMap.placePlayer(localPlayer, null);
+		else
+			gameMap.placePlayer(localPlayer);
 		
 		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
 		localPlayer.setAimingTarget(mouseTracker);
@@ -110,12 +113,15 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addActor(doubleTracker);
 		addActor(playerTracker);
         
-        for(byte i = 0; i < 5; i++) {
-            if(i != localPlayer.getPlayerID()) {
-                processPlayerJoin(
-                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
-            }
-        }
+		if (fixed)
+		{
+	        for(byte i = 0; i < 5; i++) {
+	            if(i != localPlayer.getPlayerID()) {
+	                processPlayerJoin(
+	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
+	            }
+	        }
+		}
     }
 	
 	// GETTERS

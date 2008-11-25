@@ -13,20 +13,17 @@ public class ClientWindow extends Thread implements Constants
 		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
 
 	private GameEngine game;
-	private ClientConnection connection;
 	private static JDialog gameWindow;
 	private static ClientLogonDialog loginWindow;
 
-	public ClientWindow(GameEngine engine, ClientConnection connection)
+	public ClientWindow(GameEngine engine)
 	{
 		this.game = engine;
-		this.connection = connection;
 	}
 
 	public void start()
 	{
 		game.play();
-        connection.start();
 	}
 	
 	public static void main(String[] args)
@@ -41,16 +38,14 @@ public class ClientWindow extends Thread implements Constants
 
 		Map map;
 		GameEngine game;
-        ClientConnection connection;
 		do
 		{
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
             Random random = new Random();
             byte playerId = (byte) random.nextInt(6);
-            System.out.println(playerId);
-			game = new GameEngine(map, playerId, "User" + playerId, null);
-            connection = new ClientConnection(game);
+            //System.out.println(playerId);
+			game = new GameEngine(map, playerId, loginWindow.getUserName(), null);
 			
 			// Set up the game gameWindow
 			gameWindow = new JDialog();
@@ -62,7 +57,7 @@ public class ClientWindow extends Thread implements Constants
 			gameWindow.pack();
 			gameWindow.setLocationRelativeTo(null);
 			
-            ClientWindow s = new ClientWindow(game,connection);
+            ClientWindow s = new ClientWindow(game);
 
             s.start();
 			

@@ -51,8 +51,13 @@ public class ClientConnection implements ActionListener, Constants {
         } catch (Exception ex) {
             System.err.println("Could not connect to server!");
             ex.printStackTrace();
-        }        
+        }     
     }
+	
+	public void setGameEngine(GameEngine engine)
+	{
+		this.engine = engine;
+	}
 
     /**
      * Logs into the specified server using the userName.
