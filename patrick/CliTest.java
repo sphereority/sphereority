@@ -47,6 +47,7 @@ class CliTest {
 	        System.out.printf("Multicast Address: %s\n", mcastString);
 	        // create datagram channel & connect to rem port
 	        DatagramChannel dchannel = DatagramChannel.open();
+	        dchannel.socket().bind(new InetSocketAddress(0));
             dchannel.socket().connect(new InetSocketAddress(channel.socket().getInetAddress(),port));
 	        // get localport of datagram socket
 	        int localport = dchannel.socket().getLocalPort();
