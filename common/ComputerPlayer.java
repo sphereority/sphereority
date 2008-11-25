@@ -5,6 +5,7 @@ package	common;
  * @author smaboshe
  *
  */
-public class ComputerPlayer {
+public class ComputerPlayer extends Player
+{
 	
 }

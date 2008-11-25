@@ -172,7 +172,7 @@ public interface Constants
 	/**
 	 * The speed at which a bullet travels
 	 */
-	public static final float BULLET_SPEED = 20;
+	public static final float BULLET_SPEED = 15;
 	
 	/**
 	 * The name of the client application window
@@ -191,9 +191,9 @@ public interface Constants
 	
 	/**
 	 * The amount to shove the player when they bump into a wall
-	 * WARNING: Don't tweak this any lower than 0.1f, as then you can push your way through walls!
+	 * WARNING: Don't tweak this any lower than 0.175f, as then you can push your way through walls!
 	 */
-	public static final float BUMP_FORCE = 0.125f;
+	public static final float BUMP_FORCE = 0.2f;
 	
 	/**
 	 * The number of copies of the radar widget that can be displayed either horizontally or vertically

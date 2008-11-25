@@ -12,7 +12,6 @@ import java.nio.ByteBuffer;
  * 
  */
 public abstract class MessageAnalyzer {
-	public static final int  INIT           = 0;
 	public static final byte PLAYER_MOTION  = 0;
 	public static final byte MAP_CHANGE     = 1;
 	public static final byte SCORE_UPDATE   = 2;
@@ -20,9 +19,12 @@ public abstract class MessageAnalyzer {
 	public static final byte CHAT_MESSAGE   = 4;
 	public static final byte DEATH_MESSAGE  = 5;
 	public static final byte LOGIN_MESSAGE  = 6;
-	public static final byte MULTI_MESSAGE  = 7;
+    public static final byte PLAYER_JOIN    = 7;
+    public static final byte PLAYER_LEAVE   = 8;
+	public static final byte MULTI_MESSAGE  = 9;
 	public static final byte UNDEFINED      = -1;
-	public static final int  MESSAGE_TYPE   = 0;	
+	public static final int  INIT           = 0;
+	public static final int  MESSAGE_TYPE   = 0;
 
 	/**
 	 * Translates from a byte to its corresponding
@@ -46,16 +48,22 @@ public abstract class MessageAnalyzer {
 				message = MessageType.HealthUpdate;
 				break;
 			case CHAT_MESSAGE:
-				message = MessageType.ChatMessage;
+				message = MessageType.Chat;
 				break;
 			case DEATH_MESSAGE:
-				message = MessageType.DeathMessage;
+				message = MessageType.Death;
 				break;
             case LOGIN_MESSAGE:
-                message = MessageType.LoginMessage;
+                message = MessageType.Login;
+                break;
+            case PLAYER_JOIN:
+                message = MessageType.PlayerJoin;
+                break;
+            case PLAYER_LEAVE:
+                message = MessageType.PlayerLeave;
                 break;
             case MULTI_MESSAGE:
-                message = MessageType.MulticastGroupMessage;
+                message = MessageType.MulticastGroup;
                 break;
 			default:
 				message = MessageType.Undefined;
@@ -85,16 +93,22 @@ public abstract class MessageAnalyzer {
 			case HealthUpdate:
 				message = HEALTH_UPDATE;
 				break;
-			case ChatMessage:
+			case Chat:
 				message = CHAT_MESSAGE;
 				break;
-			case DeathMessage:
+			case Death:
 				message = DEATH_MESSAGE;
 				break;
-            case LoginMessage:
+            case Login:
                 message = LOGIN_MESSAGE;
                 break;
-            case MulticastGroupMessage:
+            case PlayerJoin:
+                message = PLAYER_JOIN;
+                break;
+            case PlayerLeave:
+                message = PLAYER_LEAVE;
+                break;
+            case MulticastGroup:
                 message = MULTI_MESSAGE;
                 break;
 			default:
@@ -109,13 +123,20 @@ public abstract class MessageAnalyzer {
      */
     public static Message getMessage(byte[] message) throws Exception {
         ByteBuffer buffer = ByteBuffer.wrap(message);
-        
+        return getMessage(buffer);
+    }
+
+    /**
+     * Retrieves a message given its header and the data portion of the message.
+     * @return The message that the byte array represeneted.
+     */
+    public static Message getMessage(ByteBuffer buffer) throws Exception {
         // Store the header information
         byte[] byteHeader = new byte[Header.HEADER_MAX];
         buffer.get(byteHeader,INIT,Header.HEADER_MAX);
    
         // Store the data information
-        int dataLength = message.length - Header.HEADER_MAX;
+        int dataLength = buffer.array().length - Header.HEADER_MAX;
         byte[] byteData = new byte[dataLength];
         buffer.get(byteData,INIT,dataLength);       
 
@@ -134,16 +155,16 @@ public abstract class MessageAnalyzer {
 			case HealthUpdate:
                 receivedMessage = new HealthUpdateMessage(byteHeader,byteData);
 				break;
-			case ChatMessage:
+			case Chat:
                 receivedMessage = new ChatMessage(byteHeader,byteData);
 				break;
-			case DeathMessage:
+			case Death:
                 receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
-            case LoginMessage:
-                // receivedMessage = new LoginMessage(byteHeader,byteData);
+            case Login:
+                //receivedMessage = new LoginMessage(byteHeader,byteData);
                 break;
-            case MulticastGroupMessage:
+            case MulticastGroup:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
                 break;
 		}

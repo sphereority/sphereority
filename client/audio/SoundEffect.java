@@ -142,7 +142,9 @@ public class SoundEffect implements LineListener
 			volumeControl.setValue(volume);
 		else if (gainControl != null)
 		{
-			gainControl.setValue(-10*(1 - v));
+			float vol = -10*(1 - v);
+			vol = Math.min(6, vol);
+			gainControl.setValue(vol);
 		}
 	}
 }

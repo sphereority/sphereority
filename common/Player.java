@@ -1,7 +1,11 @@
 package	common;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
+
+import common.messages.PlayerMotionMessage;
 
 import client.gui.GuiUtils;
 
@@ -16,6 +20,7 @@ public abstract class Player extends WeightedPosition {
 	protected int playerID;
 	protected String name;
 	protected Position aim = new Position(0, 1);
+	protected float curTime;
 	// INSTANCE METHODS
 	
 	
@@ -58,12 +63,34 @@ public abstract class Player extends WeightedPosition {
 		return playerID;
 	}
 	
+	/**
+	 * Create a player motion packet
+	 * @param currentTime	The current game time
+	 * @return	The motion packet
+	 */
+	public PlayerMotionMessage getMotionPacket(float currentTime)
+	{
+		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
+	}
 	
+
 	// SETTERS
 	
 	
 	// OPERATIONS
 	public void draw(Graphics2D g, float scale) {
+		if (aim != null)
+		{
+			Stroke oldStroke = g.getStroke();
+			g.setStroke(new BasicStroke(3));
+			g.setColor(Color.orange);
+			g.drawLine(Math.round(position.getX() * scale),
+					   Math.round(position.getY() * scale),
+					   Math.round((position.getX() + aim.getX()) * scale),
+					   Math.round((position.getY() + aim.getY()) * scale));
+			g.setStroke(oldStroke);
+		}
+		
 		if (team == TEAM_A)
 			g.setColor(TEAM_A_COLOR);
 		else if (team == TEAM_B)
@@ -91,6 +118,7 @@ public abstract class Player extends WeightedPosition {
 	public boolean animate(float dTime, float currentTime)
 	{
 		timeSinceLastSound += dTime;
+		curTime = currentTime;
 		
 		boolean result = super.animate(dTime, currentTime);
 		if (! result && (timeSinceLastSound <= BLIP_TIME))
@@ -123,5 +151,19 @@ public abstract class Player extends WeightedPosition {
 	public void collideDown()
 	{
 		collision(null);
+	}
+	
+	public void aimAt(Actor a)
+	{
+		aimAt(a.getPosition());
+	}
+	
+	public void aimAt(Position p)
+	{
+		if (p == null)
+			return;
+		aim.x = p.x - position.x;
+		aim.y = p.y - position.y;
+		aim.scale(0.4f / aim.getMagnitude());
 	}
 }

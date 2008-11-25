@@ -5,5 +5,4 @@
 *.swo
 *.swp
 *~
-crun
-run
+.DS_Store

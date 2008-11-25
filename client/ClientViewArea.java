@@ -20,7 +20,8 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public static final int MAP_WIDTH = 16;
 	public static final int MAP_HEIGHT = 16;
 	public static final boolean DRAW_CENTER_DOT = false;
-	
+
+    public int framesPerSecond;	
 	// Drawing-related variables
 	protected boolean antialiasing;
 	protected float scale;
@@ -45,6 +46,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	{
 		gameEngine = engine;
 		
+        framesPerSecond = 0;
 		Dimension d = new Dimension(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
 		setMinimumSize(d);
 		setPreferredSize(d);
@@ -61,7 +63,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		scale = 50;
 		
 		antialiasing = false;
-		drawMap = false;
+		drawMap = true;
 		
 		MapRadar radar = new MapRadar(5, -5, gameEngine, map);
 		addWidget(radar);
@@ -180,7 +182,11 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		g2.translate(offset_x, offset_y);		
 		
 		// Draw all actors:
-		for (Actor a : gameEngine.actorList)
+//		for (Actor a : gameEngine.actorList)
+//			a.draw(g2, scale);
+		for (Actor a : gameEngine.bulletList)
+			a.draw(g2, scale);
+		for (Actor a : gameEngine.playerList)
 			a.draw(g2, scale);
 		
 		// Draw the walls
@@ -227,6 +233,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		// Restore all parameters changed
 		g2.setColor(oldColor);
+        
 	}
 	
 	// Called when the mouse is moved with at least one button down

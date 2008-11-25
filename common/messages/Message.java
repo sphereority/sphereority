@@ -49,7 +49,19 @@ public abstract class Message implements MessageConstants {
         return header.getPlayerId();
     }
     
+    /**
+     * Retrieves the id of the game this message originated from.
+     * @return The id of the game.
+     */
     public byte getGameId() {
         return header.getGameId();
+    }
+
+    /**
+     * Retrieves the message type of this message.
+     * @return The message type.
+     */
+    public MessageType getMessageType() {
+        return header.getMessageType();
     }
 }

@@ -15,7 +15,7 @@ public class MapChangeMessage extends Message implements MessageConstants {
      * @param playerId The id of the player sending the message.
      */
     public MapChangeMessage(byte playerId, Map map) {
-        super(MessageType.ChatMessage, playerId, MapChangeLength);
+        super(MessageType.MapChange, playerId, MapChangeLength);
         this.map = map;
     }
 
