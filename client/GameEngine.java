@@ -93,7 +93,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	private void postSetup()
 	{
-		gameMap.placePlayer(localPlayer);
+		gameMap.placePlayer(localPlayer, null);
 		
 		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
 		localPlayer.setAimingTarget(mouseTracker);
@@ -109,8 +109,14 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addActor(mouseTracker);
 		addActor(doubleTracker);
 		addActor(playerTracker);
-		
-	}
+        
+        for(byte i = 0; i < 5; i++) {
+            if(i != localPlayer.getPlayerID()) {
+                processPlayerJoin(
+                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
+            }
+        }
+    }
 	
 	// GETTERS
 	public LocalPlayer getLocalPlayer() {
@@ -508,8 +514,11 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      */
     public void processPlayerMotion(PlayerMotionMessage message) {
         // Check to see this is a remote player
-        Player player = playerList.get(getPlayerIndex(message.getPlayerId()));
+        int playerIndex = getPlayerIndex(message.getPlayerId());
+        if(playerIndex == -1)
+            return;
 
+        Player player = playerList.get(playerIndex);
         if(player instanceof RemotePlayer)
             ((RemotePlayer)player).addMotionPacket(message);
     }
@@ -519,7 +528,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     }
     
     public void processPlayerJoin(PlayerJoinMessage message) {
-        addActor(new RemotePlayer(message.getPlayerId(),message.getName()));
+        Player player = new RemotePlayer(message.getPlayerId(),message.getName());
+        gameMap.placePlayer(player,null);
+        addActor(player);
     }
 
     public void processPlayerLeave(PlayerLeaveMessage message) {

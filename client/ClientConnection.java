@@ -62,8 +62,8 @@ public class ClientConnection implements ActionListener, Constants {
         // Create a ByteBuffer
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         buffer.flip();
-
         /*
+        Avoid the server for now.  Just connect to same Multicast Address
         // Connect to the specified server
         sockChannel.connect(new InetSocketAddress(serverName,DEFAULT_PORT));
         
@@ -99,48 +99,59 @@ public class ClientConnection implements ActionListener, Constants {
             // Get your multicast address and port
             myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
             myMCastPort = MCAST_PORT;
+            
+            // Set up the multicast parts of the application
+            myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
+            myMCastPort  = MCAST_PORT;
+            mSocket = new MulticastSocket(MCAST_PORT);
+            mSocket.joinGroup(myMCastGroup);
 
-            mcastChannel.configureBlocking(false);
-            mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));
-            mcastChannel.register(selector,mcastChannel.validOps());
-    
+            // Create a pipe to write back to the connection            
+            pipe = Pipe.open();
+            source = pipe.source();
+
+            source.configureBlocking(false);
+            source.register(selector,SelectionKey.OP_READ);
+
             // Notify everyone that we have joined
             PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerId(),
                                                               myMCastGroup,
                                                               engine.localPlayer.getPlayerName());
             sendMessage(message);
+
+            reader = new MulticastReader(mSocket,pipe.sink());
+            reader.start();
         }
         else {
             System.err.println("Unable to log in!");
         }*/
 
-            // Get your multicast address and port
-            /*myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
-            myMCastPort = MCAST_PORT;
-            mcastChannel.configureBlocking(false);
-            mcastChannel.connect(new InetSocketAddress(myMCastGroup,myMCastPort));
+        // Get your multicast address and port
+        myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
+        myMCastPort = MCAST_PORT;
             
-            mcastChannel.register(selector,mcastChannel.validOps());
-    
-            // Notify everyone that we have joined
-            PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerID(),
-                                                              new InetSocketAddress(myMCastGroup,myMCastPort),
-                                                              engine.localPlayer.getPlayerName());
-            sendMessage(message);*/
+        // Set up the multicast parts of the application
         myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
         myMCastPort  = MCAST_PORT;
         mSocket = new MulticastSocket(MCAST_PORT);
         mSocket.joinGroup(myMCastGroup);
-        
+
+        // Create a pipe to write back to the connection            
         pipe = Pipe.open();
         source = pipe.source();
 
         source.configureBlocking(false);
         source.register(selector,SelectionKey.OP_READ);
 
+        // Notify everyone that we have joined
+        //PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerID(),
+        //                                                  new InetSocketAddress(myMCastGroup,myMCastPort),
+        //                                                  engine.localPlayer.getPlayerName());
+        //sendMessage(message);
+
         reader = new MulticastReader(mSocket,pipe.sink());
         reader.start();
-
+    
         return playerId;
     }
 
@@ -150,7 +161,7 @@ public class ClientConnection implements ActionListener, Constants {
     public void checkMessages() {
         // Wait to receive a message
         try {
-        	selector.select(20);
+        	selector.selectNow();
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -193,19 +204,21 @@ public class ClientConnection implements ActionListener, Constants {
             // Get channel with connection request
             source.read(buffer);
             buffer.rewind();
+
             // Get the message from the buffer
             Message message = MessageAnalyzer.getMessage(buffer);
             
-            System.out.println(message.getMessageType());
-            
+            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
+                return;
+
             switch(message.getMessageType()) {
                 case PlayerMotion:
-                    //engine.processPlayerMotion((PlayerMotionMessage)message);
-                    System.out.println(message.getPlayerId() + " moved");
+                    engine.processPlayerMotion((PlayerMotionMessage)message);
+                    System.out.println("PlayerMotion: " + message.getPlayerId() + " moved");
                     break;
                 case PlayerJoin:
                     PlayerJoinMessage msg = (PlayerJoinMessage) message;
-                    System.out.println(msg.getName() + " wants to join");
+                    System.out.println("PlayerJoin: " + msg.getName() + " wants to join");
                     engine.processPlayerJoin(msg);
                     registerPlayer(msg.getPlayerId(),msg.getAddress());
                     break;
@@ -246,7 +259,7 @@ public class ClientConnection implements ActionListener, Constants {
             sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
                                             engine.localPlayer.getPosition(),
                                             engine.localPlayer.getVelocity(),
-                                            0f));
+                                            (float)System.currentTimeMillis()));
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -258,7 +271,7 @@ public class ClientConnection implements ActionListener, Constants {
      *
      */
     public void start() {
-        timer = new javax.swing.Timer(1000,this);
+        timer = new javax.swing.Timer(1,this);
         timer.start();
 		timer.setCoalesce(true);
     }
