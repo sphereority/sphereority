@@ -18,15 +18,19 @@ public class ClientConnection {
     private Selector selector;
     private SocketChannel sockChannel;
     private DatagramChannel serverUDPChannel;
-    private MulticastSocket myMcastSocket;
-    private Vector<MulticastSocket> clientMcastSockets;
+    private MulticastSocket mcastSocket;
+    private TreeMap<Integer,MulticastSocket> clientMcastSockets;
     
+    private InetAddress myMCastGroup;
+    private int myMCastPort;
+
 	public ClientConnection(GameEngine engine, String serverName, int port, String userName)  {
         try {
             this.engine = engine;
             this.sockChannel = SocketChannel.open();
-            selector = Selector.open();
-            clientMcastSockets = new Vector<MulticastSocket>();
+            this.mcastSocket = new MulticastSocket();
+            this.selector = Selector.open();
+            this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
             loginToServer(serverName, port, userName);
         } catch (Exception ex) {
             System.err.println("Could not connect to server!");
@@ -74,6 +78,10 @@ public class ClientConnection {
             // send success message to send port number to server
 		    loginSuccess = LoginMessage.getLoginSuccessMessage(localport);
 		    sockChannel.write(ByteBuffer.wrap(loginSuccess));
+
+            // Get your multicast address and port
+            myMCastGroup = InetAddress.getByName("239.0.0.1");
+            myMCastPort = 5000;
         }
         else {
             System.err.println("Unable to log in!");
@@ -117,6 +125,7 @@ public class ClientConnection {
         }
     }
 
+    
     /**
      * Processes a SelectorKey (Message) that has come in.
      * @param selKey Key that is associated with a message.
@@ -134,29 +143,37 @@ public class ClientConnection {
             Message message = MessageAnalyzer.getMessage(buffer);
             
             // Handle the messages
-            if(message instanceof PlayerMotionMessage) {
-                engine.processPlayerMotion((PlayerMotionMessage)message);
-            }
-            // Register a client with another client's multicast group
-            else if(message instanceof MulticastGroupMessage) {
-                MulticastGroupMessage mcastMsg = (MulticastGroupMessage) message;
-                if(mcastMsg.joinGroup()) {
-                    MulticastSocket newPlayer = new MulticastSocket();
-                    newPlayer.joinGroup(mcastMsg.getAddress().getAddress());
-                    DatagramChannel channel = newPlayer.getChannel();
-                    channel.configureBlocking(false);
-                    channel.register(selector,channel.validOps());
-                }
+            switch(message.getMessageType()) {
+                case PlayerMotion:
+                    engine.processPlayerMotion((PlayerMotionMessage)message);
+                    break;
+                case PlayerJoin:
+                    PlayerJoinMessage msg = (PlayerJoinMessage) message;
+                    engine.processPlayerJoin(msg);
+                    registerPlayer(msg.getPlayerId(),msg.getAddress());
+                    break;
             }
         }
     }
 
     /**
-     * Sends a message through the multicast socket.
+     * Sends a message through the multicast socket.  Client does not subscribe to their
+     * own multicast group.
      * @param The message to be sent.
      */
     public void sendMessage(Message message) throws Exception {
         byte[] byteMessage = message.getByteMessage();
-        myMcastSocket.send(new DatagramPacket(byteMessage, byteMessage.length));
+        DatagramPacket packet = new DatagramPacket(byteMessage, 
+                                                   byteMessage.length,
+                                                   myMCastGroup,
+                                                   myMCastPort);
+        mcastSocket.send(packet);
+    }
+
+    /**
+     * 
+     */
+    protected void registerPlayer(int playerId, InetSocketAddress mcastAddress) {
+        
     }
 }

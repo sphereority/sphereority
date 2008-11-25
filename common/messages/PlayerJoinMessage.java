@@ -10,14 +10,16 @@ import java.net.InetAddress;
  */
 public class PlayerJoinMessage extends Message implements MessageConstants {
     private InetSocketAddress mcastAddress;
+    private String playerName;
     
     /**
      * Constructor - Creates a new MulticastGroupMessage.
      * @param playerId The id of the player sending the message.
      */
-    public PlayerJoinMessage(byte playerId, InetSocketAddress mcastAddress) {
+    public PlayerJoinMessage(byte playerId, InetSocketAddress mcastAddress, String playerName) {
         super(MessageType.PlayerJoin, playerId, PlayerJoinLength);
         this.mcastAddress = mcastAddress;
+        this.playerName = playerName;
     }
 
     /**
@@ -44,6 +46,14 @@ public class PlayerJoinMessage extends Message implements MessageConstants {
             // Get the port number
             int port = buffer.getInt();
             this.mcastAddress = new InetSocketAddress(address,port);
+
+            messageLength = (int) buffer.getInt();
+            messageArray = new byte[messageLength];
+            
+            for(int i = INIT; i < messageLength; i++)
+                messageArray[i] = buffer.get();
+
+            playerName = new String(messageArray);
         } catch (Exception e) { System.err.println("Unable to get address");}
     }
     
@@ -68,6 +78,10 @@ public class PlayerJoinMessage extends Message implements MessageConstants {
         buffer.put(address);
         buffer.putInt(mcastAddress.getPort());
         
+        // Put the name
+        buffer.putInt(playerName.length());
+        buffer.put(playerName.getBytes());
+
         // Return the fully created message
         return message;
 	}
@@ -77,5 +91,9 @@ public class PlayerJoinMessage extends Message implements MessageConstants {
      */
     public InetSocketAddress getAddress() {
         return mcastAddress;
+    }
+
+    public String getName() {
+        return playerName;
     }	
 }

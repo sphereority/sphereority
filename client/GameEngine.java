@@ -177,7 +177,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         cliConnect.checkReceivedMessages();
 		checkCollisions();
 		updateWorld();
-		
+        sendMotion();		
 		Thread.yield();
 	}
 	
@@ -479,6 +479,19 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      * Methods for processing messages
      * =====================================
      */
+
+    protected void sendMotion() {
+        try
+        {
+            cliConnect.sendMessage(new PlayerMotionMessage((byte)localPlayer.getPlayerID(),
+                                                           localPlayer.getPosition(),
+                                                           localPlayer.getVelocity(),
+                                                           0f));
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     public void processPlayerMotion(PlayerMotionMessage message) {
         // Check to see this is a remote player
         Player player = playerList.get(getPlayerIndex(message.getPlayerId()));
@@ -491,6 +504,13 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         
     }
     
+    public void processPlayerJoin(PlayerJoinMessage message) {
+        addActor(new RemotePlayer(message.getPlayerId(),message.getName()));
+    }
+
+    public void processPlayerLeave(PlayerLeaveMessage message) {
+        
+    }
     
     public void processMulticastGroup(MulticastGroupMessage message) {
         

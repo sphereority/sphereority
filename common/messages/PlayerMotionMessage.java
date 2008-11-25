@@ -22,6 +22,13 @@ public class PlayerMotionMessage extends Message implements MessageConstants {
         this.time  = time;
     }
 
+    public PlayerMotionMessage(byte playerId, Position position, Position velocity, float time) {
+        super(MessageType.PlayerMotion, playerId, PlayerMotionLength);
+        this.position = position;
+        this.velocity = velocity;
+        this.time  = time;
+    }
+
     /**
      * Constructor - Creates a new PlayerMotionMessage.
      * @param header Representation of a Header in bytes.
