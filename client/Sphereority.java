@@ -13,12 +13,14 @@ public class Sphereority extends Thread implements Constants {
 		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
 	
 	private GameEngine game;
+    private ClientConnection connection;
 	private static JDialog gameWindow;
 	private static ClientLogonDialog loginWindow;
 	
-	public Sphereority(GameEngine game)
+	public Sphereority(GameEngine game, ClientConnection connection)
 	{
 		this.game = game;
+        this.connection = connection;
 	}
 	
 	public static void main(String[] args) {
@@ -32,11 +34,13 @@ public class Sphereority extends Thread implements Constants {
 		
 		Map map;
 		GameEngine game;
+        ClientConnection connection;
 		do
 		{
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
 			game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName, null);
+            connection = new ClientConnection(game);
 			
 			// Set up the game gameWindow
 			gameWindow = new JDialog();
@@ -48,8 +52,14 @@ public class Sphereority extends Thread implements Constants {
 			gameWindow.pack();
 			gameWindow.setLocationRelativeTo(null);
 			
-			Sphereority s = new Sphereority(game);
-			s.start();
+            Sphereority s = new Sphereority(game,connection);
+            try {
+                connection.loginToServer("localhost","Bob");	
+            }
+            catch (Exception ex) {
+            }
+
+            s.start();
 			
 			game.registerActionListeners(gameWindow);
 			// Play the game once:
@@ -70,5 +80,6 @@ public class Sphereority extends Thread implements Constants {
 	public void run()
 	{
 		game.play();
+        connection.start();
 	}
 }

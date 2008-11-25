@@ -21,8 +21,7 @@ import javax.swing.Timer;
 public class GameEngine implements Constants, ActionListener, ActionCallback {
 	public static GameEngine gameEngine;
 	
-    public ClientConnection cliConnect;
-	public boolean gameOver;
+    public boolean gameOver;
 	public Map gameMap;
 	public ClientViewArea gameViewArea;
 	public LocalPlayer localPlayer;
@@ -62,7 +61,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		localPlayer = new LocalPlayer(localInputListener);
 		
 		postSetup();
-		cliConnect = null;
 	} // end GameEngine() constructor
 	
 	private void preSetup(Map m)
@@ -191,14 +189,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	public void gameStep()
 	{
-		if (cliConnect != null)
-			cliConnect.checkReceivedMessages();
 		checkCollisions();
 		updateWorld();
-		
-		if (cliConnect != null)
-			sendMotion();
-		
+
 		Thread.yield();
 	}
 	
@@ -469,8 +462,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 				return;
 		}
 		
-		sound.setVolume(volume);
-		sound.play();
+		//sound.setVolume(volume);
+		//sound.play();
 	}
 	
 	public void registerActionListeners(Component c)
@@ -500,19 +493,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      * Methods for processing messages
      * =====================================
      */
-
-    protected void sendMotion() {
-        try
-        {
-            cliConnect.sendMessage(new PlayerMotionMessage((byte)localPlayer.getPlayerID(),
-                                                           localPlayer.getPosition(),
-                                                           localPlayer.getVelocity(),
-                                                           0f));
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
     public void processPlayerMotion(PlayerMotionMessage message) {
         // Check to see this is a remote player
         Player player = playerList.get(getPlayerIndex(message.getPlayerId()));

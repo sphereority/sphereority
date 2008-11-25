@@ -3,7 +3,8 @@ package client;
 import common.*;
 import common.messages.*;
 
-import javax.swing.Timer;
+import java.awt.event.*;
+import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.nio.*;
@@ -14,14 +15,15 @@ import java.util.*;
 /**
  * Client connection to the server and other clients.
  */
-public class ClientConnection {
+public class ClientConnection implements ActionListener, Constants {
     private GameEngine engine;
     private Selector selector;
     private SocketChannel sockChannel;
     private DatagramChannel serverUDPChannel;
     private DatagramChannel mcastChannel;
     private TreeMap<Integer,MulticastSocket> clientMcastSockets;
-    
+    private javax.swing.Timer timer;
+
     private InetAddress myMCastGroup;
     private int myMCastPort;
 
@@ -32,7 +34,7 @@ public class ClientConnection {
      * @param port
      * @param userName
      */
-	public ClientConnection(GameEngine engine, String serverName, int port, String userName)  {
+	public ClientConnection(GameEngine engine)  {
         try {
             this.engine = engine;
             this.sockChannel = SocketChannel.open();
@@ -40,7 +42,6 @@ public class ClientConnection {
             this.mcastChannel = DatagramChannel.open();
             this.selector = Selector.open();
             this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
-            loginToServer(serverName, port, userName);
         } catch (Exception ex) {
             System.err.println("Could not connect to server!");
             ex.printStackTrace();
@@ -50,14 +51,14 @@ public class ClientConnection {
     /**
      * Logs into the specified server using the userName.
      */
-    public int loginToServer(String serverName, int serverPort, String userName) throws Exception{
+    public int loginToServer(String serverName, String userName) throws Exception {
         int playerId = -1;
         // Create a ByteBuffer
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         buffer.rewind();
 
         // Connect to the specified server
-        sockChannel.connect(new InetSocketAddress(serverName,serverPort));
+        sockChannel.connect(new InetSocketAddress(serverName,DEFAULT_PORT));
         
         // Create and send a login message
         byte[] loginMessage = LoginMessage.getLoginMessage(userName,"");
@@ -182,6 +183,36 @@ public class ClientConnection {
      * 
      */
     protected void registerPlayer(int playerId, InetSocketAddress mcastAddress) {
-      
+        
+    }
+
+    /**
+     *  
+     */
+    public void actionPerformed(ActionEvent e) {
+        try
+        {
+        checkReceivedMessages();
+
+        // Send motion message for this player
+        sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
+                                            engine.localPlayer.getPosition(),
+                                            engine.localPlayer.getVelocity(),
+                                            0f));
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        
+    }
+
+    /**
+     *
+     */
+    public void start() {
+        timer = new javax.swing.Timer(1000,this);
+        timer.start();
+		timer.setCoalesce(true);
     }
 }
