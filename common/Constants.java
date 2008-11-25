@@ -209,4 +209,15 @@ public interface Constants
 	 * The amount of time in seconds that must pass between shots fired
 	 */
 	public static final float RELOAD_TIME = 0.5f;
+	
+	
+	public static String LOG_FOLDER = "logs/";
+
+	public static String CLIENT_LOG_FILE_NAME = "client.log";
+	public static String CLIENT_LOG_PATH = LOG_FOLDER + CLIENT_LOG_FILE_NAME;
+	public static String CLIENT_LOGGER_NAME = "Sphereority Client";
+
+	public static String SERVER_LOG_FILE_NAME = "server.log";
+	public static String SERVER_LOG_PATH = LOG_FOLDER + SERVER_LOG_FILE_NAME;
+	public static String SERVER_LOGGER_NAME = "Sphereority Server";
 }
