@@ -47,6 +47,9 @@ public class RemotePlayer extends Player
 	{
 		this.currentTime = currentTime;
 		
+		float x, y, timeDiff, totalDiff;
+		x = y = totalDiff = 0;
+		
 		for (PlayerMotionMessage m : messageList)
 		{
 			if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
@@ -54,8 +57,26 @@ public class RemotePlayer extends Player
 				messageList.remove(m);
 				continue;
 			}
+			else
+			{
+				timeDiff = currentTime - m.getTime();
+				x += timeDiff * m.getVelocity().getX() + m.getPosition().getX();
+				y += timeDiff * m.getVelocity().getY() + m.getPosition().getY();
+				totalDiff += timeDiff;
+			}
 		}
 		
-		return false;
+		if (totalDiff < 0.001f)
+		{
+			// TODO: Add hook for missing packets here
+			return false;
+		}
+		
+		x /= totalDiff;
+		y /= totalDiff;
+		
+		setPosition(x, y);
+		
+		return true;
 	}
 }
