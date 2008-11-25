@@ -21,10 +21,11 @@ class ServerGameEngine extends Thread {
     public void run(){
         System.out.println("ServerGameEngine Running");
     }
-    public synchronized void newClient(String username, ObjectOutputStream tcpstream, DatagramChannel udpchan){
+    public synchronized void newClient(String username, SocketChannel tcpchannel, DatagramChannel udpchan){
         System.out.println("ServerGameEngine: new client: " + username);
     }
     public synchronized void newTCPMessage(Message message){
+    	//byte mtype = message.getMessageType();
         System.out.println("ServerGameEngine: TCP message received");
     }
     public synchronized void newUDPMessage(Message message){

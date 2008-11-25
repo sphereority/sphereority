@@ -9,11 +9,15 @@ There is a client application and a server application to allow several players 
 SERVER
 ======
 
-To compile the client application:
-$ javac server/NetworkListener.java
+To compile the server:
+$ javac server/SphereorityServer.java
 
-To run the client application:
-$ java server/NetworkListener
+Optionally, you may need to compile the server with -Xlint:unchecked:
+$ javac -Xlint:unchecked server/SphereorityServer.java
+
+
+To run the server:
+$ java server/SphereorityServer
 
 
 
