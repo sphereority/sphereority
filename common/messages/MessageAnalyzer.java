@@ -167,6 +167,8 @@ public abstract class MessageAnalyzer {
             case MulticastGroup:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
                 break;
+            default:
+            	System.out.println("Unknown packet.");
 		}
 		return receivedMessage;
     }

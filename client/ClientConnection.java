@@ -6,23 +6,23 @@ import common.messages.*;
 import java.awt.event.*;
 //import javax.swing.*;
 import java.net.*;
-//import java.io.*;
+import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 //import java.nio.charset.Charset;
-import java.util.*;
+//import java.util.*;
 
 /**
  * Client connection to the server and other clients.
  */
-public class ClientConnection implements ActionListener, Constants {
+public class ClientConnection extends Thread implements ActionListener, Constants {
     private GameEngine engine;
-    private Selector selector;
-    private SocketChannel sockChannel;
+    //private Selector selector;
+    //private SocketChannel sockChannel;
 //    private DatagramChannel serverUDPChannel;
 //    private DatagramChannel mcastChannel;
 //    private TreeMap<Integer,MulticastSocket> clientMcastSockets;
-    private javax.swing.Timer timer;
+//    private javax.swing.Timer timer;
 
     private MulticastSocket mSocket;
     private MulticastReader reader;
@@ -42,11 +42,11 @@ public class ClientConnection implements ActionListener, Constants {
 	public ClientConnection(GameEngine engine)  {
         try {
             this.engine = engine;
-            this.sockChannel = SocketChannel.open();
+            //this.sockChannel = SocketChannel.open();
             //this.serverUDPChannel = DatagramChannel.open();
             //this.mcastChannel = DatagramChannel.open();
             
-            this.selector = Selector.open();
+            //this.selector = Selector.open();
 //            this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
         } catch (Exception ex) {
             System.err.println("Could not connect to server!");
@@ -141,13 +141,14 @@ public class ClientConnection implements ActionListener, Constants {
         if (mSocket.getReceiveBufferSize() < 1024*128)
         	mSocket.setReceiveBufferSize(1024*128);
         System.out.printf("Multicast port number: %d\n", mSocket.getLocalPort());
+        System.out.printf("Packets have a timeToLive of %d\n", mSocket.getTimeToLive());
 
         // Create a pipe to write back to the connection            
         pipe = Pipe.open();
         source = pipe.source();
 
         source.configureBlocking(false);
-        source.register(selector,SelectionKey.OP_READ);
+        //source.register(selector,SelectionKey.OP_READ);
 
         // Notify everyone that we have joined
         //PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerID(),
@@ -166,36 +167,49 @@ public class ClientConnection implements ActionListener, Constants {
      */
     public void checkMessages() {
         // Wait to receive a message
-        try {
-        	selector.selectNow();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//        	selector.selectNow();
+//        }
+//        catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
         
         // Go through all the received messages
-        Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-        ByteBuffer receivedBuffer = ByteBuffer.allocate(4096);
+//        Iterator<SelectionKey> it = selector.selectedKeys().iterator();
+//        ByteBuffer receivedBuffer = ByteBuffer.allocate(4096);
+    	DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
+    	try
+    	{
+    		mSocket.receive(packet);
+    		//System.out.printf("Got a packet of length %d.\n", packet.getLength());
+    		processMessage(packet.getData());
+    	}
+    	catch (IOException er)
+    	{
+    		er.printStackTrace();
+    	}
       
         // Do a max of 20 messages at a time for efficiency reasons
-        for(int i = 0; it.hasNext() && i < 20; i++) {
-            SelectionKey selKey = it.next();
-            
-            try {
-                receivedBuffer.clear();
-                processMessage(selKey, receivedBuffer);
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            // Remove it to indicate it is processed
-            it.remove();
-            
-            // Reset the buffer for further use
-            receivedBuffer.clear();
-            receivedBuffer.flip();
-        }
-    }
+//        for(int i = 0; it.hasNext() && i < 20; i++) {
+//            SelectionKey selKey = it.next();
+//            
+//            try {
+//                receivedBuffer.clear();
+//                processMessage(selKey, receivedBuffer);
+//            }
+//            catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
+//            // Remove it to indicate it is processed
+//            it.remove();
+//            
+//            // Reset the buffer for further use
+//            receivedBuffer.clear();
+//            receivedBuffer.flip();
+//        }
+        
+        
+    } // end checkMessages()
 
     
     /**
@@ -237,7 +251,38 @@ public class ClientConnection implements ActionListener, Constants {
             }
         }
     }
-
+    
+    protected void processMessage(byte[] data)
+    {
+    	try
+    	{
+    		Message message = MessageAnalyzer.getMessage(data);
+    		if (message.getPlayerId() == engine.localPlayer.getPlayerID())
+    			return;
+    		
+    		switch (message.getMessageType())
+    		{
+    			case PlayerMotion:
+                    engine.processPlayerMotion((PlayerMotionMessage)message);
+                    System.out.printf("PlayerMotion: %d moved to\t(%.2f,%.2f)\n", message.getPlayerId(), ((PlayerMotionMessage)message).getPosition().getX(), ((PlayerMotionMessage)message).getPosition().getY());
+                    break;
+                case PlayerJoin:
+                    PlayerJoinMessage msg = (PlayerJoinMessage) message;
+                    System.out.println("PlayerJoin: " + msg.getName() + " wants to join");
+                    engine.processPlayerJoin(msg);
+                    registerPlayer(msg.getPlayerId(),msg.getAddress());
+                    break;
+                default:
+                    System.out.println("Got Undefined Message");
+                    break;
+    		}
+    	}
+    	catch (Exception er)
+    	{
+    		er.printStackTrace();
+    	}
+    }
+    
     /**
      * Sends a message through the multicast socket.  Client does not subscribe to their
      * own multicast group.
@@ -278,13 +323,25 @@ public class ClientConnection implements ActionListener, Constants {
         }
         
     }
+    
+    public void run()
+    {
+    	while (true)
+    	{
+    		checkMessages();
+    		
+    		try { Thread.sleep(10); }
+    		catch (InterruptedException er) { }
+//    		Thread.yield();
+    	}
+    }
 
     /**
      *
      */
-    public void start() {
-        timer = new javax.swing.Timer(TIMER_TICK, this);
-        timer.start();
-		timer.setCoalesce(true);
-    }
+//    public void start() {
+//        timer = new javax.swing.Timer(TIMER_TICK, this);
+//        timer.start();
+//		timer.setCoalesce(true);
+//    }
 }
