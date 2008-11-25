@@ -9,7 +9,7 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-class Connection extends Thread {
+class Connection extends Thread implements Constants{
     /*
      * login was handled by NetworkListener.java
      * since this thread was created, NetworkListener.java:
@@ -26,9 +26,9 @@ class Connection extends Thread {
      */
 
      // handle to the ServerGameEngine
-    ServerGameEngine           gameengine;
+    private ServerGameEngine        gameengine;
 
-    String                      username;
+    private String                  username;
 
     private Selector		selector;
     private SelectionKey	readsocket_key;
@@ -37,7 +37,8 @@ class Connection extends Thread {
     private SocketChannel	sockchannel;
     private SelectionKey    socket_key;
 
-    private DatagramSocket	dsock;
+    private MulticastSocket	mcastsocket;
+    //private DatagramSocket	dsock;
     private DatagramChannel	dsockchannel;
     private SelectionKey    dgram_socket_key;
 
@@ -54,15 +55,16 @@ class Connection extends Thread {
         try {
 	        /*
 	         * Setup
-	         *     first create a udp socket
 	         */
-	        // create a udp socket
-	        dsockchannel = DatagramChannel.open();
+        	//register client with game engine
+        	byte playerid = gameengine.newClient(username);
+	        // create a muticast socket
+        	dsockchannel = DatagramChannel.open();
 	        dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
 
 	        // send login success mesage + udp port number
 	        int localport = dsockchannel.socket().getLocalPort();
-	        byte [] bytes = LoginMessage.getLoginSuccessMessage(localport);
+	        byte [] bytes = LoginMessage.getLoginSuccessMessage(playerid,MCAST_ADDRESS,localport);
 	        ByteBuffer buf = ByteBuffer.allocate(4096);
 	        buf.put(bytes);
 	        buf.flip();
@@ -78,7 +80,6 @@ class Connection extends Thread {
 	        String message = LoginMessage.getMessageString(bytes);
 	        System.out.println(message);
 
-            // connect udp socket to client
             if (!LoginMessage.isLoginSuccessMessage(bytes)){
                 System.out.println("Client could not connect");
             }
@@ -88,7 +89,7 @@ class Connection extends Thread {
 
                 // register the client with the game engine
                 // gived it handles to the outputs streams of the sockets so it can send on it's own
-                gameengine.newClient(username,sockchannel,dsockchannel);
+                gameengine.clientChannels(playerid, sockchannel,dsockchannel);
 
                 // create the selector for polling the channels
                 selector = Selector.open();
@@ -98,7 +99,7 @@ class Connection extends Thread {
                 //socket_key.attach(oistream);
         	    dsockchannel.configureBlocking(false);
         	    dgram_socket_key = dsockchannel.register( selector, SelectionKey.OP_READ );
-                dgram_socket_key.attach(new String("datagram"));
+                //dgram_socket_key.attach(new String("datagram"));
 
                 /*
                  * Everything is set up
@@ -110,7 +111,7 @@ class Connection extends Thread {
                      blah++;
                      // wait for an event
                      int numkeys = selector.select();
-                     System.out.print("NUmber of keys ready: ");
+                     System.out.print("Number of keys ready: ");
                      System.out.println(numkeys);
                      // get list of selection keys with pending events
                      Set keySet = selector.selectedKeys();
@@ -126,7 +127,6 @@ class Connection extends Thread {
                      }
                      keySet.clear();
                  }
-
             }
                 
             dsockchannel.close();
