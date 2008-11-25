@@ -49,8 +49,10 @@ public class RemotePlayer extends Player
 		{
 			lock.acquire();
 			messageList.add(msg);
-			while (messageList.size() > MAX_SAVED_MESSAGES)
+			
+			if (messageList.size() > MAX_SAVED_MESSAGES)
 				messageList.removeElementAt(0);
+			
 			lock.release();
 		}
 		catch (InterruptedException er)
