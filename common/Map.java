@@ -186,6 +186,10 @@ public class Map implements Constants {
             p.setPosition(spawnPoints.get(RANDOM.nextInt(spawnPoints.size())).getPosition());
         }
     }
+
+    public void placePlayer(Player p, SpawnPoint sp) {
+        p.setPosition(spawnPoints.get(2).getPosition());
+    }
     
     /**
      * Prints coordinate of spawnpoints in spawnPoints vector.

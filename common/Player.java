@@ -73,30 +73,32 @@ public abstract class Player extends WeightedPosition {
 		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
 	}
 	
+    public String getPlayerName() {
+        return name;
+    }	
 
 	// SETTERS
 	
 	
 	// OPERATIONS
 	public void draw(Graphics2D g, float scale) {
-		if (aim != null)
-		{
-			Stroke oldStroke = g.getStroke();
-			g.setStroke(new BasicStroke(3));
-			g.setColor(Color.orange);
-			g.drawLine(Math.round(position.getX() * scale),
-					   Math.round(position.getY() * scale),
-					   Math.round((position.getX() + aim.getX()) * scale),
-					   Math.round((position.getY() + aim.getY()) * scale));
-			g.setStroke(oldStroke);
-		}
-		
 		if (team == TEAM_A)
 			g.setColor(TEAM_A_COLOR);
 		else if (team == TEAM_B)
 			g.setColor(TEAM_B_COLOR);
 		else
 			g.setColor(TEAMLESS_COLOR);
+		
+		if (aim != null)
+		{
+			Stroke oldStroke = g.getStroke();
+			g.setStroke(new BasicStroke(3));
+			g.drawLine(Math.round(position.getX() * scale),
+					   Math.round(position.getY() * scale),
+					   Math.round((position.getX() + aim.getX()) * scale),
+					   Math.round((position.getY() + aim.getY()) * scale));
+			g.setStroke(oldStroke);
+		}
 		
 		GuiUtils.drawFilledOctagon(g, Math.round(position.getX()*scale), Math.round(position.getY()*scale), scale*PLAYER_SIZE);
 	}

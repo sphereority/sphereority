@@ -18,7 +18,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	
 	// Mouse-related variables
 	private int mouseX, mouseY;
-	private boolean mouseFiring;
+	private boolean mouseFiring, mouseFired;
 	
 	// Configuration-related variables
 	private int keyLeft, keyRight, keyUp, keyDown;
@@ -31,7 +31,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		numKeysPressed = 0;
 		
 		// Set up mouse variables
-		mouseFiring = false;
+		mouseFiring = mouseFired = false;
 		
 		// Default bindings:
 //		keyLeft = KeyEvent.VK_LEFT;
@@ -162,7 +162,9 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	 */
 	public boolean isButtonFiring()
 	{
-		return mouseFiring;
+		boolean result = mouseFiring || mouseFired;
+		mouseFired = false;
+		return result;
 	}
 	
 	public int getMousePosX()
@@ -230,7 +232,7 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	public void mousePressed(MouseEvent e)
 	{
 		if (e.getButton() == mouseFireButton)
-			mouseFiring = true;
+			mouseFiring = mouseFired = true;
 		
 		updateMousePosition(e);
 	}
