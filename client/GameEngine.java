@@ -515,9 +515,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     public void processDeathMessage(DeathMessage message) {
     }
 
-    public void processChatMessage(ChatMessage message) {
-
-    }
+//    public void processChatMessage(ChatMessage message) {
+//
+//    }
 
     /**
      * Retrieve a player given their ID.
