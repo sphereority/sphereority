@@ -1,7 +1,10 @@
 package	common;
 
 import common.messages.PlayerMotionMessage;
+
+import java.util.ConcurrentModificationException;
 import java.util.Vector;
+import java.util.concurrent.*;
 
 /**
  * This class describes a player who is playing the game via the network
@@ -17,10 +20,12 @@ public class RemotePlayer extends Player
 	/**
 	 * The oldest message we want to consider, in seconds
 	 */
-	public static final float OLDEST_SAVED_MESSAGE = 10;
+	public static final float OLDEST_SAVED_MESSAGE = 2;
 	
 	protected float currentTime;
 	protected Vector<PlayerMotionMessage> messageList;
+	
+	private Semaphore lock = new Semaphore(1);
 	
 	/**
 	 * Creates a RemotePlayer with the specified id and name
@@ -40,40 +45,64 @@ public class RemotePlayer extends Player
 		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE)
 			return;
 		
-		messageList.add(msg);
+		try
+		{
+			lock.acquire();
+			messageList.add(msg);
+			lock.release();
+		}
+		catch (InterruptedException er)
+		{
+			
+		}
 	}
 	
 	public boolean animate(float dTime, float currentTime)
 	{
 		this.currentTime = currentTime;
 		
-		float x, y, timeDiff, totalDiff;
-		x = y = totalDiff = 0;
+		float x, y, weight, totalWeight;
+		x = y = totalWeight = 0;
 		
-		for (PlayerMotionMessage m : messageList)
+		do
 		{
-			if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
+			try
 			{
-				messageList.remove(m);
-				continue;
+				//lock.acquire();
+				for (PlayerMotionMessage m : messageList)
+					if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
+						messageList.remove(m);
+				
+				for (PlayerMotionMessage m : messageList)
+				{
+					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
+					x += weight * m.getVelocity().getX() + m.getPosition().getX();
+					y += weight * m.getVelocity().getY() + m.getPosition().getY();
+					totalWeight += weight;
+				}
+				//lock.release();
 			}
-			else
+//			catch (InterruptedException er)
+//			{
+//				continue;
+//			}
+			catch (ConcurrentModificationException er)
 			{
-				timeDiff = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
-				x += timeDiff * m.getVelocity().getX() + m.getPosition().getX();
-				y += timeDiff * m.getVelocity().getY() + m.getPosition().getY();
-				totalDiff += timeDiff;
+				//continue;
+				return false;
 			}
-		}
+		} while (false);
 		
-		if (totalDiff < 0.001f)
+		if (totalWeight < 0.0001f)
 		{
 			// TODO: Add hook for missing packets here
 			return false;
 		}
+		else
+			System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
 		
-		x /= totalDiff;
-		y /= totalDiff;
+		x /= totalWeight;
+		y /= totalWeight;
 		
 		setPosition(x, y);
 		

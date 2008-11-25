@@ -217,7 +217,7 @@ public class ClientConnection implements ActionListener, Constants {
             switch(message.getMessageType()) {
                 case PlayerMotion:
                     engine.processPlayerMotion((PlayerMotionMessage)message);
-                    System.out.println("PlayerMotion: " + message.getPlayerId() + " moved");
+                    //System.out.println("PlayerMotion: " + message.getPlayerId() + " moved");
                     break;
                 case PlayerJoin:
                     PlayerJoinMessage msg = (PlayerJoinMessage) message;
@@ -274,7 +274,7 @@ public class ClientConnection implements ActionListener, Constants {
      *
      */
     public void start() {
-        timer = new javax.swing.Timer(1,this);
+        timer = new javax.swing.Timer(TIMER_TICK, this);
         timer.start();
 		timer.setCoalesce(true);
     }
