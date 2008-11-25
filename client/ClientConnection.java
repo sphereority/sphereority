@@ -330,7 +330,9 @@ public class ClientConnection extends Thread implements ActionListener, Constant
     	{
     		checkMessages();
     		
-    		Thread.yield();
+    		try { Thread.sleep(10); }
+    		catch (InterruptedException er) { }
+//    		Thread.yield();
     	}
     }
 
