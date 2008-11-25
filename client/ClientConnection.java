@@ -200,6 +200,7 @@ public class ClientConnection implements ActionListener, Constants {
                                             engine.localPlayer.getPosition(),
                                             engine.localPlayer.getVelocity(),
                                             0f));
+        System.out.println("Sent A Message");
         }
         catch (Exception ex)
         {

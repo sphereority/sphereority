@@ -59,6 +59,15 @@ class ServerGameEngine extends Thread {
         System.out.println("ServerGameEngine: TCP message received");
     }
     public synchronized void newUDPMessage(Message message){
+    	try{
+        	byte [] bytes = message.getByteMessage();
+        	ByteBuffer buf = ByteBuffer.allocate(bytes.length);
+        	buf.put(bytes);
+    		udpchannel.write(buf);
+    	}
+    	catch (Exception e){
+    		e.printStackTrace();
+    	}
         System.out.println("ServerGameEngine: UDP message received");
     }
 
