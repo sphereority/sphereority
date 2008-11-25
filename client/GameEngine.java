@@ -207,8 +207,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		checkCollisions();
 		updateWorld();
 		
-		if (connection != null)
-			connection.actionPerformed(null);
+//		if (connection != null)
+//			connection.actionPerformed(null);
 
 		Thread.yield();
 	}
@@ -414,7 +414,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		gameViewArea.repaint();
 		
 		// TODO: send this message
-		//PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
+		if (connection != null)
+		{
+			PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
+			try { connection.sendMessage(pmm); }
+			catch (Exception er) { }
+		}
 	} // end updateWorld()
 	
 	public void actionPerformed(ActionEvent e)

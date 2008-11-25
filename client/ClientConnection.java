@@ -136,10 +136,11 @@ public class ClientConnection implements ActionListener, Constants {
         myMCastPort = MCAST_PORT;
             
         // Set up the multicast parts of the application
-        myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
-        myMCastPort  = MCAST_PORT;
         mSocket = new MulticastSocket(MCAST_PORT);
         mSocket.joinGroup(myMCastGroup);
+        if (mSocket.getReceiveBufferSize() < 1024*128)
+        	mSocket.setReceiveBufferSize(1024*128);
+        System.out.printf("Multicast port number: %d\n", mSocket.getLocalPort());
 
         // Create a pipe to write back to the connection            
         pipe = Pipe.open();
@@ -177,12 +178,12 @@ public class ClientConnection implements ActionListener, Constants {
         ByteBuffer receivedBuffer = ByteBuffer.allocate(4096);
       
         // Do a max of 20 messages at a time for efficiency reasons
-        for(int i = 0; it.hasNext() ; i++) {
+        for(int i = 0; it.hasNext() && i < 20; i++) {
             SelectionKey selKey = it.next();
             
             try {
                 receivedBuffer.clear();
-                processMessage(selKey,receivedBuffer);
+                processMessage(selKey, receivedBuffer);
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -268,7 +269,9 @@ public class ClientConnection implements ActionListener, Constants {
 //                                            engine.localPlayer.getPosition(),
 //                                            engine.localPlayer.getVelocity(),
 //                                            (float)System.currentTimeMillis()));
-            sendMessage(engine.localPlayer.getMotionPacket(engine.currentTime));
+            PlayerMotionMessage pmm = engine.localPlayer.getMotionPacket(engine.currentTime);
+            //System.out.printf("Sending PlayerMotionMessage\n");
+            sendMessage(pmm);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -280,8 +283,8 @@ public class ClientConnection implements ActionListener, Constants {
      *
      */
     public void start() {
-//        timer = new javax.swing.Timer(TIMER_TICK, this);
-//        timer.start();
-//		timer.setCoalesce(true);
+        timer = new javax.swing.Timer(TIMER_TICK, this);
+        timer.start();
+		timer.setCoalesce(true);
     }
 }

@@ -111,8 +111,7 @@ public class RemotePlayer extends Player
 			// TODO: Add hook for missing packets here
 			return false;
 		}
-		else
-			System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
+//		else System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
 		
 		x /= totalWeight;
 		y /= totalWeight;
