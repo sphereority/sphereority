@@ -34,10 +34,9 @@ public class Sphereority extends Thread implements Constants {
 		GameEngine game;
 		do
 		{
-			// TODO: Technically, the GameEngine creation code should be here...
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[RANDOM.nextInt(MAP_LIST.length)]);
-			game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName);
+			game = new GameEngine(map, (byte)RANDOM.nextInt(256), loginWindow.userName, null);
 			
 			// Set up the game gameWindow
 			gameWindow = new JDialog();

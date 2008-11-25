@@ -8,7 +8,6 @@ public class MapTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
         // Map map = new Map();
         //Map map = new Map("widefield", );
         Map map = new Map("widefield", "10 10\n"+

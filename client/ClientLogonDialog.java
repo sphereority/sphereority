@@ -73,6 +73,10 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
 		{
 			cancel();
 		}
+		else if (source.equals(entryServer) && entryName.getText().length() < 1)
+		{
+			entryName.grabFocus();
+		}
 		else if (source.equals(buttonOkay) || source instanceof JTextField)
 		{
 			login();

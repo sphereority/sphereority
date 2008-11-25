@@ -26,6 +26,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected boolean antialiasing;
 	protected float scale;
 	protected boolean drawMap;
+	protected Point lastOffset;
 	
 	// Colour-defining variables
 	
@@ -40,7 +41,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	protected GameEngine gameEngine;
 	
 	// Temporary testing stuff:
-	protected long lastTime;
 	
 	public ClientViewArea(GameEngine engine)
 	{
@@ -62,8 +62,6 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		widgetList = new Vector<Widget>();
 		scale = 50;
 		
-		lastTime = System.currentTimeMillis();
-		
 		antialiasing = false;
 		drawMap = false;
 		
@@ -81,19 +79,25 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		mapWidth = MAP_WIDTH;
 		mapHeight = MAP_HEIGHT;
 		
-		super.setFocusable(true);
+		lastOffset = new Point();
+		
+		setFocusable(true);
+	}
+	
+	public Point getLastOffset()
+	{
+		return lastOffset;
 	}
 	
 	public void setLocalPlayer(LocalPlayer p)
 	{
 		localPlayer = p;
-		if (viewTracker == null)
-		{
-			viewTracker = new TrackingObject(localPlayer.getPosition());
-		}
-		viewTracker.setTarget(localPlayer);
-		if (!gameEngine.actorList.contains(viewTracker))
-			gameEngine.addActor(viewTracker);
+		
+//		if (viewTracker == null)
+//		{
+//			viewTracker = new TrackingObject(localPlayer);
+//			gameEngine.addActor(viewTracker);
+//		}
 		
 		repaint();
 	}
@@ -171,6 +175,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 			offset_x -= Math.round(viewTracker.getPosition().getX()*scale);
 			offset_y -= Math.round(viewTracker.getPosition().getY()*scale);
 		}
+		
+		lastOffset.x = offset_x;
+		lastOffset.y = offset_y;
 		
 		g2.translate(offset_x, offset_y);		
 		
@@ -340,5 +347,10 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void mapChanged(Map newMap)
 	{
 		setMap(newMap);
+	}
+
+	public float getScale()
+	{
+		return scale;
 	}
 } // end ClientViewArea clas

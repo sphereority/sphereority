@@ -13,16 +13,16 @@ import java.awt.event.*;
 public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher
 {
 	// Key event-related variables
-	protected boolean[] keysPressed;
-	protected int numKeysPressed;
+	private boolean[] keysPressed;
+	private int numKeysPressed;
 	
 	// Mouse-related variables
-	protected int mouseX, mouseY;
-	protected boolean mouseFired;
+	private int mouseX, mouseY;
+	private boolean mouseFiring;
 	
 	// Configuration-related variables
-	protected int keyLeft, keyRight, keyUp, keyDown;
-	protected int mouseFire;
+	private int keyLeft, keyRight, keyUp, keyDown;
+	private int mouseFireButton;
 	
 	public InputListener()
 	{
@@ -31,14 +31,18 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		numKeysPressed = 0;
 		
 		// Set up mouse variables
-		mouseFired = false;
+		mouseFiring = false;
 		
 		// Default bindings:
-		keyLeft = KeyEvent.VK_LEFT;
-		keyRight = KeyEvent.VK_RIGHT;
-		keyUp = KeyEvent.VK_UP;
-		keyDown = KeyEvent.VK_DOWN;
-		mouseFire = MouseEvent.BUTTON1;
+//		keyLeft = KeyEvent.VK_LEFT;
+//		keyRight = KeyEvent.VK_RIGHT;
+//		keyUp = KeyEvent.VK_UP;
+//		keyDown = KeyEvent.VK_DOWN;
+		keyLeft = KeyEvent.VK_A;
+		keyRight = KeyEvent.VK_D;
+		keyUp = KeyEvent.VK_W;
+		keyDown = KeyEvent.VK_S;
+		mouseFireButton = MouseEvent.BUTTON1;
 	}
 	
 	/**
@@ -156,12 +160,19 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 	 * Asks if the user has hit the fire button recently
 	 * @return
 	 */
-	public boolean isButtonFired()
+	public boolean isButtonFiring()
 	{
-		boolean result = mouseFired;
-		//mouseFired = false;
-		
-		return result;
+		return mouseFiring;
+	}
+	
+	public int getMousePosX()
+	{
+		return mouseX;
+	}
+	
+	public int getMousePosY()
+	{
+		return mouseY;
 	}
 	
 	/**
@@ -218,16 +229,16 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 
 	public void mousePressed(MouseEvent e)
 	{
-		if (e.getButton() == mouseFire)
-			mouseFired = true;
+		if (e.getButton() == mouseFireButton)
+			mouseFiring = true;
 		
 		updateMousePosition(e);
 	}
 
 	public void mouseReleased(MouseEvent e)
 	{
-		if (e.getButton() == mouseFire)
-			mouseFired = false;
+		if (e.getButton() == mouseFireButton)
+			mouseFiring = false;
 		
 		updateMousePosition(e);
 	}

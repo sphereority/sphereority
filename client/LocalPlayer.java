@@ -58,7 +58,7 @@ public class LocalPlayer extends Player
 		if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
 		if (inputDevice.isUpKeyPressed())    accelerate(0, -PLAYER_ACCELERATION*dTime);
 		if (inputDevice.isDownKeyPressed())  accelerate(0, PLAYER_ACCELERATION*dTime);
-		if (inputDevice.isButtonFired())     fire();
+		if (inputDevice.isButtonFiring())     fire();
 		
 		boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)
@@ -113,7 +113,7 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedY() > 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			playBump();
 			velocity.bounceY();
 			velocity.setY(velocity.getY() - BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -124,7 +124,7 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedX() < 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			playBump();
 			velocity.bounceX();
 			velocity.setX(velocity.getX() + BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -135,7 +135,7 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedX() > 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			playBump();
 			velocity.bounceX();
 			velocity.setX(velocity.getX() - BUMP_FORCE);
 			timeSinceLastSound = 0;
@@ -146,10 +146,15 @@ public class LocalPlayer extends Player
 	{
 		if (getSpeedY() < 0)
 		{
-			GameEngine.gameEngine.playBump(velocity.getMagnitude() / MAXIMUM_SPEED);
+			playBump();
 			velocity.bounceY();
 			velocity.setY(velocity.getY() + BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
+	}
+	
+	private void playBump()
+	{
+		GameEngine.gameEngine.playBump(velocity.getMagnitude());
 	}
 } // end class LocalPlayer
