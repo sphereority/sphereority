@@ -33,8 +33,13 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
     @Override
     public void OnDataReceive(UDPConnector connector, DatagramPacket packet) {
         try {
+            // Retrieve the message
             Message message = MessageAnalyzer.getMessage(packet.getData());
             
+            // Ignore messages that are sent to yourself
+            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
+                return;
+
             switch(message.getMessageType()) {
                 case PlayerMotion:
                     PlayerMotionMessage pm = (PlayerMotionMessage)message;
@@ -49,7 +54,6 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         catch (Exception ex) {
             ex.printStackTrace();
         }
-        //System.out.println("Data received: " + new String(packet.getData()));
     }
     
 
@@ -110,7 +114,7 @@ class AutoSendMessages extends Thread
                 //message = (PlayerMotionMessage) MessageAnalyzer.getMessage(msgToSend);
                 //System.out.println(message.getPlayerId() + " " + message.getPosition() + 
                 //                   " " + message.getVelocity() + " " + message.getTime());
-                Thread.sleep(500);
+                Thread.sleep(1000);
             }
             catch (Exception ex)
             {
