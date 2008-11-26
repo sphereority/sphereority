@@ -10,6 +10,7 @@ import common.*;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
 import javax.swing.*;
@@ -23,28 +24,22 @@ public class Sphereority extends Thread implements Constants {
 	private GameEngine game;
 	private static ClientLogonDialog loginWindow;
 	private static JDialog gameWindow;
-		
+
 	public Sphereority(GameEngine game, ClientConnection connection) {
 		this.game = game;
 		this.connection = connection;
 	}
-	
-	public static void main(String[] args) {		
-		initialiseLogger();
+
+	public static void main(String[] args) {
+		// Get the log level from the command-line if one is supplied
+		initialiseLogger(args);
 		
-		logger.info("Client initialised.");
-		
-		logger.severe("Major disaster");
-		logger.warning("Potential problem");
-		logger.info("Standard output");
-		logger.config("Some config notes");
-		logger.fine("Fine detail");
-		logger.finer("Finer detail");
-		logger.finest("Finest detail");
-		
+		// Report the current log level to the log file
+		logger.log(logger.getLevel(), "Log Level set to: " +  logger.getLevel());
+
 		// Create and display the LoginDialog
 		//loginWindow = new ClientLogonDialog(null);
-		
+
 		// If the user quit the dialog, we must quit
 		//if (!loginWindow.show())
 		//	System.exit(0);
@@ -55,7 +50,7 @@ public class Sphereority extends Thread implements Constants {
 
     if (args.length == 1) {
         serverName = args[0];
-    }		
+    }
 
 		Map map;
 		GameEngine game;
@@ -71,51 +66,93 @@ public class Sphereority extends Thread implements Constants {
       connection = new ClientConnection(null);
 			game = new GameEngine(map, playerId, "User" + playerId, connection);
 			connection.setGameEngine(game);
-			
+
 			// Set up the game gameWindow
 			gameWindow = new JDialog();
 			gameWindow.setTitle(CLIENT_WINDOW_NAME);
 			gameWindow.setModal(true);
-			
+
 			gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-			
+
 			gameWindow.pack();
 			gameWindow.setLocationRelativeTo(null);
-			
+
 			Sphereority s = new Sphereority(game,connection);
 			try {
-			    connection.loginToServer(serverName,"Bob");	
+			    connection.loginToServer(serverName,"Bob");
 			}
 			catch (Exception ex) {
 			}
 
 			s.start();
-			
+
 			game.registerActionListeners(gameWindow);
 			// Play the game once:
 			gameWindow.setVisible(true);
 			game.unregisterActionListeners(gameWindow);
-			
+
 			// Show the login dialog again
 		}
 		while (loginWindow != null && loginWindow.show());
 		// If quit, don't loop
-		
+
 		// TEMP: this is for testing only:
 		gameWindow.dispose();
-		
+
 		System.exit(0);
 	}
-	
+
 	public void run() {
 		game.play();
 		connection.start();
 	}
-	
-	public static void initialiseLogger() {
+
+	public static void initialiseLogger(String[] args) {
 		// Client application logging
 		logger = Logger.getLogger(CLIENT_LOGGER_NAME);
-		
+
+		// Get the log level from the command-line if one is supplied
+		if (args.length > 0) {
+			/*
+			 * Logger levels:
+			 * SEVERE (highest value)
+			 * WARNING
+			 * INFO
+			 * CONFIG
+			 * FINE
+			 * FINER
+			 * FINEST (lowest value)
+			 */
+
+			String level = args[0].trim().toUpperCase();
+
+			if (level.equals("SEVERE")) {
+				logger.setLevel(Level.SEVERE);
+			}
+			else if (level.equals("WARNING")) {
+				logger.setLevel(Level.WARNING);
+			}
+			else if (level.equals("INFO")) {
+				logger.setLevel(Level.INFO);
+			}
+			else if (level.equals("CONFIG")) {
+				logger.setLevel(Level.CONFIG);
+			}
+			else if (level.equals("FINE")) {
+				logger.setLevel(Level.FINE);
+			}
+			else if (level.equals("FINER")) {
+				logger.setLevel(Level.FINER);
+			}
+			else if (level.equals("FINEST")) {
+				logger.setLevel(Level.FINEST);
+			}			
+		}
+		else {
+			// Set the default log level if it is not specified
+			logger.setLevel(Level.CONFIG);
+		}
+
 		try {
 		  logger.addHandler(new FileHandler(CLIENT_LOG_PATH));
 		}

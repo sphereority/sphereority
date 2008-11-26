@@ -7,6 +7,7 @@ import java.util.Random;
  * These are some constants that are useful to have quickly
  * @author dvanhumb
  */
+
 public interface Constants
 {
 	public static final Random RANDOM = new Random();
@@ -179,10 +180,12 @@ public interface Constants
 	 */
 	public static final float BULLET_SPEED = 15;
 	
+	public static final String CLIENT_VERSION = "v0.5 beta";
+
 	/**
 	 * The name of the client application window
 	 */
-	public static final String CLIENT_WINDOW_NAME = "Sphereority - v0.5beta";
+	public static final String CLIENT_WINDOW_NAME = "Sphereority" + " - " + CLIENT_VERSION;
 	
 	/**
 	 * The amount of time between game steps
