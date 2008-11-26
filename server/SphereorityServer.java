@@ -2,6 +2,8 @@ package server;
 
 import common.Constants;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class SphereorityServer {
 	// SINGLETONS

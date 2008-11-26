@@ -7,6 +7,8 @@ import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class ServerGameEngine extends Thread {
 	// SINGLETONS
