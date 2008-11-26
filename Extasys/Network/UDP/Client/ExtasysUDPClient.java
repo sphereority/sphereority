@@ -38,9 +38,9 @@ public class ExtasysUDPClient
 
     private String fName;
     private String fDescription;
-    private ArrayBlockingQueue fThreadPoolQueue = new ArrayBlockingQueue(50000);
+    private ArrayBlockingQueue<Runnable> fThreadPoolQueue = new ArrayBlockingQueue<Runnable>(50000);
     private ThreadPoolExecutor fMyThreadPool;
-    private ArrayList fConnectors = new ArrayList();
+    private ArrayList<UDPConnector> fConnectors = new ArrayList<UDPConnector>();
 
     /**
      * Constructs a new Extasys UDP Client.
@@ -80,9 +80,9 @@ public class ExtasysUDPClient
     {
         for (int i = 0; i < fConnectors.size(); i++)
         {
-            if (((UDPConnector) fConnectors.get(i)).getName().equals(name))
+            if (fConnectors.get(i).getName().equals(name))
             {
-                ((UDPConnector) fConnectors.get(i)).Stop();
+                fConnectors.get(i).Stop();
                 fConnectors.remove(i);
                 break;
             }
@@ -97,7 +97,7 @@ public class ExtasysUDPClient
     {
         for (int i = 0; i < fConnectors.size(); i++)
         {
-            ((UDPConnector) fConnectors.get(i)).SendData(data);
+            fConnectors.get(i).SendData(data);
         }
     }
 
@@ -111,7 +111,7 @@ public class ExtasysUDPClient
     {
         for (int i = 0; i < fConnectors.size(); i++)
         {
-            ((UDPConnector) fConnectors.get(i)).SendData(bytes, offset, length);
+            fConnectors.get(i).SendData(bytes, offset, length);
         }
     }
 
@@ -125,7 +125,7 @@ public class ExtasysUDPClient
         {
             for (int i = 0; i < fConnectors.size(); i++)
             {
-                ((UDPConnector) fConnectors.get(i)).Start();
+                fConnectors.get(i).Start();
             }
         }
         catch (SocketException ex)
@@ -143,7 +143,7 @@ public class ExtasysUDPClient
         {
             for (int i = 0; i < fConnectors.size(); i++)
             {
-                ((UDPConnector) fConnectors.get(i)).Stop();
+                fConnectors.get(i).Stop();
             }
         }
         catch (Exception ex)
@@ -217,7 +217,7 @@ public class ExtasysUDPClient
         {
             for (int i = 0; i < fConnectors.size(); i++)
             {
-                result += ((UDPConnector) fConnectors.get(i)).getBytesIn();
+                result += fConnectors.get(i).getBytesIn();
             }
         }
         catch (Exception ex)
@@ -237,7 +237,7 @@ public class ExtasysUDPClient
         {
             for (int i = 0; i < fConnectors.size(); i++)
             {
-                result += ((UDPConnector) fConnectors.get(i)).getBytesOut();
+                result += fConnectors.get(i).getBytesOut();
             }
         }
         catch (Exception ex)
