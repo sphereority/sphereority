@@ -10,9 +10,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class ServerGameEngine extends Thread {
+class ServerGameEngine extends Thread implements Constants {
 	// SINGLETONS
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
 
     // port to listen on for new connection threads
     private int         listenport;

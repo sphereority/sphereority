@@ -1,12 +1,14 @@
 package common.messages;
  
+
+import common.Constants;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LoginMessage {
+public class LoginMessage implements Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 

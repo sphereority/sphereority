@@ -1,6 +1,6 @@
 package server;
 
-import common.*;
+import common.Constants;
 import common.messages.LoginMessage;
 import java.io.*;
 import java.lang.reflect.Array;
@@ -11,9 +11,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class NetworkListener extends Thread {
+class NetworkListener extends Thread implements Constants {
 	// SINGLETONS
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
 
     ServerGameEngine            gameengine;
     private int                 remoteport;
