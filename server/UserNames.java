@@ -5,6 +5,9 @@ import common.*;
 import java.util.*;
 
 class UserNames {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     Hashtable userNames;
     UserNames (){
 	userNames = new Hashtable(3);

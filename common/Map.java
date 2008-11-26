@@ -7,6 +7,9 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Map implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static final String DEFAULT_MAP = "10 10\r\n"+
     "++++++++++\r\n" +
     "+        +\r\n" +

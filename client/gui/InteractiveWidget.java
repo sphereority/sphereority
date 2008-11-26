@@ -1,7 +1,9 @@
 package client.gui;
 
-public abstract class InteractiveWidget extends Widget
-{
+public abstract class InteractiveWidget extends Widget {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static final int STATE_READY = 0x501;
 	public static final int STATE_HOVERED = 0x502;
 	public static final int STATE_PRESSED = 0x503;

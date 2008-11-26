@@ -11,8 +11,10 @@ import java.util.concurrent.*;
  * @author smaboshe
  *
  */
-public class RemotePlayer extends Player
-{
+public class RemotePlayer extends Player {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	/**
 	 * The most messages that we want to use at any one time
 	 */

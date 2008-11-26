@@ -9,8 +9,10 @@ import javax.sound.sampled.*;
  * @author Daryl Van Humbeck
  * I know, this is kind of lame, it only returns instances of SoundEffect and you could do that yourself, but there might a reason to do this later, so I'm being careful.
  */
-public class GameSoundSystem
-{
+public class GameSoundSystem {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Mixer mixer;
 	
 	public GameSoundSystem()

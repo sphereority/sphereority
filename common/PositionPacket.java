@@ -5,8 +5,10 @@ package	common;
  * @author smaboshe
  *
  */
-public class PositionPacket
-{
+public class PositionPacket {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Position position, velocity;
 	protected float time;
 	protected byte gameID, playerID;

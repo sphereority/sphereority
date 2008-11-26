@@ -16,6 +16,9 @@ import java.nio.channels.*;
  * Client connection to the server and other clients.
  */
 public class ClientConnection extends Thread implements ActionListener, Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private GameEngine engine;
     //private Selector selector;
     //private SocketChannel sockChannel;

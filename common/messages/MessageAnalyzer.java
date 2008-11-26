@@ -12,6 +12,9 @@ import java.nio.ByteBuffer;
  * 
  */
 public abstract class MessageAnalyzer {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static final byte PLAYER_MOTION  = 0;
 	public static final byte MAP_CHANGE     = 1;
 	public static final byte SCORE_UPDATE   = 2;

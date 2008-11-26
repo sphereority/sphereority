@@ -8,8 +8,10 @@ import java.awt.Graphics2D;
  * This class describes projectile in the game
  * @author smaboshe
  */
-public class Projectile extends Actor
-{
+public class Projectile extends Actor {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Position startPos;
 	protected Position direction;
 	protected byte owner;

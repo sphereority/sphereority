@@ -9,6 +9,9 @@ import java.net.InetAddress;
  * @author rlagman
  */
 public class PlayerJoinMessage extends Message implements MessageConstants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private InetSocketAddress mcastAddress;
     private String playerName;
     

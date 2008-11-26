@@ -11,6 +11,9 @@ import java.nio.channels.*;
 import java.util.*;
 
 class NetworkListener extends Thread {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     ServerGameEngine            gameengine;
     private int                 remoteport;
 

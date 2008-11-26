@@ -16,6 +16,9 @@ import client.gui.GuiUtils;
  *
  */
 public abstract class Player extends WeightedPosition {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected float timeSinceLastSound;
 	protected int playerID;
 	protected String name;

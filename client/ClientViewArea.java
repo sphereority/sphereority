@@ -14,8 +14,10 @@ import common.*;
  * This class manages displaying the current play area
  * @author dvanhumb
  */
-public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener
-{
+public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	private static final long serialVersionUID = 23498751L;
 	public static final int MAP_WIDTH = 16;
 	public static final int MAP_HEIGHT = 16;

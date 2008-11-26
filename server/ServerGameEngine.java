@@ -9,6 +9,9 @@ import java.nio.channels.*;
 import java.util.*;
 
 class ServerGameEngine extends Thread {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     // port to listen on for new connection threads
     private int         listenport;
 

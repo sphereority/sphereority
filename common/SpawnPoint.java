@@ -1,6 +1,9 @@
 package common;
 
 public class SpawnPoint {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     int x; // x coordinate in map units
     int y; // y coordinate in map units
     

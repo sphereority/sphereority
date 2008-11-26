@@ -10,8 +10,10 @@ import java.awt.event.*;
  * This class provides a handy place to put keyboard/mouse event handling code
  * @author dvanhumb
  */
-public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher
-{
+public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	// Key event-related variables
 	private boolean[] keysPressed;
 	private int numKeysPressed;

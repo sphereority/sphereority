@@ -10,6 +10,9 @@ import java.awt.geom.Rectangle2D;
  *
  */
 public class Stone extends Actor {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Rectangle2D bounds = null;
 	
 	// CONSTRUCTOR

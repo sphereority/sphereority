@@ -7,6 +7,12 @@ import java.nio.ByteBuffer;
  * @author rlagman
  */
 public class ChatMessage extends Message implements MessageConstants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     /**
      * The type of message that is being sent.
      */

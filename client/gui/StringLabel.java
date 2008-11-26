@@ -2,8 +2,10 @@ package client.gui;
 
 import java.awt.*;
 
-public class StringLabel extends Widget
-{
+public class StringLabel extends Widget {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected String label;
 	protected float x_align, y_align;
 	protected float fontSize;

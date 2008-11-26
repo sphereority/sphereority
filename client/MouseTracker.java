@@ -5,8 +5,10 @@ import java.awt.Graphics2D;
 
 import common.*;
 
-public class MouseTracker extends Actor
-{
+public class MouseTracker extends Actor {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected InputListener inputListener;
 	protected ClientViewArea clientViewArea;
 	

@@ -16,6 +16,9 @@ import java.nio.channels.*;
  * Client connection to the server and other clients.
  */
 public class MulticastReader extends Thread implements Constants { 
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private MulticastSocket socket;
     private Pipe.SinkChannel pipe;
     private InetAddress myself;

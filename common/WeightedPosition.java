@@ -14,8 +14,10 @@ import java.awt.Graphics2D;
  * @author dvanhumb
  *
  */
-public class WeightedPosition extends Actor implements Constants
-{
+public class WeightedPosition extends Actor implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public WeightedPosition()
 	{
 		this(0, 0);

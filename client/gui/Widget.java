@@ -2,8 +2,10 @@ package client.gui;
 
 import java.awt.*;
 
-public abstract class Widget
-{	
+public abstract class Widget {	
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected int x, y, width, height;
 	protected Color color;
 	

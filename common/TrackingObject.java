@@ -5,8 +5,10 @@ package	common;
  * @author smaboshe
  *
  */
-public class TrackingObject extends WeightedPosition
-{
+public class TrackingObject extends WeightedPosition {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Actor target;
 	
 	public TrackingObject()

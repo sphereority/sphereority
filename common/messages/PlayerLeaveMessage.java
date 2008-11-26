@@ -9,6 +9,9 @@ import java.net.InetAddress;
  * @author rlagman
  */
 public class PlayerLeaveMessage extends Message implements MessageConstants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     
     /**
      * Constructor - Creates a new PlayerLeaveMessage.

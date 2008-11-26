@@ -7,8 +7,10 @@ import javax.sound.sampled.*;
  * A handy sound-clip wrapper 
  * @author dvanhumb
  */
-public class SoundEffect implements LineListener
-{	
+public class SoundEffect implements LineListener {	
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected float volume;
 	protected File soundFile;
 	protected Clip soundClip;

@@ -8,6 +8,9 @@ import common.Position;
  * @author rlagman
  */
 public class PlayerMotionMessage extends Message implements MessageConstants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Position position, velocity;
 	protected float time;
 	

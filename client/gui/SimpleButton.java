@@ -4,8 +4,10 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.*;
 
-public class SimpleButton extends InteractiveWidget
-{
+public class SimpleButton extends InteractiveWidget {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Vector<ActionCallback> callbacks;
 	protected Polygon outline, fill;
 	

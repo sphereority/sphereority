@@ -7,6 +7,9 @@ import java.nio.ByteBuffer;
  *  @author Raphael Lagman
  */
 public class Header implements MessageConstants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     /**
      *  Constant - Maximum size of the header is 16 bytes.
      */

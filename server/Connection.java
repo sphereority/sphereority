@@ -10,6 +10,9 @@ import java.nio.channels.*;
 import java.util.*;
 
 class Connection extends Thread implements Constants{
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     /*
      * login was handled by NetworkListener.java
      * since this thread was created, NetworkListener.java:

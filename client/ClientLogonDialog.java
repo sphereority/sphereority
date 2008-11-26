@@ -5,8 +5,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class ClientLogonDialog implements ActionListener, KeyEventDispatcher
-{
+public class ClientLogonDialog implements ActionListener, KeyEventDispatcher {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected JDialog dialog;
 	
 	// Entry widgets

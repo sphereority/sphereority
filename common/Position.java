@@ -7,6 +7,9 @@ package	common;
  *
  */
 public class Position implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	// INSTANCE VARIABLES
 	protected float x;
 	protected float y;

@@ -7,8 +7,10 @@ import javax.swing.*;
 
 import common.*;
 
-public class ClientWindow extends Thread implements Constants
-{
+public class ClientWindow extends Thread implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static final String[] MAP_LIST = new String[]
 		{ "circles", "mercury", "random_1", "sample-map", "widefield" };
 

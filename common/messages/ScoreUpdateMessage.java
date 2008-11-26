@@ -7,6 +7,9 @@ import java.nio.ByteBuffer;
  * @author rlagman
  */
 public class ScoreUpdateMessage extends Message implements MessageConstants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private int newScore;
     
     /**

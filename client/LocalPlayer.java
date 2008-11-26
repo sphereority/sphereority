@@ -11,8 +11,10 @@ import common.*;
  * @author smaboshe
  * 
  */
-public class LocalPlayer extends Player
-{
+public class LocalPlayer extends Player {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected InputListener inputDevice;
 	protected Rectangle2D bounds = null;
 	protected float timeSinceLastShot;

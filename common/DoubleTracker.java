@@ -2,8 +2,10 @@ package common;
 
 import java.awt.Graphics2D;
 
-public class DoubleTracker extends Actor
-{
+public class DoubleTracker extends Actor {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Actor firstActor, secondActor;
 	
 	public DoubleTracker()
