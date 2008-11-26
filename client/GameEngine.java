@@ -120,7 +120,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         
 		if (fixed)
 		{
-	        for(byte i = 0; i < 5; i++) {
+	        for(byte i = 0; i < 6; i++) {
 	            if(i != localPlayer.getPlayerID()) {
 	                processPlayerJoin(
 	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));

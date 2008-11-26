@@ -22,7 +22,7 @@ public interface Constants
     /**
      * Address for UDP Mutlicast
      */
-    public static final String MCAST_ADDRESS = "224.1.1.10";
+    public static final String MCAST_ADDRESS = "237.75.31.125";
     
     /**
      * Port for multicas socket
@@ -63,6 +63,11 @@ public interface Constants
 	 * The size of a player in world units
 	 */
 	public static final float PLAYER_SIZE = 0.5f;
+	
+	/**
+	 * The length of a player's barrle in world units
+	 */
+	public static final float AIM_LENGTH = 0.4f;
 
 	/**
 	 * The width of the player window

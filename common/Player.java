@@ -22,7 +22,7 @@ public abstract class Player extends WeightedPosition {
 	protected float timeSinceLastSound;
 	protected int playerID;
 	protected String name;
-	protected Position aim = new Position(0, 1);
+	protected Position aim = new Position(0, AIM_LENGTH);
 	protected float curTime;
 	// INSTANCE METHODS
 	
@@ -169,6 +169,6 @@ public abstract class Player extends WeightedPosition {
 			return;
 		aim.x = p.x - position.x;
 		aim.y = p.y - position.y;
-		aim.scale(0.4f / aim.getMagnitude());
+		aim.scale(AIM_LENGTH / aim.getMagnitude());
 	}
 }
