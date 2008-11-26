@@ -1,7 +1,9 @@
 package	common;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class describes an abstract class for an Actor in this game
@@ -9,6 +11,9 @@ import java.awt.geom.Rectangle2D;
  *
  */
 public abstract class Actor implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	// INSTANCE VARIABLES
 	protected Position position;
 	protected Position velocity;
@@ -26,6 +31,9 @@ public abstract class Actor implements Constants {
 
 	// CONSTRUCTORS
 	public Actor() {
+		// Get access to the logger
+		logger.log(Level.INFO, "Created an Actor");
+		
 		position = new Position();
 		velocity = new Position();
 		alive = true;
