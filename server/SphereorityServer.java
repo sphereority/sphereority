@@ -2,8 +2,13 @@ package server;
 
 import common.Constants;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-class SphereorityServer {
+class SphereorityServer implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
+
     public static void main (String [] args){
         try {
             ServerGameEngine sge = new ServerGameEngine();

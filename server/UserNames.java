@@ -1,10 +1,14 @@
 package server;
 
-import common.*;
-
+import common.Constants;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-class UserNames {
+class UserNames implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
+
     Hashtable userNames;
     UserNames (){
 	userNames = new Hashtable(3);

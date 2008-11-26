@@ -1,16 +1,16 @@
 package client;
 
-import common.*;
-//import common.messages.*;
 import client.audio.*;
 import client.gui.*;
+import common.*;
 import common.messages.*;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.Window;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Vector;
 import javax.swing.Timer;
 
@@ -19,6 +19,9 @@ import javax.swing.Timer;
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static GameEngine gameEngine;
 	
     public boolean gameOver;
@@ -207,10 +210,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	{
 		checkCollisions();
 		updateWorld();
-		
-		//if (connection != null)
-		//	connection.actionPerformed(null);
-
 		Thread.yield();
 	}
 	
@@ -414,8 +413,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		}
 		gameViewArea.repaint();
 		
-		// TODO: send this message
-		//PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
 	} // end updateWorld()
 	
 	public void actionPerformed(ActionEvent e)

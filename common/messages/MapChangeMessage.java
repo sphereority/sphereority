@@ -1,13 +1,19 @@
 package common.messages;
 
 import common.Map;
+import common.Constants;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * MapChangeMessage - Notifies that the map is changing.
  * @author rlagman
  */
-public class MapChangeMessage extends Message implements MessageConstants {
+public class MapChangeMessage extends Message implements MessageConstants, Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private Map map;
     
     /**

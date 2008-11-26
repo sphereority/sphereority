@@ -1,12 +1,18 @@
 package common.messages;
 
+import common.Constants;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *  Contains information common to all messages in Sphereority.
  *  @author Raphael Lagman
  */
-public class Header implements MessageConstants {
+public class Header implements MessageConstants, Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     /**
      *  Constant - Maximum size of the header is 16 bytes.
      */

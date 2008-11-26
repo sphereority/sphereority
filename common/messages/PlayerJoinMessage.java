@@ -1,14 +1,20 @@
 package common.messages;
 
-import java.nio.ByteBuffer;
-import java.net.InetSocketAddress;
+import common.Constants;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * PlayerJoinMessage - Notifies that a player is joining the game.
  * @author rlagman
  */
-public class PlayerJoinMessage extends Message implements MessageConstants {
+public class PlayerJoinMessage extends Message implements MessageConstants, Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private InetSocketAddress mcastAddress;
     private String playerName;
     

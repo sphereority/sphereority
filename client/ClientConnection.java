@@ -4,12 +4,15 @@ import common.Constants;
 import common.Player;
 import common.messages.Message;
 import common.messages.PlayerMotionMessage;
+import common.messages.PlayerJoinMessage;
 import common.messages.MessageAnalyzer;
 import java.net.InetAddress;
 import java.net.DatagramPacket;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
 import Extasys.Network.UDP.Client.IUDPClient;
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Client connection to the server and other clients.
@@ -17,6 +20,7 @@ import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 public class ClientConnection extends ExtasysUDPClient implements Constants {
     private AutoSendMessages fAutoSendMessagesThread;
     private GameEngine engine;
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
     /**
      * Creates a client connection
@@ -37,8 +41,8 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
             Message message = MessageAnalyzer.getMessage(packet.getData());
             
             // Ignore messages that are sent to yourself
-            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
-                return;
+//            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
+//                return;
 
             switch(message.getMessageType()) {
                 case PlayerMotion:
@@ -49,13 +53,18 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                                                         + pm.getVelocity() + " "
                                                         + pm.getTime());
                     break;
+                case PlayerJoin:
+                    PlayerJoinMessage msg = (PlayerJoinMessage) message;
+                    System.out.println("PlayerJoin: " + msg.getName() + " wants to join");
+                    //engine.processPlayerJoin(msg);
+                    break;
+
             }
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
 
     /**
      * Start sending the messages.
@@ -123,7 +132,7 @@ class AutoSendMessages extends Thread
             }
         }
     }
-
+    
     public void Dispose()
     {
         fActive = false;

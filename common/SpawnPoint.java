@@ -1,6 +1,13 @@
 package common;
 
-public class SpawnPoint {
+import common.Constants;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class SpawnPoint implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     int x; // x coordinate in map units
     int y; // y coordinate in map units
     

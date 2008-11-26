@@ -1,7 +1,6 @@
 package client.gui;
 
-public interface ActionCallback
-{
+public interface ActionCallback {
 	/**
 	 * This gets called when a widget sends a notification
 	 * @param source	The object that originated this event

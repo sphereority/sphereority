@@ -1,10 +1,17 @@
 package common.messages;
  
-import java.nio.charset.Charset;
-import java.nio.ByteBuffer;
-import java.net.*;
 
-public class LoginMessage {
+import common.Constants;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class LoginMessage implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     // Constants
     private static final String CHARSET_NAME = "UTF-8";
     private static final String NAME_HEADER = "NAME=";

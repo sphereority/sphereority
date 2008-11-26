@@ -1,12 +1,18 @@
 package common.messages;
 
+import common.Constants;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * DeathMessage - Notifies that a player has killed another player.
  * @author rlagman
  */
-public class DeathMessage extends Message implements MessageConstants {
+public class DeathMessage extends Message implements MessageConstants, Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private byte killedBy;    
     private byte killed;
     

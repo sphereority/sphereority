@@ -3,13 +3,17 @@ package server;
 import common.*;
 import common.messages.*;
 import common.messages.LoginMessage;
-
 import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class Connection extends Thread implements Constants{
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     /*
      * login was handled by NetworkListener.java
      * since this thread was created, NetworkListener.java:
