@@ -27,7 +27,7 @@ public interface Constants
     /**
      * Port for multicas socket
      */
-    public static final int MCAST_PORT = 50000;
+    public static final int MCAST_PORT = 55000;
 	
 	/**
 	 * The fastest an object can move in units per second
