@@ -1,5 +1,8 @@
 package	common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class describes an artificial game player (a "bot")
  * @author smaboshe

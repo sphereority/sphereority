@@ -1,6 +1,8 @@
 package common;
 
 import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * TODO: I'm in the process of splitting the speed stuff into two parts:

@@ -1,10 +1,11 @@
 package	common;
 
 import common.messages.PlayerMotionMessage;
-
-import java.util.ConcurrentModificationException;
-import java.util.Vector;
 import java.util.concurrent.*;
+import java.util.ConcurrentModificationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.Vector;
 
 /**
  * This class describes a player who is playing the game via the network

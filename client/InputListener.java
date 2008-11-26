@@ -1,16 +1,19 @@
 package client;
 
+import common.Constants;
 import java.awt.Component;
-import java.awt.KeyboardFocusManager;
-import java.awt.Window;
-import java.awt.KeyEventDispatcher;
 import java.awt.event.*;
+import java.awt.KeyboardFocusManager;
+import java.awt.KeyEventDispatcher;
+import java.awt.Window;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class provides a handy place to put keyboard/mouse event handling code
  * @author dvanhumb
  */
-public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher {
+public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher, Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 

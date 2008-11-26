@@ -5,9 +5,6 @@ package common.messages;
  * Also provides a way to figure out what kind of message is received.
  */
 public abstract class Message implements MessageConstants {
-	// SINGLETONS
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
-
     protected Header header;
     protected int dataLength;
     

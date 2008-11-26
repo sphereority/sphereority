@@ -1,5 +1,8 @@
 package common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class PsycoBot extends ComputerPlayer {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);

@@ -1,13 +1,13 @@
 package	common;
 
+import client.gui.GuiUtils;
+import common.messages.PlayerMotionMessage;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-
-import common.messages.PlayerMotionMessage;
-
-import client.gui.GuiUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This (presently) represents a player

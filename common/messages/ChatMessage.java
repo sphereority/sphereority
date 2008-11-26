@@ -1,15 +1,15 @@
 package common.messages;
 
+import common.Constants;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
  * @author rlagman
  */
-public class ChatMessage extends Message implements MessageConstants {
-	// SINGLETONS
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
-
+public class ChatMessage extends Message implements MessageConstants, Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 

@@ -1,16 +1,16 @@
 package client;
 
-import common.*;
-//import common.messages.*;
 import client.audio.*;
 import client.gui.*;
+import common.*;
 import common.messages.*;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.Window;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Vector;
 import javax.swing.Timer;
 

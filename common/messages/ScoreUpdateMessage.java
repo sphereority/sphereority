@@ -1,12 +1,15 @@
 package common.messages;
 
+import common.Constants;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * ScoreUpdateMessage - Notifies that a player's score has changed.
  * @author rlagman
  */
-public class ScoreUpdateMessage extends Message implements MessageConstants {
+public class ScoreUpdateMessage extends Message implements MessageConstants, Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 

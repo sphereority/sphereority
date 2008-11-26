@@ -1,12 +1,15 @@
 package common.messages;
 
+import common.Constants;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * HealthUpdateMessage - Notifies that a player's health has changed.
  * @author rlagman
  */
-public class HealthUpdateMessage extends Message implements MessageConstants {
+public class HealthUpdateMessage extends Message implements MessageConstants, Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 

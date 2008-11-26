@@ -1,14 +1,14 @@
 package client;
 
+import client.gui.*;
+import common.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
-
-import javax.swing.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Vector;
-
-import client.gui.*;
-import common.*;
+import javax.swing.*;
 
 /**
  * This class manages displaying the current play area

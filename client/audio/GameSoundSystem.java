@@ -1,7 +1,9 @@
 package client.audio;
 
+import common.Constants;
 import java.io.*;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.*;
 
 /**
@@ -9,7 +11,7 @@ import javax.sound.sampled.*;
  * @author Daryl Van Humbeck
  * I know, this is kind of lame, it only returns instances of SoundEffect and you could do that yourself, but there might a reason to do this later, so I'm being careful.
  */
-public class GameSoundSystem {
+public class GameSoundSystem implements Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 

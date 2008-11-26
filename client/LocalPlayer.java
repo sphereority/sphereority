@@ -1,8 +1,9 @@
 package client;
 
-import java.awt.geom.Rectangle2D;
-
 import common.*;
+import java.awt.geom.Rectangle2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class describes a human player who has local access to the keyboard and

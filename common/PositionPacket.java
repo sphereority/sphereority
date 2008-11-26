@@ -1,5 +1,8 @@
 package	common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class describes a position set to or received from the network
  * @author smaboshe

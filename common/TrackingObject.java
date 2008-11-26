@@ -1,5 +1,8 @@
 package	common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Describes an object that follows an Actor
  * @author smaboshe

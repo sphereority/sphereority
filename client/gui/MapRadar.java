@@ -1,11 +1,12 @@
 package client.gui;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-
-import common.*;
 import client.*;
+import common.*;
+import java.awt.Color;
+import java.awt.geom.Rectangle2D;
+import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MapRadar extends Widget implements MapChangeListener, Constants {
 	// SINGLETONS

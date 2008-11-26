@@ -4,9 +4,6 @@ package common.messages;
  * Interface - Contains constants regarding to messages
  */
 public interface MessageConstants {
-	// SINGLETONS
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
-
     /**
      * Constant regarding to a particular message's data length.
      */

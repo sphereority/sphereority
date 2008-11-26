@@ -1,5 +1,7 @@
 package	common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Describes a two-dimensional postion on a coordinate plane.

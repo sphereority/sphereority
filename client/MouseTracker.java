@@ -1,9 +1,10 @@
 package client;
 
-import java.awt.Point;
-import java.awt.Graphics2D;
-
 import common.*;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MouseTracker extends Actor {
 	// SINGLETONS

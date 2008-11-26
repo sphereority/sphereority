@@ -1,8 +1,10 @@
 package common.messages;
  
-import java.nio.charset.Charset;
-import java.nio.ByteBuffer;
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LoginMessage {
 	// SINGLETONS

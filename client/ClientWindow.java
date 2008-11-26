@@ -1,11 +1,11 @@
 package client;
 
-import java.awt.*;
-import java.util.Random;
-
-import javax.swing.*;
-
 import common.*;
+import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.Random;
+import javax.swing.*;
 
 public class ClientWindow extends Thread implements Constants {
 	// SINGLETONS

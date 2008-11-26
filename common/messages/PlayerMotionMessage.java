@@ -1,13 +1,16 @@
 package common.messages;
 
-import java.nio.ByteBuffer;
+import common.Constants;
 import common.Position;
+import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * PlayerMotionMessage - Notifies that a player has killed another player.
  * @author rlagman
  */
-public class PlayerMotionMessage extends Message implements MessageConstants {
+public class PlayerMotionMessage extends Message implements MessageConstants, Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
