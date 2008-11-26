@@ -39,7 +39,10 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                 case PlayerMotion:
                     PlayerMotionMessage pm = (PlayerMotionMessage)message;
                     engine.processPlayerMotion(pm);
-                    System.out.println("Data Received: " + pm.getPlayerId() + " " + pm.getPosition() +  " " + pm.getVelocity() + " " + pm.getTime());
+                    System.out.println("PlayerMotion: " + pm.getPlayerId() + " "
+                                                        + pm.getPosition() + " "
+                                                        + pm.getVelocity() + " "
+                                                        + pm.getTime());
                     break;
             }
         }

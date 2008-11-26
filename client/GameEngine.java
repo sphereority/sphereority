@@ -114,17 +114,17 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 		addActor(mouseTracker);
 		addActor(doubleTracker);
 		addActor(playerTracker);
-        
+
+        /*
 		if (fixed)
 		{
 	        for(byte i = 0; i < 5; i++) {
-                System.out.println("Was Added");
 	            if(i != localPlayer.getPlayerID()) {
 	                processPlayerJoin(
 	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
 	            }
 	        }
-		}
+		}*/
     }
 	
 	// GETTERS
