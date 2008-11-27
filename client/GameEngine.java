@@ -98,10 +98,10 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
 	
 	private void postSetup(boolean fixed)
 	{
-		if (fixed)
-			gameMap.placePlayer(localPlayer, null);
-		else
-			gameMap.placePlayer(localPlayer);
+		//if (fixed)
+		//	gameMap.placePlayer(localPlayer, null);
+		//else
+		gameMap.placePlayer(localPlayer);
 		
 		MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
 		localPlayer.setAimingTarget(mouseTracker);
@@ -522,11 +522,18 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      * =====================================
      */
     public void processPlayerMotion(PlayerMotionMessage message) {
-        // Check to see this is a remote player
+        // Get the index of the player
         int playerIndex = getPlayerIndex(message.getPlayerId());
-        if(playerIndex == -1)
-            return;
-
+       
+        // Add as a remote player if the player does not exist
+        if(playerIndex == -1) {
+            processPlayerJoin(new PlayerJoinMessage((byte)message.getPlayerId(),
+                                                    new java.net.InetSocketAddress("localhost",55000),
+                                                    "User" + message.getPlayerId(),
+                                                    new SpawnPoint(message.getPosition())));
+        }
+        
+        // Update the co-ordinates of the player
         Player player = playerList.get(playerIndex);
         if(player instanceof RemotePlayer)
             ((RemotePlayer)player).addMotionPacket(message);
@@ -538,7 +545,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     
     public void processPlayerJoin(PlayerJoinMessage message) {
         Player player = new RemotePlayer(message.getPlayerId(),message.getName());
-        gameMap.placePlayer(player,null);
+        gameMap.placePlayer(player,message.getSpawnPoint());
         addActor(player);
     }
 

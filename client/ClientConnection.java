@@ -6,6 +6,7 @@ import common.messages.Message;
 import common.messages.PlayerMotionMessage;
 import common.messages.PlayerJoinMessage;
 import common.messages.MessageAnalyzer;
+import java.net.SocketException;
 import java.net.InetAddress;
 import java.net.DatagramPacket;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
@@ -35,14 +36,19 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
     }
 
     @Override
+    /**
+     * How to handle received messages.
+     * @param connector The connector the message was received from.
+     * @param packet The packet the message was sent from.
+     */
     public void OnDataReceive(UDPConnector connector, DatagramPacket packet) {
         try {
             // Retrieve the message
             Message message = MessageAnalyzer.getMessage(packet.getData());
             
             // Ignore messages that are sent to yourself
-//            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
-//                return;
+            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
+                return;
 
             switch(message.getMessageType()) {
                 case PlayerMotion:
@@ -55,8 +61,9 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                     break;
                 case PlayerJoin:
                     PlayerJoinMessage msg = (PlayerJoinMessage) message;
-                    System.out.println("PlayerJoin: " + msg.getName() + " wants to join");
-                    //engine.processPlayerJoin(msg);
+                    System.out.println("PlayerJoin: " + msg.getName() + 
+                                       " wants to join");
+                    engine.processPlayerJoin(msg);
                     break;
 
             }
@@ -65,7 +72,7 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
             ex.printStackTrace();
         }
     }
-
+    
     /**
      * Start sending the messages.
      */

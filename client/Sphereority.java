@@ -104,11 +104,14 @@ public class Sphereority extends Thread implements Constants {
 
 		System.exit(0);
 	}
-
+    
 	public void run() {
-	    game.play();
+	    // Start the game
+        game.play();
         try {
+            // Start the client connection
             connection.Start();
+            // Notify 
             connection.StartSendingMessages();
         } catch (Exception ex) {
             ex.printStackTrace();
