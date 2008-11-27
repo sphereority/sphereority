@@ -37,12 +37,12 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         AddConnector("SphereorityConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
     }
 
-    @Override
     /**
      * How to handle received messages.
      * @param connector The connector the message was received from.
      * @param packet The packet the message was sent from.
      */
+    //@Override
     public void OnDataReceive(UDPConnector connector, DatagramPacket packet) {
         try {
             // Retrieve the message
@@ -56,21 +56,27 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                 case PlayerMotion:
                     PlayerMotionMessage pm = (PlayerMotionMessage)message;
                     engine.processPlayerMotion(pm);
-                    System.out.println("PlayerMotion: " + pm.getPlayerId() + " "
-                                                        + pm.getPosition() + " "
-                                                        + pm.getVelocity() + " "
-                                                        + pm.getTime());
+                    logger.log(Level.INFO,"PlayerMotion: " + pm.getPlayerId()
+                                                           + " "
+                                                           + pm.getPosition() 
+                                                           + " "
+                                                           + pm.getVelocity() 
+                                                           + " "
+                                                           + pm.getTime());
                     break;
                 case PlayerJoin:
-                    PlayerJoinMessage pjoinm = (PlayerJoinMessage) message;
-                    System.out.println("PlayerJoin: " + pjoinm.getName() + 
-                                       " wants to join");
-                    engine.processPlayerJoin(pjoinm);
+                    PlayerJoinMessage pj = (PlayerJoinMessage) message;
+                    logger.log(Level.INFO,"PlayerJoin: " + pj.getPlayerId());
+                    engine.processPlayerJoin(pj);
                     break;
                 case Projectile:
-                    ProjectileMessage projmsg = (ProjectileMessage) message;
-                    System.out.println("Projectile: " + projmsg.getPlayerId());
-                    engine.processProjectile(projmsg);
+                    ProjectileMessage p = (ProjectileMessage) message;
+                    logger.log(Level.INFO,"Projectile: " + p.getPlayerId()
+                                                         + " "
+                                                         + p.getStartPosition()
+                                                         + " "
+                                                         + p.getDirection());
+                    engine.processProjectile(p);
                     break;
 
             }
@@ -139,7 +145,7 @@ class SendUpdateMessages extends Thread
         this.engine = engine;
     }
 
-    @Override
+    //@Override
     public void run()
     {
         int messageCount = 0;
