@@ -13,6 +13,7 @@ import java.net.DatagramPacket;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
 import Extasys.Network.UDP.Client.IUDPClient;
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
+import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * Client connection to the server and other clients.
  */
 public class ClientConnection extends ExtasysUDPClient implements Constants {
-    private AutoSendMessages fAutoSendMessagesThread;
+    private SendUpdateMessages fSendUpdateMessagesThread;
     private GameEngine engine;
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
@@ -33,7 +34,7 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
 
         // Add a UDP connector to this UDP client.
         // You can add more than one connectors if you need to.
-        super.AddConnector("SphereorityConnector", 10240, 8000, remoteHostIP, remoteHostPort);
+        AddConnector("SphereorityConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
     }
 
     @Override
@@ -79,6 +80,24 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         }
     }
     
+    /**
+     * Add a new connector to this client that can be either unicast or multicast.
+     * @param name is the name of the connector.
+     * @param readBufferSize is maximum number of bytes the connector can read at a time.
+     * @param readTimeOut is the maximum time in milliseconds the connector can use to read incoming data.
+     * @param serverIP is the server's ip address the connector will use to send data.
+     * @param serverPort is the server's udp port.
+     * @return the connector.
+     */
+    public UDPConnector AddConnector(String name, int readBufferSize, int readTimeOut, InetAddress serverIP, int serverPort, boolean isMulticast)
+    {
+        UDPConnector connector;
+        connector = isMulticast ? new MulticastConnector(this, name, readBufferSize, readTimeOut, serverIP, serverPort) :
+                                  new UDPConnector(this, name, readBufferSize, readTimeOut, serverIP, serverPort);
+        getConnectors().add(connector);
+        return connector;
+    }
+    
     public void SendMessage(Message message) throws Exception {
         byte[] msgToSend = message.getByteMessage();
         super.SendData(msgToSend, 0, msgToSend.length);
@@ -89,18 +108,18 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
      */
     public void StartSendingMessages() {
         StopSendingMessages();
-        fAutoSendMessagesThread = new AutoSendMessages(this,engine);
-        fAutoSendMessagesThread.start();
+        fSendUpdateMessagesThread = new SendUpdateMessages(this,engine);
+        fSendUpdateMessagesThread.start();
     }
 
     /**
      * Stop sending the messages.
      */
     public void StopSendingMessages() {
-        if (fAutoSendMessagesThread != null)
+        if (fSendUpdateMessagesThread != null)
         {
-            fAutoSendMessagesThread.Dispose();
-            fAutoSendMessagesThread.interrupt();
+            fSendUpdateMessagesThread.Dispose();
+            fSendUpdateMessagesThread.interrupt();
         }
     }
 }
@@ -108,13 +127,13 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
 /**
  * Thread used for sending messages
  */
-class AutoSendMessages extends Thread
+class SendUpdateMessages extends Thread
 {
     private ClientConnection fMyClient;
     private GameEngine engine;
     private boolean fActive = true;
 
-    public AutoSendMessages(ClientConnection client, GameEngine engine)
+    public SendUpdateMessages(ClientConnection client, GameEngine engine)
     {
         fMyClient = client;
         this.engine = engine;
@@ -137,17 +156,18 @@ class AutoSendMessages extends Thread
                                                               player.getVelocity(),
                                                               (float)System.currentTimeMillis()));
                 
+                // Go through all the projectiles in the game
                 for(common.Projectile p : engine.bulletList) {
+                    // Check if this is our own projectile and whether
+                    // we have sent information about it
                     if(!p.isDelivered() && !(p.getOwner() != playerId)) {
+                        // Deliver the information about the projectile
                         fMyClient.SendMessage(new ProjectileMessage(playerId,
                                                                     p.getStartPosition(),
                                                                     p.getDirection()));
+                        p.delivered();
                     }
                 }
-                // Sanity Check -> Make sure we are sending out the correct data
-                //message = (PlayerMotionMessage) MessageAnalyzer.getMessage(msgToSend);
-                //System.out.println(message.getPlayerId() + " " + message.getPosition() + 
-                //                   " " + message.getVelocity() + " " + message.getTime());
                 Thread.sleep(500);
             }
             catch (Exception ex)

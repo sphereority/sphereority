@@ -192,7 +192,7 @@ public class ExtasysUDPClient
      * Each element of the ArrayList is a UDPConnector class.
      * @return ArrayList with the client's connectors.
      */
-    public ArrayList getConnectors()
+    public ArrayList<UDPConnector> getConnectors()
     {
         return fConnectors;
     }

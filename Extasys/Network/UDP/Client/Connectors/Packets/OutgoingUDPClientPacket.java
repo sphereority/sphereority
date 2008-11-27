@@ -20,6 +20,7 @@ THE SOFTWARE.*/
 package Extasys.Network.UDP.Client.Connectors.Packets;
 
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
+import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
 import Extasys.ManualResetEvent;
 import java.net.DatagramPacket;
 
@@ -70,6 +71,7 @@ public class OutgoingUDPClientPacket implements Runnable
     @Override
     public void run()
     {
+                
         try
         {                
             if (fPreviousPacket == null)

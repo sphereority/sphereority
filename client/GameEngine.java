@@ -536,10 +536,13 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             }
         }
         
-        // Update the co-ordinates of the player
-        Player player = playerList.get(playerIndex);
-        if(player instanceof RemotePlayer)
-            ((RemotePlayer)player).addMotionPacket(message);
+        try {
+            // Update the co-ordinates of the player
+            Player player = playerList.get(playerIndex);
+            if(player instanceof RemotePlayer)
+                ((RemotePlayer)player).addMotionPacket(message);
+        } catch (Exception ex) {
+        }
     }
 
     public void processPlayerJoin(PlayerJoinMessage message) {

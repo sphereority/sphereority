@@ -41,7 +41,7 @@ public class Projectile extends Actor {
     /**
      * Make a note that this projectile has been delivered.
      */ 
-    public void deliveredProjectile() {
+    public void delivered() {
         isDelivered = true;
     }
     

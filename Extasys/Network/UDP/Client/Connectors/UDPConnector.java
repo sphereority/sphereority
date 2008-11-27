@@ -23,7 +23,7 @@ import Extasys.Network.UDP.Client.Connectors.Packets.*;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.MulticastSocket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
@@ -33,15 +33,15 @@ import java.net.SocketException;
  */
 public class UDPConnector
 {
-    private boolean fActive = false;
-    private ExtasysUDPClient fMyUDPClient; //Extasys UDP Client reference.
-    public MulticastSocket fSocket;
-    private InetAddress fServerIP;
-    private int fServerPort;
-    private Thread fReadDataThread;
-    private String fName;
-    private int fReadBufferSize;
-    private int fReadTimeOut;
+    protected boolean fActive = false;
+    protected ExtasysUDPClient fMyUDPClient; //Extasys UDP Client reference.
+    public DatagramSocket fSocket;
+    protected InetAddress fServerIP;
+    protected int fServerPort;
+    protected Thread fReadDataThread;
+    protected String fName;
+    protected int fReadBufferSize;
+    protected int fReadTimeOut;
     public int fBytesIn = 0;
     public int fBytesOut = 0;
     public IncomingUDPClientPacket fLastIncomingPacket = null;
@@ -78,8 +78,7 @@ public class UDPConnector
                 fActive = true;
                 try
                 {
-                    fSocket = new MulticastSocket(fServerPort);
-                    fSocket.joinGroup(fServerIP);
+                    fSocket = new DatagramSocket();
                 }
                 catch (SocketException ex)
                 {
