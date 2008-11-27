@@ -1,37 +1,38 @@
 package client;
-
+ 
 import common.Constants;
-import common.Player;
 import common.messages.Message;
-import common.messages.PlayerMotionMessage;
-import common.messages.PlayerJoinMessage;
-import common.messages.ProjectileMessage;
 import common.messages.MessageAnalyzer;
-import java.net.SocketException;
-import java.net.InetAddress;
-import java.net.DatagramPacket;
+import common.messages.PlayerJoinMessage;
+import common.messages.PlayerMotionMessage;
+import common.messages.ProjectileMessage;
+import common.Player;
+import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
 import Extasys.Network.UDP.Client.IUDPClient;
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+ 
 /**
  * Client connection to the server and other clients.
  */
 public class ClientConnection extends ExtasysUDPClient implements Constants {
     private SendUpdateMessages fSendUpdateMessagesThread;
     private GameEngine engine;
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
-
+    public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+ 
     /**
      * Creates a client connection
      */
     public ClientConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) {
         super("SphereorityClient", "The client connection for sphereority", 8,16);
         this.engine = engine;
-
+ 
         // Add a UDP connector to this UDP client.
         // You can add more than one connectors if you need to.
         AddConnector("SphereorityConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
@@ -51,7 +52,7 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
             // Ignore messages that are sent to yourself
             if(message.getPlayerId() == engine.localPlayer.getPlayerID())
                 return;
-
+ 
             switch(message.getMessageType()) {
                 case PlayerMotion:
                     PlayerMotionMessage pm = (PlayerMotionMessage)message;
@@ -78,7 +79,7 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                                                          + p.getDirection());
                     engine.processProjectile(p);
                     break;
-
+ 
             }
         }
         catch (Exception ex) {
@@ -117,7 +118,7 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         fSendUpdateMessagesThread = new SendUpdateMessages(this,engine);
         fSendUpdateMessagesThread.start();
     }
-
+ 
     /**
      * Stop sending the messages.
      */
@@ -129,7 +130,7 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         }
     }
 }
-
+ 
 /**
  * Thread used for sending messages
  */
