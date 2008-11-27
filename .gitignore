@@ -1,10 +1,10 @@
 *.bat
 *.class
 *.classpath
+*.log*
 *.prefs
 *.project
 *.swo
 *.swp
 *~
 .DS_Store
-logs/*.log*
