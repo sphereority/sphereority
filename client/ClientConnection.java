@@ -5,6 +5,7 @@ import common.Player;
 import common.messages.Message;
 import common.messages.PlayerMotionMessage;
 import common.messages.PlayerJoinMessage;
+import common.messages.ProjectileMessage;
 import common.messages.MessageAnalyzer;
 import java.net.SocketException;
 import java.net.InetAddress;
@@ -60,10 +61,15 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                                                         + pm.getTime());
                     break;
                 case PlayerJoin:
-                    PlayerJoinMessage msg = (PlayerJoinMessage) message;
-                    System.out.println("PlayerJoin: " + msg.getName() + 
+                    PlayerJoinMessage pjoinm = (PlayerJoinMessage) message;
+                    System.out.println("PlayerJoin: " + pjoinm.getName() + 
                                        " wants to join");
-                    engine.processPlayerJoin(msg);
+                    engine.processPlayerJoin(pjoinm);
+                    break;
+                case Projectile:
+                    ProjectileMessage projmsg = (ProjectileMessage) message;
+                    System.out.println("Projectile: " + projmsg.getPlayerId());
+                    engine.processProjectile(projmsg);
                     break;
 
             }
@@ -71,6 +77,11 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public void SendMessage(Message message) throws Exception {
+        byte[] msgToSend = message.getByteMessage();
+        super.SendData(msgToSend, 0, msgToSend.length);
     }
     
     /**
@@ -118,19 +129,26 @@ class AutoSendMessages extends Thread
             try
             {
                 Player player = engine.localPlayer;
-                PlayerMotionMessage message = new PlayerMotionMessage((byte)player.getPlayerID(),
-                                                                      player.getPosition(),
-                                                                      player.getVelocity(),
-                                                                      (float)System.currentTimeMillis());
+                byte playerId = (byte)player.getPlayerID();
                 
-                byte[] msgToSend = message.getByteMessage();
-                fMyClient.SendData(msgToSend, 0, msgToSend.length);
-
+                // Send where the player is now
+                fMyClient.SendMessage(new PlayerMotionMessage((byte)player.getPlayerID(),
+                                                              player.getPosition(),
+                                                              player.getVelocity(),
+                                                              (float)System.currentTimeMillis()));
+                
+                for(common.Projectile p : engine.bulletList) {
+                    if(!p.isDelivered() && !(p.getOwner() != playerId)) {
+                        fMyClient.SendMessage(new ProjectileMessage(playerId,
+                                                                    p.getStartPosition(),
+                                                                    p.getDirection()));
+                    }
+                }
                 // Sanity Check -> Make sure we are sending out the correct data
                 //message = (PlayerMotionMessage) MessageAnalyzer.getMessage(msgToSend);
                 //System.out.println(message.getPlayerId() + " " + message.getPosition() + 
                 //                   " " + message.getVelocity() + " " + message.getTime());
-                Thread.sleep(1000);
+                Thread.sleep(500);
             }
             catch (Exception ex)
             {

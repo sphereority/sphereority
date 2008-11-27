@@ -539,15 +539,35 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             ((RemotePlayer)player).addMotionPacket(message);
     }
 
-    public void processScoreUpdate(ScoreUpdateMessage message) {
-        
-    }
-    
     public void processPlayerJoin(PlayerJoinMessage message) {
         Player player = new RemotePlayer(message.getPlayerId(),message.getName());
         gameMap.placePlayer(player,message.getSpawnPoint());
         addActor(player);
     }
+
+    public void processProjectile(ProjectileMessage message) {
+        // Get the index of the player
+        int playerIndex = getPlayerIndex(message.getPlayerId());
+        
+        // Do not process this message if the player has not joined the game
+        if ( playerIndex == -1)
+            return;
+        
+        Player player = playerList.get(playerIndex);
+        if(player instanceof RemotePlayer)
+            addActor(new Projectile(message.getStartPosition(),
+                                    message.getDirection(),
+                                    player.getCurrentTime(),
+                                    player.getCurrentTime(),
+                                    (byte)player.getPlayerID(),
+                                    player.getTeam()));
+                                    
+    }
+    
+    public void processScoreUpdate(ScoreUpdateMessage message) {
+        
+    }
+    
 
     public void processPlayerLeave(PlayerLeaveMessage message) {
         
