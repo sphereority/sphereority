@@ -1,9 +1,8 @@
 package client;
-  
+ 
 import client.audio.*;
 import client.gui.*;
 import common.*;
-import common.Constants;
 import common.messages.*;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,9 +19,9 @@ import javax.swing.Timer;
  * @author smaboshe
  */
 public class GameEngine implements Constants, ActionListener, ActionCallback {
-	// SINGLETONS
-	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
-
+  // SINGLETONS
+  public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+ 
   public static GameEngine gameEngine;
   
     public boolean gameOver;
@@ -99,10 +98,10 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
   
   private void postSetup(boolean fixed)
   {
-    if (fixed)
-      gameMap.placePlayer(localPlayer, null);
-    else
-      gameMap.placePlayer(localPlayer);
+    //if (fixed)
+    //  gameMap.placePlayer(localPlayer, null);
+    //else
+    gameMap.placePlayer(localPlayer);
     
     MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
     localPlayer.setAimingTarget(mouseTracker);
@@ -118,17 +117,17 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     addActor(mouseTracker);
     addActor(doubleTracker);
     addActor(playerTracker);
-        
+ 
+        /*
     if (fixed)
     {
           for(byte i = 0; i < 5; i++) {
-                System.out.println("Was Added");
               if(i != localPlayer.getPlayerID()) {
                   processPlayerJoin(
                       new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
               }
           }
-    }
+    }*/
     }
   
   // GETTERS
@@ -211,10 +210,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
   {
     checkCollisions();
     updateWorld();
-    
-    //if (connection != null)
-    //  connection.actionPerformed(null);
- 
     Thread.yield();
   }
   
@@ -418,8 +413,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     }
     gameViewArea.repaint();
     
-    // TODO: send this message
-    //PlayerMotionMessage pmm = localPlayer.getMotionPacket(currentTime);
   } // end updateWorld()
   
   public void actionPerformed(ActionEvent e)
@@ -529,25 +522,52 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      * =====================================
      */
     public void processPlayerMotion(PlayerMotionMessage message) {
-        // Check to see this is a remote player
+        // Get the index of the player
         int playerIndex = getPlayerIndex(message.getPlayerId());
-        if(playerIndex == -1)
-            return;
- 
+       
+        // Add as a remote player if the player does not exist
+        if(playerIndex == -1) {
+            processPlayerJoin(new PlayerJoinMessage((byte)message.getPlayerId(),
+                                                    new java.net.InetSocketAddress("localhost",55000),
+                                                    "User" + message.getPlayerId(),
+                                                    new SpawnPoint(message.getPosition())));
+        }
+        
+        // Update the co-ordinates of the player
         Player player = playerList.get(playerIndex);
         if(player instanceof RemotePlayer)
             ((RemotePlayer)player).addMotionPacket(message);
     }
  
+    public void processPlayerJoin(PlayerJoinMessage message) {
+        Player player = new RemotePlayer(message.getPlayerId(),message.getName());
+        gameMap.placePlayer(player,message.getSpawnPoint());
+        addActor(player);
+    }
+ 
+    public void processProjectile(ProjectileMessage message) {
+        // Get the index of the player
+        int playerIndex = getPlayerIndex(message.getPlayerId());
+        
+        // Do not process this message if the player has not joined the game
+        if ( playerIndex == -1)
+            return;
+        
+        Player player = playerList.get(playerIndex);
+        if(player instanceof RemotePlayer)
+            addActor(new Projectile(message.getStartPosition(),
+                                    message.getDirection(),
+                                    player.getCurrentTime(),
+                                    player.getCurrentTime(),
+                                    (byte)player.getPlayerID(),
+                                    player.getTeam()));
+                                    
+    }
+    
     public void processScoreUpdate(ScoreUpdateMessage message) {
         
     }
     
-    public void processPlayerJoin(PlayerJoinMessage message) {
-        Player player = new RemotePlayer(message.getPlayerId(),message.getName());
-        gameMap.placePlayer(player,null);
-        addActor(player);
-    }
  
     public void processPlayerLeave(PlayerLeaveMessage message) {
         

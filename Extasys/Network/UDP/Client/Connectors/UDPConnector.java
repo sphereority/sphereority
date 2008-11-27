@@ -257,7 +257,6 @@ class ReadIncomingData extends Thread
                 data = new byte[fMyConnector.getReadBufferSize()];
                 receivedPacket = new DatagramPacket(data, data.length);
                 fMyConnector.fSocket.receive(receivedPacket);
-                System.out.println("Received Packet");
                 fMyConnector.fBytesIn += receivedPacket.getLength();
                 fMyConnector.fLastIncomingPacket = new IncomingUDPClientPacket(fMyConnector, receivedPacket, fMyConnector.fLastIncomingPacket);
             }

@@ -16,9 +16,14 @@ public class SpawnPoint implements Constants {
      * @param x the x coordinate in map units
      * @param y the y coordinate in map units
      */
-    SpawnPoint(int x, int y) {
+    public SpawnPoint(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+    
+    public SpawnPoint(common.Position pos) {
+        x = (int) (pos.getX() - 0.5f);
+        y = (int) (pos.getY() - 0.5f);
     }
     
     public int getX() {

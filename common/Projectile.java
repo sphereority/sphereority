@@ -17,7 +17,8 @@ public class Projectile extends Actor {
 	protected Position startPos;
 	protected Position direction;
 	protected byte owner;
-	
+	protected boolean isDelivered;
+    
 	public Projectile(Position startPos, Position direction, float startTime, float curTime, byte owner, int team)
 	{
 		this.startPos = new Position(startPos);	// Duplicate this one so we're not following somebody else
@@ -27,8 +28,31 @@ public class Projectile extends Actor {
 		position = new Position(startPos);
 		position.move(direction, (curTime - startTime) * BULLET_SPEED);
 		this.owner = owner;
+        isDelivered = false;
 	}
 	
+    /**
+     * Check to see if this projectile has been delivered as a packet.
+     */
+    public boolean isDelivered() {
+        return isDelivered;
+    }
+    
+    /**
+     * Make a note that this projectile has been delivered.
+     */ 
+    public void deliveredProjectile() {
+        isDelivered = true;
+    }
+    
+    public Position getStartPosition() {
+        return startPos;
+    }
+    
+    public Position getDirection() {
+        return direction;
+    }
+    
 	public boolean animate(float dTime, float currentTime)
 	{
 		position.move(direction, dTime * BULLET_SPEED);
