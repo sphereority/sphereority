@@ -525,12 +525,15 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         // Get the index of the player
         int playerIndex = getPlayerIndex(message.getPlayerId());
        
-        // Add as a remote player if the player does not exist
-        if(playerIndex == -1) {
-            processPlayerJoin(new PlayerJoinMessage((byte)message.getPlayerId(),
-                                                    new java.net.InetSocketAddress("localhost",55000),
-                                                    "User" + message.getPlayerId(),
-                                                    new SpawnPoint(message.getPosition())));
+        // Make sure only one instance gets to this part at a time
+        synchronized(this) {
+            // Add as a remote player if the player does not exist
+            if(playerIndex == -1) {
+                processPlayerJoin(new PlayerJoinMessage((byte)message.getPlayerId(),
+                                                        new java.net.InetSocketAddress("localhost",55000),
+                                                        "User" + message.getPlayerId(),
+                                                        new SpawnPoint(message.getPosition())));
+            }
         }
         
         // Update the co-ordinates of the player

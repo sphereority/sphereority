@@ -62,8 +62,7 @@ public class Sphereority extends Thread implements Constants {
 			// This grabs a random map on startup
 			map = new Map(MAP_LIST[4]);
             Random random = new Random();
-            byte playerId = (byte) random.nextInt(6);
-            System.out.println(playerId);
+            byte playerId = (byte) random.nextInt(255);
             game = new GameEngine(map, playerId, "User" + playerId, null);
 
             // Attempt to start a connection
