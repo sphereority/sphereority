@@ -124,4 +124,8 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
     public SpawnPoint getSpawnPoint() {
         return sp;
     }
+    
+    public void setName(String playerName) {
+        this.playerName = playerName;
+    }
 }

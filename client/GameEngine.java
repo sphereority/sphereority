@@ -527,11 +527,11 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
        
         // Make sure only one instance gets to this part at a time
         synchronized(this) {
-            // Add as a remote player if the player does not exist
+            // Do not process a player if they have not been added
             if(playerIndex == -1) {
-                processPlayerJoin(new PlayerJoinMessage((byte)message.getPlayerId(),
-                                                        new java.net.InetSocketAddress("localhost",55000),
-                                                        "User" + message.getPlayerId(),
+                processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(),
+                                                        null,
+                                                        "Resolving Name...",
                                                         new SpawnPoint(message.getPosition())));
             }
         }
@@ -542,6 +542,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             if(player instanceof RemotePlayer)
                 ((RemotePlayer)player).addMotionPacket(message);
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
  

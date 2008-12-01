@@ -18,6 +18,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
  
@@ -50,8 +51,9 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
         
             switch(message.getMessageType()) {
                 case PlayerJoin:
-                    logger.log(logger.getLevel(),"Player Join Received");
-                    PlayerJoinMessage pj = (PlayerJoinMessage) message;
+                    PlayerJoinMessage join = (PlayerJoinMessage) message;
+                    join.setName(engine.getUserName(message.getPlayerId()));
+                    SendMessage(listener,join,packet.getAddress(),packet.getPort());
                     break;
                 case Login:
                     LoginMessage login = (LoginMessage) message;
@@ -60,22 +62,14 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     if(login.isAck())
                         break;
                     
-                    logger.log(logger.getLevel(),"Login Request Received");
+                    logger.log(logger.getLevel(),"Login Request Received from " + packet.getAddress() + " " + packet.getPort());
                     
                     byte playerId = engine.processLoginMessage(login);
                     
                     // Player has not already logged in
-                    if(playerId != -1) {
-                        // Create a message to confirm
-                        login = new LoginMessage(playerId,
-                                                 login.getPlayerName(),
-                                                 gameAddress,
-                                                 true);
-                        byte[] msgToSend = login.getByteMessage();               
+                    if(playerId != -1)
+                        SendGameInformation(listener,playerId,packet.getAddress(),packet.getPort());
                         
-                        // Send confirmation information back to the player
-                        listener.SendData(new DatagramPacket(msgToSend, 0, msgToSend.length, packet.getAddress(),packet.getPort()));
-                    }
                     break;
             }
         }
@@ -83,6 +77,53 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
         {
             ex.printStackTrace();
         }
+    }
+    
+    /**
+     * Sends a Sphereority message via a UDPListener
+     * @param listener
+     * @param address
+     * @param port
+     */
+    protected void SendGameInformation(UDPListener listener, byte playerId,
+                                InetAddress address, int port) throws Exception{
+        // Send information back to the user
+        // about the other players
+        Iterator<Byte> it = engine.getPlayers().iterator();
+        
+        // Inform other players you are joining
+        SendMessage(listener,
+                    new PlayerJoinMessage(playerId,
+                                          gameAddress,
+                                          engine.getUserName(playerId),
+                                          new common.SpawnPoint(0,0)),
+                    gameAddress.getAddress(),
+                    gameAddress.getPort());
+        
+        // Create a message to confirm login
+        SendMessage(listener,
+                    new LoginMessage(playerId,
+                                     engine.getUserName(playerId),
+                                     gameAddress,
+                                     true),
+                    address,
+                    port);
+        
+
+    }
+    
+    /**
+     * Sends a Sphereority message via a UDPListener
+     * @param listener
+     * @param message
+     * @param address
+     * @param port
+     */
+    protected void SendMessage(UDPListener listener, Message message, 
+                                InetAddress address, int port) throws Exception{
+        byte[] msg = message.getByteMessage();
+        DatagramPacket p = new DatagramPacket(msg,0,msg.length,address,port);
+        listener.SendData(p);
     }
     
     /**

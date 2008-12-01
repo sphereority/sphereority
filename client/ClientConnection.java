@@ -77,11 +77,19 @@ public class ClientConnection extends ExtasysUDPClient implements IUDPClient, Co
                                      new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
                                      false));
     
+        // Make sure that we only wait at most 10 seconds
+        long waitTime = System.currentTimeMillis() + 10000;
         // Wait until we have logged in and prepared the game
         while(!isConnected) {
             Thread.yield();
+            
+            // Stop attempting to connect if 10 seconds has past
+            if(System.currentTimeMillis() > waitTime) {
+                throw new Exception("Unable to connect to server!");
+            }
         }
-       
+        
+
         logger.log(logger.getLevel(),"Sent login message");
     }
     
@@ -130,7 +138,7 @@ public class ClientConnection extends ExtasysUDPClient implements IUDPClient, Co
                 /* Special Case: This will be received from the server */
                 case Login:
                     LoginMessage login = (LoginMessage)message;
-                    System.out.println("Received LoginMessage");
+                    
                     // Is this from the server?
                     if(login.isAck()) {
                         // Add the connector to the Sphereority game
@@ -141,6 +149,7 @@ public class ClientConnection extends ExtasysUDPClient implements IUDPClient, Co
                                      login.getAddress().getAddress(),
                                      login.getAddress().getPort(),
                                      true);
+                        
                         // Set the user name and id again
                         engine.localPlayer.setPlayerID(login.getPlayerId());
                         engine.localPlayer.setPlayerName(login.getPlayerName());

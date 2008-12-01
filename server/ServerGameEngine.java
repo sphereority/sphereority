@@ -59,4 +59,16 @@ class ServerGameEngine implements Constants {
         }
         return playerId;
     }
+    
+    public Set<Byte> getPlayers() {
+        return userNames.keySet();
+    }
+    
+    public String getUserName(byte playerId) {
+        return userNames.get(playerId);
+    }
+    
+    public InetSocketAddress getAddress(byte playerId) {
+        return addresses.get(playerId);
+    }
 }
