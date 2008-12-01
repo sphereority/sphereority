@@ -65,6 +65,10 @@ public abstract class Player extends WeightedPosition {
 	{
 		return playerID;
 	}
+    
+    public float getCurrentTime() {
+        return curTime;
+    }
 	
 	/**
 	 * Create a player motion packet
