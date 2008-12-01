@@ -18,17 +18,28 @@ public interface Constants
 	 * Default port for TCP network listener
 	 */
 	public static final int DEFAULT_PORT = 44000;
+     
+    /**
+     * Address for players playing a game.
+     */
+    public static final String PLAYER_MCAST_ADDRESS = "224.1.1.15";
 
     /**
-     * Address for UDP Mutlicast
+     * Port for multicast socket
      */
-    public static final String MCAST_ADDRESS = "224.1.1.10";
-    
-    /**
-     * Port for multicas socket
-     */
-    public static final int MCAST_PORT = 55000;
+    public static final int MCAST_PORT = 44000;
 	
+     /**
+     * Address for receiving UDP Login requests.
+     */
+    public static final String SERVER_ADDRESS = "0.0.0.0";
+
+    /**
+     * Port for the server socket.
+     */
+    public static final int SERVER_PORT = 45000;
+    
+    
 	/**
 	 * The fastest an object can move in units per second
 	 */

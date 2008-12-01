@@ -2,78 +2,61 @@ package server;
 
 import common.Constants;
 import common.messages.*;
-import java.io.*;
-import java.net.*;
-import java.nio.*;
-import java.nio.channels.*;
+
+import java.net.InetSocketAddress;
+
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class ServerGameEngine extends Thread implements Constants {
+class ServerGameEngine implements Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
 
-    // port to listen on for new connection threads
-    private int         listenport;
+    private Queue<Byte> avaliableUserIDs;
+    private Hashtable<Byte,String> userNames;
+    private Hashtable<Byte,InetSocketAddress> addresses;
+    
+    private byte nextPlayer;
 
-    // serverchannel to listen with
-    private ServerSocketChannel     listenchannel;
-    // Vector to store sockets to connections
-    private Hashtable               tcpchannels;
-    private DatagramChannel			udpchannel = null;
-    private Hashtable				usernames;
-    private byte					nextplayer=1;
-
-    ServerGameEngine (){
-    	usernames = new Hashtable();
-    	tcpchannels = new Hashtable();
+    private final byte INIT = 0;
+    private final byte MAX_PLAYERS = 32;
+    
+    public ServerGameEngine (){
+        avaliableUserIDs = new LinkedList<Byte>();
+        // Populate the set with the avaliable userIds
+        for(byte i = 0; i < MAX_PLAYERS; i++)
+            avaliableUserIDs.offer(i);
+        
+    	userNames = new Hashtable<Byte,String>();
+        addresses = new Hashtable<Byte,InetSocketAddress>();
+        nextPlayer = 0;
     }
-    public void run(){
-        System.out.println("ServerGameEngine Running");
-    }  
-    public synchronized byte newClient(String username){
-    	usernames.put(new Integer(nextplayer),username);
-        System.out.println("ServerGameEngine: new client: " + username);
-        return nextplayer++;
+    
+    /**
+     * Processes a login message.
+     * @param message The message for login.
+     * @return The id that is assigned to the player.
+     */
+    public byte processLoginMessage(LoginMessage message) {
+        byte playerId = message.getPlayerId();
+        
+        synchronized(this) {
+            // Don't process if we are out of avaliable user IDs
+            if(avaliableUserIDs.size() == 0) {
+                playerId = -1;
+            }
+            else {
+                playerId = avaliableUserIDs.poll();
+                userNames.put(playerId,message.getPlayerName());
+                addresses.put(playerId,message.getAddress());
+                
+                logger.log(logger.getLevel(), "New Player Added: " 
+                                                + message.getPlayerName());
+                System.out.println("New Player Added: " 
+                                                + message.getPlayerName());
+            }
+        }
+        return playerId;
     }
-    public synchronized void clientChannels(byte playerid, SocketChannel tcpchannel, DatagramChannel udpchan){
-    	tcpchannels.put(new Integer(playerid), tcpchannel);
-    	if (udpchannel == null)
-    		udpchannel = udpchan;
-    	System.out.printf("ServerGameEngine.java: player %d channels registered\n", playerid);
-    }
-    public synchronized void newTCPMessage(Message message){
-    	//byte mtype = message.getMessageType();
-    	try{
-    		byte player = message.getPlayerId();
-    		byte [] bytes = message.getByteMessage();
-    		ByteBuffer buf = ByteBuffer.allocate(bytes.length);
-    		buf.put(bytes);
-    		SocketChannel channel;
-    		for (int i=1; i<nextplayer; i++){
-    			if (i != (int)player){
-    				channel = (SocketChannel) tcpchannels.get(new Integer(i));
-    				channel.write(buf);
-    			}
-    		}
-    	}
-    	catch (Exception e){
-    		e.printStackTrace();
-    	}
-        System.out.println("ServerGameEngine: TCP message received");
-    }
-    public synchronized void newUDPMessage(Message message){
-    	try{
-        	byte [] bytes = message.getByteMessage();
-        	ByteBuffer buf = ByteBuffer.allocate(bytes.length);
-        	buf.put(bytes);
-    		udpchannel.write(buf);
-    	}
-    	catch (Exception e){
-    		e.printStackTrace();
-    	}
-        System.out.println("ServerGameEngine: UDP message received");
-    }
-
 }

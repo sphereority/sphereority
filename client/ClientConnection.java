@@ -1,19 +1,23 @@
 package client;
  
+import common.Player;
 import common.Constants;
 import common.messages.Message;
 import common.messages.MessageAnalyzer;
 import common.messages.PlayerJoinMessage;
 import common.messages.PlayerMotionMessage;
 import common.messages.ProjectileMessage;
-import common.Player;
+import common.messages.LoginMessage;
+
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
 import Extasys.Network.UDP.Client.IUDPClient;
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
+
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,23 +25,66 @@ import java.util.logging.Logger;
 /**
  * Client connection to the server and other clients.
  */
-public class ClientConnection extends ExtasysUDPClient implements Constants {
+public class ClientConnection extends ExtasysUDPClient implements IUDPClient, Constants {
     private SendUpdateMessages fSendUpdateMessagesThread;
     private GameEngine engine;
+    private boolean isConnected;
     public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
  
     /**
      * Creates a client connection
      */
-    public ClientConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) {
+    public ClientConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) throws Exception{
         super("SphereorityClient", "The client connection for sphereority", 8,16);
         this.engine = engine;
- 
+        isConnected = false;
         // Add a UDP connector to this UDP client.
         // You can add more than one connectors if you need to.
-        AddConnector("SphereorityConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
+        AddConnector("ServerConnector", 10240, 8000, remoteHostIP, remoteHostPort,false);
+        
+        // Try to connect to the server.
+        establishServerConnection();
     }
 
+    /**
+     * Starts the ClientConnection
+     */
+    // @Override
+    public void Start() throws SocketException, Exception {    
+        // Restart all the connectors
+        super.Start();
+        System.out.println("Starting...");
+        // Start sending the messages.
+        StartSendingMessages();
+        
+    }
+    
+    /**
+     * Attempts to establish a connection to the server.
+     */
+    public void establishServerConnection() throws Exception {
+        logger.log(logger.getLevel(),"Establishing Server Connection");
+        System.out.println("Establishing Server Connection");
+        
+        // Start the connector to the server.
+        super.Start();
+        
+        // Request to the server that we log in.
+        // Note: Do not need to specify address here.
+        // Is here just to avoid a nullpointer when writing the message
+        SendMessage(new LoginMessage((byte)engine.localPlayer.getPlayerID(),
+                                     engine.localPlayer.getPlayerName(),
+                                     new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
+                                     false));
+    
+        // Wait until we have logged in and prepared the game
+        while(!isConnected) {
+            Thread.yield();
+        }
+       
+        logger.log(logger.getLevel(),"Sent login message");
+    }
+    
     /**
      * How to handle received messages.
      * @param connector The connector the message was received from.
@@ -79,6 +126,29 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
                                                          + p.getDirection());
                     engine.processProjectile(p);
                     break;
+                
+                /* Special Case: This will be received from the server */
+                case Login:
+                    LoginMessage login = (LoginMessage)message;
+                    System.out.println("Received LoginMessage");
+                    // Is this from the server?
+                    if(login.isAck()) {
+                        // Add the connector to the Sphereority game
+                        // that the server will tell us
+                        AddConnector("SphereorityConnector",
+                                     10240,
+                                     8000,
+                                     login.getAddress().getAddress(),
+                                     login.getAddress().getPort(),
+                                     true);
+                        // Set the user name and id again
+                        engine.localPlayer.setPlayerID(login.getPlayerId());
+                        engine.localPlayer.setPlayerName(login.getPlayerName());
+                        
+                        // Allow the client to start sending messages
+                        isConnected = true;
+                    }
+                    break;
  
             }
         }
@@ -105,6 +175,9 @@ public class ClientConnection extends ExtasysUDPClient implements Constants {
         return connector;
     }
     
+    /**
+     * Sends a Sphereority message via all the connectors.
+     */
     public void SendMessage(Message message) throws Exception {
         byte[] msgToSend = message.getByteMessage();
         super.SendData(msgToSend, 0, msgToSend.length);

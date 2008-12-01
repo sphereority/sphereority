@@ -38,15 +38,15 @@ import java.net.SocketException;
 public class UDPListener 
 {
 
-    private ExtasysUDPServer fMyUDPServer; //Extasys UDP server reference.
-    private String fName;
-    private InetAddress fIPAddress;
-    private int fPort;
-    private int fReadBufferSize;
-    private int fReadDataTimeOut;
+    protected ExtasysUDPServer fMyUDPServer; //Extasys UDP server reference.
+    protected String fName;
+    protected InetAddress fIPAddress;
+    protected int fPort;
+    protected int fReadBufferSize;
+    protected int fReadDataTimeOut;
     public DatagramSocket fSocket;
-    private boolean fActive = false;
-    private Thread fReadIncomingDataThread;
+    protected boolean fActive = false;
+    protected Thread fReadIncomingDataThread;
     public int fBytesIn = 0;
     public int fBytesOut = 0;
     //Messages IO.
