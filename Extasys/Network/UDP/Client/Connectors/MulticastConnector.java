@@ -61,7 +61,7 @@ public class MulticastConnector extends UDPConnector
                 try
                 {
                     fSocket = new MulticastSocket(fServerPort);
-                    ((MulticastSocket)fSocket).joinGroup(fServerIP);
+                    ((MulticastSocket)fSocket).joinGroup(fServerIP); 
                 }
                 catch (SocketException ex)
                 {

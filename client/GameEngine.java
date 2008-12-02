@@ -521,19 +521,17 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
      * Methods for processing messages
      * =====================================
      */
-    public void processPlayerMotion(PlayerMotionMessage message) {
+    public synchronized void processPlayerMotion(PlayerMotionMessage message) {
         // Get the index of the player
         int playerIndex = getPlayerIndex(message.getPlayerId());
-       
-        // Make sure only one instance gets to this part at a time
-        synchronized(this) {
-            // Add as a remote player if the player does not exist
-            if(playerIndex == -1) {
-                processPlayerJoin(new PlayerJoinMessage((byte)message.getPlayerId(),
-                                                        new java.net.InetSocketAddress("localhost",55000),
-                                                        "User" + message.getPlayerId(),
-                                                        new SpawnPoint(message.getPosition())));
-            }
+        
+        // Do not process a player if they have not been added
+        if(playerIndex == -1) {
+            SpawnPoint sp = new SpawnPoint(message.getPosition());
+            processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(),
+                                                    RESOLVING_NAME,
+                                                    null,
+                                                    sp));
         }
         
         try {
@@ -542,13 +540,26 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             if(player instanceof RemotePlayer)
                 ((RemotePlayer)player).addMotionPacket(message);
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
  
-    public void processPlayerJoin(PlayerJoinMessage message) {
-        Player player = new RemotePlayer(message.getPlayerId(),message.getName());
-        gameMap.placePlayer(player,message.getSpawnPoint());
-        addActor(player);
+    public synchronized void processPlayerJoin(PlayerJoinMessage message) {
+        // Get the index of the player
+        int playerIndex = getPlayerIndex(message.getPlayerId());
+        Player player;
+        
+        // Creating a new player
+        if(playerIndex == -1) {
+            player = new RemotePlayer(message.getPlayerId(),message.getName());
+            gameMap.placePlayer(player,message.getSpawnPoint());
+            addActor(player);
+        }
+        // Updating information about the player
+        else {
+            player = playerList.get(playerIndex);
+            player.setPlayerName(message.getName());
+        }
     }
  
     public void processProjectile(ProjectileMessage message) {

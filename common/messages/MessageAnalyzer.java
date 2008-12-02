@@ -169,7 +169,10 @@ public abstract class MessageAnalyzer {
                 receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
             case Login:
-                //receivedMessage = new LoginMessage(byteHeader,byteData);
+                receivedMessage = new LoginMessage(byteHeader,byteData);
+                break;
+            case PlayerJoin:
+                receivedMessage = new PlayerJoinMessage(byteHeader,byteData);
                 break;
             case MulticastGroup:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
