@@ -39,7 +39,7 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
         super("SphereorityClient", "The server connection for Sphereority", 8, 32);
         this.engine = engine;
         this.gameAddress = new InetSocketAddress(InetAddress.getByName(PLAYER_MCAST_ADDRESS),MCAST_PORT);
-        this.AddListener("SphereorityServer", listenerIP, port, 10240, 10000, false);
+        this.AddListener("SphereorityServer", listenerIP, port, 10240, 10000, true);
     }
 
     @Override
@@ -48,29 +48,38 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
         try
         {
             Message message = MessageAnalyzer.getMessage(packet.getData());
+            
+            // Ignore the message if it is sent by the server
+            if(message.isAck())
+                return;
         
             switch(message.getMessageType()) {
                 case PlayerJoin:
-                    PlayerJoinMessage join = (PlayerJoinMessage) message;
-                    join.setName(engine.getUserName(message.getPlayerId()));
-                    SendMessage(listener,join,packet.getAddress(),packet.getPort());
-                    break;
-                case Login:
-                    LoginMessage login = (LoginMessage) message;
-                    
-                    // Do not process if it is sent by the server
-                    if(login.isAck())
-                        break;
-                    
-                    logger.log(logger.getLevel(),"Login Request Received from " + packet.getAddress() + " " + packet.getPort());
-                    
-                    byte playerId = engine.processLoginMessage(login);
-                    
-                    // Player has not already logged in
-                    if(playerId != -1)
-                        SendGameInformation(listener,playerId,packet.getAddress(),packet.getPort());
+                    PlayerJoinMessage pj = (PlayerJoinMessage) message;
+                    pj.setAck(true);
                         
+                    // Processing a new player?
+                    if(pj.getPlayerId() == -1) {
+                        pj.setPlayerId(engine.processPlayerJoin(pj));
+                        
+                        // Send a message via the Server
+                        SendMessage(listener,
+                                    pj,
+                                    listener.getIPAddress(),
+                                    listener.getPort());
+                    }
+                    // Asking for information about an existing user
+                    else {
+                        pj.setName(engine.getPlayerName(pj.getPlayerId()));
+                        
+                        SendMessage(listener,
+                                    pj,
+                                    listener.getIPAddress(),
+                                    listener.getPort());
+                    }
+                    
                     break;
+                    
             }
         }
         catch (Exception ex)
@@ -78,40 +87,7 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
             ex.printStackTrace();
         }
     }
-    
-    /**
-     * Sends a Sphereority message via a UDPListener
-     * @param listener
-     * @param address
-     * @param port
-     */
-    protected void SendGameInformation(UDPListener listener, byte playerId,
-                                InetAddress address, int port) throws Exception{
-        // Send information back to the user
-        // about the other players
-        Iterator<Byte> it = engine.getPlayers().iterator();
-        
-        // Inform other players you are joining
-        SendMessage(listener,
-                    new PlayerJoinMessage(playerId,
-                                          gameAddress,
-                                          engine.getUserName(playerId),
-                                          new common.SpawnPoint(0,0)),
-                    gameAddress.getAddress(),
-                    gameAddress.getPort());
-        
-        // Create a message to confirm login
-        SendMessage(listener,
-                    new LoginMessage(playerId,
-                                     engine.getUserName(playerId),
-                                     gameAddress,
-                                     true),
-                    address,
-                    port);
-        
-
-    }
-    
+      
     /**
      * Sends a Sphereority message via a UDPListener
      * @param listener

@@ -24,6 +24,12 @@ public class Header implements MessageConstants, Constants {
     protected MessageType message;
 
     /**
+     * isAck - Used for reliable communications to confirm whether this
+     *         is an acknowledgment.
+     */
+    protected boolean isAck;
+    
+    /**
      * gameId - Identifies a game that is being played.
      */
     protected byte gameId;
@@ -38,13 +44,26 @@ public class Header implements MessageConstants, Constants {
      *  @param message The type of message the header is associated with
      *  @param gameId The id of the game (unused at the moment)
      *  @param playerId The id of the player sending a message.
+     *  @param isAck Whether this message is an acknowledgement or not.
      */
-    public Header(MessageType message, byte gameId, byte playerId) {
+    public Header(MessageType message, byte gameId, byte playerId, boolean isAck) {
         this.message  = message;
         this.gameId   = gameId;
         this.playerId = playerId;
+        this.isAck    = isAck;
     }
 
+        /**
+     *  Constructor - Initializes the parts of a Header.
+     *  @param message The type of message the header is associated with
+     *  @param gameId The id of the game (unused at the moment)
+     *  @param playerId The id of the player sending a message.
+     *  @param isAck Whether this message is an acknowledgement or not.
+     */
+    public Header(MessageType message, byte gameId, byte playerId) {
+        this(message,gameId,playerId,false);
+    }
+    
     /**
      * Constructor - Creates a header given a byte representation of an
      *               instance of a header.
@@ -54,7 +73,8 @@ public class Header implements MessageConstants, Constants {
         ByteBuffer buffer = ByteBuffer.wrap(header);
         this.message  = MessageAnalyzer.getMessageType(buffer.get());
         this.gameId   = buffer.get();
-        this.playerId = buffer.get();    
+        this.playerId = buffer.get();  
+        this.isAck    = buffer.get() == 1;
     }
     
     /**
@@ -70,6 +90,7 @@ public class Header implements MessageConstants, Constants {
         buffer.put(MessageAnalyzer.getMessageType(message));
         buffer.put(gameId);
         buffer.put(playerId);
+        buffer.put(isAck ? (byte)1 : (byte)0);
         
         // Return the header as a byte array
         return header;
@@ -94,5 +115,17 @@ public class Header implements MessageConstants, Constants {
      */
     public byte getGameId() {
         return gameId;
+    }
+    
+    public boolean getIsAck() {
+        return isAck;
+    }
+    
+    public void setPlayerId(byte playerId) {
+        this.playerId = playerId;
+    }
+    
+    public void setAck(boolean isAck) {
+        this.isAck = isAck;
     }
 }

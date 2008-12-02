@@ -38,6 +38,7 @@ class ServerGameEngine implements Constants {
      * @param message The message for login.
      * @return The id that is assigned to the player.
      */
+     /*
     public byte processLoginMessage(LoginMessage message) {
         byte playerId = message.getPlayerId();
         
@@ -58,13 +59,38 @@ class ServerGameEngine implements Constants {
             }
         }
         return playerId;
+    }*/
+    
+    /**
+     * Processes a PlayerJoin message.
+     * @param message The message for login.
+     * @return The id that is assigned to the player.
+     */
+    public synchronized byte processPlayerJoin(PlayerJoinMessage message) {
+        byte playerId = message.getPlayerId();
+        
+        // Don't process if we are out of avaliable user IDs
+        if(avaliableUserIDs.size() == 0) {
+            playerId = -1;
+        }
+        else {
+            playerId = avaliableUserIDs.poll();
+            userNames.put(playerId,message.getName());
+            addresses.put(playerId,message.getAddress());
+            
+            logger.log(logger.getLevel(), "New Player Added: " 
+                                            + message.getName());
+            System.out.println("New Player Added: " 
+                                            + message.getName());
+        }
+        return playerId;
     }
     
     public Set<Byte> getPlayers() {
         return userNames.keySet();
     }
     
-    public String getUserName(byte playerId) {
+    public String getPlayerName(byte playerId) {
         return userNames.get(playerId);
     }
     

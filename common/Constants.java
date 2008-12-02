@@ -32,13 +32,17 @@ public interface Constants
      /**
      * Address for receiving UDP Login requests.
      */
-    public static final String SERVER_ADDRESS = "0.0.0.0";
+    public static final String SERVER_ADDRESS = "224.1.1.20";
 
     /**
      * Port for the server socket.
      */
     public static final int SERVER_PORT = 45000;
     
+    /**
+     * Placeholder string while we try to figure out a player's name.
+     */
+    public static final String RESOLVING_NAME = "Resolving Name...";
     
 	/**
 	 * The fastest an object can move in units per second

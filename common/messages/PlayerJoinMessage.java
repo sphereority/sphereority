@@ -16,16 +16,26 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
-    private InetSocketAddress mcastAddress;
     private String playerName;
+    private InetSocketAddress mcastAddress;
     private SpawnPoint sp;
     
     /**
      * Constructor - Creates a new MulticastGroupMessage.
      * @param playerId The id of the player sending the message.
      */
-    public PlayerJoinMessage(byte playerId, InetSocketAddress mcastAddress, String playerName,SpawnPoint sp) {
-        super(MessageType.PlayerJoin, playerId, PlayerJoinLength);
+    public PlayerJoinMessage(byte playerId, String playerName,
+                             InetSocketAddress mcastAddress,SpawnPoint sp) {
+        this(playerId,playerName,mcastAddress,sp,false);
+    }
+    /**
+     * Constructor - Creates a new MulticastGroupMessage.
+     * @param playerId The id of the player sending the message.
+     */
+    public PlayerJoinMessage(byte playerId, String playerName,
+                             InetSocketAddress mcastAddress,SpawnPoint sp,
+                             boolean isAck) {
+        super(MessageType.PlayerJoin, playerId, PlayerJoinLength, isAck);
         this.mcastAddress = mcastAddress;
         this.playerName = playerName;
         this.sp = sp;
@@ -125,6 +135,10 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
         return sp;
     }
     
+    /**
+     * Sets the name of a player.
+     * @param playerName The new name for the player.
+     */
     public void setName(String playerName) {
         this.playerName = playerName;
     }

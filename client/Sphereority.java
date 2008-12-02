@@ -60,7 +60,7 @@ public class Sphereority extends Thread implements Constants {
 
         // Attempt to start a connection
         try {
-            connection = new ClientConnection(InetAddress.getByName("localhost"),SERVER_PORT,game);
+            connection = new ClientConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT,game);
         }
         catch (Exception ex) {
             ex.printStackTrace();
