@@ -99,5 +99,4 @@ public class ChatMessage extends Message implements MessageConstants, Constants 
     public String getMessage() {
         return message;    
     }
-	
 }

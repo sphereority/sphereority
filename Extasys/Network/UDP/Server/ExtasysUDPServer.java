@@ -35,11 +35,11 @@ import java.util.concurrent.TimeUnit;
 public class ExtasysUDPServer
 {
 
-    private String fName;
-    private String fDescription;
-    private ArrayList fListeners = new ArrayList();
-    private ArrayBlockingQueue fThreadPoolQueue = new ArrayBlockingQueue(50000);
-    private ThreadPoolExecutor fMyThreadPool;
+    protected String fName;
+    protected String fDescription;
+    protected ArrayList<UDPListener> fListeners = new ArrayList<UDPListener>();
+    protected ArrayBlockingQueue<Runnable> fThreadPoolQueue = new ArrayBlockingQueue<Runnable>(50000);
+    protected ThreadPoolExecutor fMyThreadPool;
 
     /**
      * Constructs a new Extasys UDP Server.

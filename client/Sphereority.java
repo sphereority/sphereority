@@ -37,59 +37,54 @@ public class Sphereority extends Thread implements Constants {
     logger.log(logger.getLevel(), "Log Level set to: " +  logger.getLevel());
  
     // Create and display the LoginDialog
-    //loginWindow = new ClientLogonDialog(null);
+    loginWindow = new ClientLogonDialog(null);
  
     // If the user quit the dialog, we must quit
-    //if (!loginWindow.show())
-    //  System.exit(0);
+    if (!loginWindow.show())
+        System.exit(0);
     // Else play the game
  
-        String serverName = "localhost";
-        logger.config("Server Name: " + serverName);
- 
-        if (args.length == 1) {
-            serverName = args[0];
-        }
- 
+    logger.config("Server Name: " + loginWindow.getServerName());
+
     Map map;
     GameEngine game;
-        ClientConnection connection = null;
+    ClientConnection connection = null;
  
-        do
+    do
     {
-      // This grabs a random map on startup
-      map = new Map(MAP_LIST[4]);
-            Random random = new Random();
-            byte playerId = (byte) random.nextInt(255);
-            game = new GameEngine(map, playerId, "User" + playerId, null);
- 
-            // Attempt to start a connection
-            try {
-                connection = new ClientConnection(InetAddress.getByName(MCAST_ADDRESS),MCAST_PORT,game);
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
+        // This grabs a random map on startup
+        map = new Map(MAP_LIST[4]);
+        Random random = new Random();
+        byte playerId = (byte) random.nextInt(255);
+        game = new GameEngine(map, playerId, loginWindow.getUserName(), null);
+
+        // Attempt to start a connection
+        try {
+            connection = new ClientConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT,game);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
             
-      // Set up the game gameWindow
-      gameWindow = new JDialog();
-      gameWindow.setTitle(CLIENT_WINDOW_NAME);
-      gameWindow.setModal(true);
- 
-      gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
- 
-      gameWindow.pack();
-      gameWindow.setLocationRelativeTo(null);
-      
-            Sphereority s = new Sphereority(game,connection);
+        // Set up the game gameWindow
+        gameWindow = new JDialog();
+        gameWindow.setTitle(CLIENT_WINDOW_NAME);
+        gameWindow.setModal(true);
+
+        gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+
+        gameWindow.pack();
+        gameWindow.setLocationRelativeTo(null);
+
+        Sphereority s = new Sphereority(game,connection);
             
-            s.start();
+        s.start();
       
-      game.registerActionListeners(gameWindow);
-      // Play the game once:
-      gameWindow.setVisible(true);
-      game.unregisterActionListeners(gameWindow);
+        game.registerActionListeners(gameWindow);
+        // Play the game once:
+        gameWindow.setVisible(true);
+        game.unregisterActionListeners(gameWindow);
  
       // Show the login dialog again
     }
@@ -102,14 +97,12 @@ public class Sphereority extends Thread implements Constants {
     System.exit(0);
   }
     
-  public void run() {
-      // Start the game
-        game.play();
+    public void run() {
         try {
+            // Start the game
+            game.play();
             // Start the client connection
             connection.Start();
-            // Notify 
-            connection.StartSendingMessages();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
