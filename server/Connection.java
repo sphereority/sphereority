@@ -5,6 +5,7 @@ import common.messages.*;
 import common.messages.LoginMessage;
 
 import java.net.*;
+import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
@@ -27,28 +28,17 @@ class Connection extends Thread implements Constants{
 
      // handle to the ServerGameEngine
     private ServerGameEngine        gameengine;
-
     private String                  username;
+    private Socket					socket;
+    private BufferedInputStream		istream;
+    private BufferedOutputStream	ostream;
+    private byte []					bytes;
 
-    private Selector		selector;
-    private SelectionKey	readsocket_key;
-
-    private Socket			sock;
-    private SocketChannel	sockchannel;
-    private SelectionKey    socket_key;
-
-    private MulticastSocket	mcastsocket;
-    //private DatagramSocket	dsock;
-    private DatagramChannel	dsockchannel;
-    private SelectionKey    dgram_socket_key;
-
-    private SocketChannel   gamechannel;
-
-
-    Connection(String uname, ServerGameEngine sge, SocketChannel sc){
-        username = uname;
-        gameengine = sge;
-	    sockchannel = sc;
+    Connection(String username, ServerGameEngine gameengine, Socket socket, BufferedInputStream istream){
+        this.username = username;
+        this.gameengine = gameengine;
+	    this.socket = socket;
+	    this.istream = istream;
     }
     public void run(){
 	    System.out.println("Connection.run()");
@@ -56,29 +46,20 @@ class Connection extends Thread implements Constants{
 	        /*
 	         * Setup
 	         */
+        	//get outputstream from socket
+        	ostream = new BufferedOutputStream(socket.getOutputStream());
         	//register client with game engine
         	byte playerid = gameengine.newClient(username);
-	        // create a muticast socket
-        	dsockchannel = DatagramChannel.open();
-	        dsockchannel.socket().bind(new InetSocketAddress("localhost",0));
-
-	        // send login success mesage + udp port number
-	        int localport = dsockchannel.socket().getLocalPort();
-	        byte [] bytes = LoginMessage.getLoginSuccessMessage(playerid,MCAST_ADDRESS,MCAST_PORT);
+	        
+	        // send login success mesage
+        	byte [] bytes = LoginMessage.getLoginSuccessMessage(playerid);
 	        System.out.print("Connection.java: First Success Message:");
 	        System.out.println(LoginMessage.getMessageString(bytes));
-	        ByteBuffer buf = ByteBuffer.allocate(4096);
-	        buf.put(bytes);
-	        buf.flip();
-	        int numwritten = sockchannel.write(buf);
-	        System.out.printf("Connection.java: first write: number of bytes written: %d\n", numwritten);
+	        ostream.write(bytes);
+	        //System.out.printf("Connection.java: first write: number of bytes written: %d\n", numwritten);
 	        // get response to success message
-	        buf.clear();
-	        int numread = sockchannel.read(buf);
+	        int numread = istream.read(bytes);
 	        System.out.printf("Connection.java: first read: bytes read: %d\n", numread);
-	        bytes = new byte[numread];
-	        buf.flip();
-	        buf.get(bytes);
 	        String message = LoginMessage.getMessageString(bytes);
 	        System.out.println(message);
 
@@ -86,12 +67,8 @@ class Connection extends Thread implements Constants{
                 System.out.println("Client could not connect");
             }
             else {
-                int udp_remoteport = LoginMessage.getPort(bytes);
-                dsockchannel.socket().connect(new InetSocketAddress(sockchannel.socket().getInetAddress(),udp_remoteport));
-
-                // register the client with the game engine
-                // gived it handles to the outputs streams of the sockets so it can send on it's own
-                gameengine.clientChannels(playerid, sockchannel,dsockchannel);
+                // register the client's socketchannel with the game engine
+                gameengine.clientChannels(playerid, sockchannel);
 
                 // create the selector for polling the channels
                 selector = Selector.open();

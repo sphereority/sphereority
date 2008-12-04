@@ -16,14 +16,22 @@ public class LoginMessage {
     private static final String SEPERATOR = "~";
 
     // get the whole message as a string
-    public static String getMessageString(byte [] messagedata){
-	Charset charset = Charset.forName(CHARSET_NAME);
-	ByteBuffer buffer = ByteBuffer.allocate(messagedata.length);
-	buffer.put(messagedata);
-	buffer.rewind();
-	String message = new String(charset.decode(buffer).array());
+    public static String getMessageString(ByteBuffer buffer){
+    	buffer.flip();
+        
+        Charset charset = Charset.forName(CHARSET_NAME);
+    	String message = new String(charset.decode(buffer).array());
 
-	return message;
+    	return message;
+    }
+    public static String getMessageString(byte [] messagedata){
+    	Charset charset = Charset.forName(CHARSET_NAME);
+    	ByteBuffer buffer = ByteBuffer.allocate(messagedata.length);
+    	buffer.put(messagedata);
+    	buffer.rewind();
+    	String message = new String(charset.decode(buffer).array());
+
+    	return message;
     }
     /*
      * login message
@@ -53,12 +61,12 @@ public class LoginMessage {
      * Login Success Message
     */
     public static boolean isLoginSuccessMessage(byte [] messagedata){
-	String message = getMessageString(messagedata);
-	return message.startsWith("SUCCESS" + SEPERATOR);
+    	String message = getMessageString(messagedata);
+    	return message.startsWith("SUCCESS" + SEPERATOR);
     }
-    public static byte [] getLoginSuccessMessage(byte playerid, String mcastaddress, int port){
+    public static byte [] getLoginSuccessMessage(byte playerid){
     	Charset charset = Charset.forName(CHARSET_NAME);
-    	String message = new String("SUCCESS" + SEPERATOR + PORT_HEADER + Integer.toString(port) + SEPERATOR + PLAYERID_HEADER + Byte.toString(playerid) + SEPERATOR + MCAST_ADDRESS_HEADER + mcastaddress);
+    	String message = new String("SUCCESS" + SEPERATOR + PLAYERID_HEADER + Byte.toString(playerid) + SEPERATOR);
 		return charset.encode(message).array();
     }
     public static int getPort(byte [] messagedata){
@@ -84,39 +92,22 @@ public class LoginMessage {
     	int end = message.indexOf(SEPERATOR,start);
 	
     	return Byte.parseByte(message.substring(start,end));
-    }
-    public static String getMulticastAddress(byte [] messagedata){
-    	Charset charset = Charset.forName(CHARSET_NAME);
-    	ByteBuffer buffer = ByteBuffer.allocate(messagedata.length);
-    	buffer.put(messagedata);
-    	buffer.rewind();
-    	String message = new String(charset.decode(buffer).array());
-
-    	int start = message.indexOf(MCAST_ADDRESS_HEADER) + MCAST_ADDRESS_HEADER.length();
-    	int end = message.indexOf(SEPERATOR,start);
-    	//System.out.printf("LoginMessage.java: getMulticastAddress, start = %d, end = %d\n", start,end);
-	
-    	if (end > start)
-    		return message.substring(start,end);
-    	else
-    		return "";
-    }
-    /*
+    }    /*
     *  LOGIN FAILURE
     */
     public static boolean isLoginFailureMessage(byte [] messagedata){
-	String message = getMessageString(messagedata);
-	return message.startsWith("FAILURE" + SEPERATOR);
+    	String message = getMessageString(messagedata);
+    	return message.startsWith("FAILURE" + SEPERATOR);
     }
     public static byte [] getLoginFailreMessage(String reason){
-	Charset charset = Charset.forName(CHARSET_NAME);
-	String message = new String("FAILURE" + SEPERATOR + FAIL_REASON_HEADER + reason + SEPERATOR);
-	return charset.encode(message).array();
+    	Charset charset = Charset.forName(CHARSET_NAME);
+    	String message = new String("FAILURE" + SEPERATOR + FAIL_REASON_HEADER + reason + SEPERATOR);
+    	return charset.encode(message).array();
     }
     public static String getFailureReason(byte [] messagedata){
-	String message = getMessageString(messagedata);
-	int start = message.indexOf(FAIL_REASON_HEADER) + FAIL_REASON_HEADER.length();
-	int end = message.indexOf(SEPERATOR,start);
-	return message.substring(start,end);
+    	String message = getMessageString(messagedata);
+    	int start = message.indexOf(FAIL_REASON_HEADER) + FAIL_REASON_HEADER.length();
+    	int end = message.indexOf(SEPERATOR,start);
+    	return message.substring(start,end);
     }
 }

@@ -14,9 +14,8 @@ class ServerGameEngine extends Thread {
 
     // serverchannel to listen with
     private ServerSocketChannel     listenchannel;
-    // Vector to store sockets to connections
+    // Hashtable to store sockets to connections
     private Hashtable               tcpchannels;
-    private DatagramChannel			udpchannel = null;
     private Hashtable				usernames;
     private byte					nextplayer=1;
 
@@ -32,10 +31,8 @@ class ServerGameEngine extends Thread {
         System.out.println("ServerGameEngine: new client: " + username);
         return nextplayer++;
     }
-    public synchronized void clientChannels(byte playerid, SocketChannel tcpchannel, DatagramChannel udpchan){
+    public synchronized void clientChannels(byte playerid, SocketChannel tcpchannel){
     	tcpchannels.put(new Integer(playerid), tcpchannel);
-    	if (udpchannel == null)
-    		udpchannel = udpchan;
     	System.out.printf("ServerGameEngine.java: player %d channels registered\n", playerid);
     }
     public synchronized void newTCPMessage(Message message){
