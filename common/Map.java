@@ -3,10 +3,15 @@ package common;
 import common.Constants;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Scanner;
 import java.util.Vector;
 
 public class Map implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static final String DEFAULT_MAP = "10 10\r\n"+
     "++++++++++\r\n" +
     "+        +\r\n" +
@@ -188,7 +193,7 @@ public class Map implements Constants {
     }
 
     public void placePlayer(Player p, SpawnPoint sp) {
-        p.setPosition(spawnPoints.get(2).getPosition());
+        p.setPosition(sp.getPosition());
     }
     
     /**

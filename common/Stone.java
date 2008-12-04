@@ -1,8 +1,10 @@
 package	common;
 
 //import client.gui.GuiUtils;
-import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class describes a stone which will serve as a building block for a wall
@@ -10,6 +12,9 @@ import java.awt.geom.Rectangle2D;
  *
  */
 public class Stone extends Actor {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Rectangle2D bounds = null;
 	
 	// CONSTRUCTOR

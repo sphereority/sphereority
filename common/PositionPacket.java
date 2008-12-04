@@ -1,12 +1,17 @@
 package	common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class describes a position set to or received from the network
  * @author smaboshe
  *
  */
-public class PositionPacket
-{
+public class PositionPacket {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Position position, velocity;
 	protected float time;
 	protected byte gameID, playerID;

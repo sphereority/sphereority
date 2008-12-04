@@ -1,7 +1,6 @@
 package client.gui;
 
-public abstract class InteractiveWidget extends Widget
-{
+public abstract class InteractiveWidget extends Widget {
 	public static final int STATE_READY = 0x501;
 	public static final int STATE_HOVERED = 0x502;
 	public static final int STATE_PRESSED = 0x503;

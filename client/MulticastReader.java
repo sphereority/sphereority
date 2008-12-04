@@ -1,30 +1,38 @@
 package client;
 
+//import common.messages.*;
+//import java.awt.event.*;
+//import java.io.*;
+//import java.nio.charset.Charset;
+//import java.util.*;
+//import javax.swing.*;
 import common.*;
-import common.messages.*;
-
-import java.awt.event.*;
-import javax.swing.*;
 import java.net.*;
-import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Client connection to the server and other clients.
  */
 public class MulticastReader extends Thread implements Constants { 
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private MulticastSocket socket;
     private Pipe.SinkChannel pipe;
-
-    private InetAddress myMCastGroup;
-    private int myMCastPort;
+    private InetAddress myself;
 
     public MulticastReader(MulticastSocket socket, Pipe.SinkChannel pipe) {
         this.socket = socket;
         this.pipe   = pipe;
+        try
+        {
+        	myself = InetAddress.getByName("localhost");
+        	System.out.printf("My name is %s\n", myself.toString());
+        }
+        catch (UnknownHostException er) { }
     }
     
     /**
@@ -36,6 +44,9 @@ public class MulticastReader extends Thread implements Constants {
         while(true) {
             try {
                 socket.receive(packet);
+                //if (packet.getAddress().equals(myself)) continue;
+                
+                //System.out.printf("Recieved packet of length %d from %s\n", packet.getLength(), packet.getAddress().toString());
                 pipe.write(ByteBuffer.wrap(packet.getData()));
             }
             catch (Exception ex) {

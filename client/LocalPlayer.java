@@ -1,8 +1,9 @@
 package client;
 
-import java.awt.geom.Rectangle2D;
-
 import common.*;
+import java.awt.geom.Rectangle2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class describes a human player who has local access to the keyboard and
@@ -11,8 +12,10 @@ import common.*;
  * @author smaboshe
  * 
  */
-public class LocalPlayer extends Player
-{
+public class LocalPlayer extends Player {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected InputListener inputDevice;
 	protected Rectangle2D bounds = null;
 	protected float timeSinceLastShot;

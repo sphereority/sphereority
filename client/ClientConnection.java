@@ -1,287 +1,282 @@
 package client;
+ 
+import common.Player;
+import common.Constants;
+import common.SpawnPoint;
+import common.messages.Message;
+import common.messages.MessageAnalyzer;
+import common.messages.PlayerJoinMessage;
+import common.messages.PlayerMotionMessage;
+import common.messages.ProjectileMessage;
+import common.messages.LoginMessage;
 
-import common.*;
-import common.messages.*;
+import Extasys.Network.UDP.Client.Connectors.UDPConnector;
+import Extasys.Network.UDP.Client.ExtasysUDPClient;
+import Extasys.Network.UDP.Client.IUDPClient;
+import Extasys.Network.UDP.Client.Connectors.UDPConnector;
+import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
 
-import java.awt.event.*;
-//import javax.swing.*;
-import java.net.*;
-//import java.io.*;
-import java.nio.*;
-import java.nio.channels.*;
-//import java.nio.charset.Charset;
-import java.util.*;
-
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+ 
 /**
  * Client connection to the server and other clients.
  */
-public class ClientConnection implements ActionListener, Constants {
+public class ClientConnection extends ExtasysUDPClient implements IUDPClient, Constants {
+    private SendUpdateMessages fSendUpdateMessagesThread;
     private GameEngine engine;
-    private Selector selector;
-    private SocketChannel sockChannel;
-//    private DatagramChannel serverUDPChannel;
-//    private DatagramChannel mcastChannel;
-//    private TreeMap<Integer,MulticastSocket> clientMcastSockets;
-    private javax.swing.Timer timer;
-
-    private MulticastSocket mSocket;
-    private MulticastReader reader;
-    private Pipe pipe;
-    private Pipe.SourceChannel source;
-    
-    private InetAddress myMCastGroup;
-    private int myMCastPort;
-
+    private boolean isConnected;
+    public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+ 
     /**
-     * Creates a client connection to the server and other clients.
-     * @param engine
-     * @param serverName
-     * @param port
-     * @param userName
+     * Creates a client connection
      */
-	public ClientConnection(GameEngine engine)  {
-        try {
-            this.engine = engine;
-            this.sockChannel = SocketChannel.open();
-            //this.serverUDPChannel = DatagramChannel.open();
-            //this.mcastChannel = DatagramChannel.open();
-            
-            this.selector = Selector.open();
-//            this.clientMcastSockets = new TreeMap<Integer,MulticastSocket>();
-        } catch (Exception ex) {
-            System.err.println("Could not connect to server!");
-            ex.printStackTrace();
-        }     
-    }
-	
-	public void setGameEngine(GameEngine engine)
-	{
-		this.engine = engine;
-	}
-
-    /**
-     * Logs into the specified server using the userName.
-     */
-    public int loginToServer(String serverName, String userName) throws Exception {
-        int playerId = -1;
-        // Create a ByteBuffer
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
-        buffer.flip();
-        /*
-        Avoid the server for now.  Just connect to same Multicast Address
-        // Connect to the specified server
-        sockChannel.connect(new InetSocketAddress(serverName,DEFAULT_PORT));
+    public ClientConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) throws Exception{
+        super("SphereorityClient", "The client connection for sphereority", 8,16);
+        this.engine = engine;
+        isConnected = false;
+        // Add a UDP connector to this UDP client.
+        // You can add more than one connectors if you need to.
+        AddConnector("ServerConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
         
-        // Create and send a login message
-        byte[] loginMessage = LoginMessage.getLoginMessage(userName,"");
-        System.out.println(LoginMessage.getMessageString(loginMessage));
-        sockChannel.write(ByteBuffer.wrap(loginMessage));
-        
-        // Receive a login success/failure
-        sockChannel.read(buffer);
-        byte[] loginSuccess = buffer.array();
-
-        // Check if we successfully logged in
-        if(LoginMessage.isLoginSuccessMessage(loginSuccess)) {
-            int port = LoginMessage.getPort(loginSuccess);
-            playerId = LoginMessage.getPlayerId(loginSuccess);
-            System.out.printf("Port: %d\n", port);
-
-            // create datagram channel & connect to rem port
-            serverUDPChannel.configureBlocking(false);
-            serverUDPChannel.connect(new InetSocketAddress(serverName,port));
-
-            // get localport of datagram socket
-            int localport = serverUDPChannel.socket().getLocalPort();
-            System.out.printf("UDP local port: %d\n", localport);
-            // Register the UDP Channel with the selector
-            serverUDPChannel.register(selector,serverUDPChannel.validOps());
-		    
-            // send success message to send port number to server
-		    loginSuccess = LoginMessage.getLoginSuccessMessage((byte)playerId,MCAST_ADDRESS,localport);
-		    sockChannel.write(ByteBuffer.wrap(loginSuccess));
-
-            // Get your multicast address and port
-            myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
-            myMCastPort = MCAST_PORT;
-            
-            // Set up the multicast parts of the application
-            myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
-            myMCastPort  = MCAST_PORT;
-            mSocket = new MulticastSocket(MCAST_PORT);
-            mSocket.joinGroup(myMCastGroup);
-
-            // Create a pipe to write back to the connection            
-            pipe = Pipe.open();
-            source = pipe.source();
-
-            source.configureBlocking(false);
-            source.register(selector,SelectionKey.OP_READ);
-
-            // Notify everyone that we have joined
-            PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerId(),
-                                                              myMCastGroup,
-                                                              engine.localPlayer.getPlayerName());
-            sendMessage(message);
-
-            reader = new MulticastReader(mSocket,pipe.sink());
-            reader.start();
-        }
-        else {
-            System.err.println("Unable to log in!");
-        }*/
-
-        // Get your multicast address and port
-        myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
-        myMCastPort = MCAST_PORT;
-            
-        // Set up the multicast parts of the application
-        myMCastGroup = InetAddress.getByName(MCAST_ADDRESS);
-        myMCastPort  = MCAST_PORT;
-        mSocket = new MulticastSocket(MCAST_PORT);
-        mSocket.joinGroup(myMCastGroup);
-
-        // Create a pipe to write back to the connection            
-        pipe = Pipe.open();
-        source = pipe.source();
-
-        source.configureBlocking(false);
-        source.register(selector,SelectionKey.OP_READ);
-
-        // Notify everyone that we have joined
-        //PlayerJoinMessage message = new PlayerJoinMessage((byte)engine.localPlayer.getPlayerID(),
-        //                                                  new InetSocketAddress(myMCastGroup,myMCastPort),
-        //                                                  engine.localPlayer.getPlayerName());
-        //sendMessage(message);
-
-        reader = new MulticastReader(mSocket,pipe.sink());
-        reader.start();
-    
-        return playerId;
+        // Try to connect to the server.
+        establishServerConnection();
     }
 
     /**
-     * Checks if messages have been sent to the client.
+     * Starts the ClientConnection
      */
-    public void checkMessages() {
-        // Wait to receive a message
-        try {
-        	selector.selectNow();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    // @Override
+    public void Start() throws SocketException, Exception {    
+        // Restart all the connectors
+        super.Start();
+        System.out.println("Starting...");
+        // Start sending the messages.
+        StartSendingMessages();
         
-        // Go through all the received messages
-        Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-        ByteBuffer receivedBuffer = ByteBuffer.allocate(4096);
-      
-        // Do a max of 20 messages at a time for efficiency reasons
-        for(int i = 0; it.hasNext() ; i++) {
-            SelectionKey selKey = it.next();
+    }
+    
+    /**
+     * Attempts to establish a connection to the server.
+     */
+    public void establishServerConnection() throws Exception {
+        logger.log(logger.getLevel(),"Establishing Server Connection");
+        System.out.println("Establishing Server Connection");
+        
+        // Start the connector to the server.
+        super.Start();
+        
+        InetSocketAddress serverAddress
+                    = new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT);
+        SpawnPoint sp = new SpawnPoint(engine.localPlayer.getPosition());
+        
+        // Request to the server that we log in.
+        // Note: Do not need to specify address here.
+        // Is here just to avoid a nullpointer when writing the message
+        SendMessage(new PlayerJoinMessage((byte)-1,
+                                          engine.localPlayer.getPlayerName(),
+                                          serverAddress,
+                                          sp,
+                                          false));
+    
+        // Make sure that we only wait at most 10 seconds
+        long waitTime = System.currentTimeMillis() + 10000;
+        
+        // Wait until we have logged in and prepared the game
+        while(!isConnected) {
+            Thread.yield();
             
-            try {
-                receivedBuffer.clear();
-                processMessage(selKey,receivedBuffer);
+            // Stop attempting to connect if 10 seconds has past
+            if(System.currentTimeMillis() > waitTime) {
+                throw new Exception("Unable to connect to server!");
             }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            // Remove it to indicate it is processed
-            it.remove();
-            
-            // Reset the buffer for further use
-            receivedBuffer.clear();
-            receivedBuffer.flip();
         }
-    }
+        
 
+        logger.log(logger.getLevel(),"Sent login message");
+    }
     
     /**
-     * Processes a SelectorKey (Message) that has come in.
-     * @param selKey Key that is associated with a message.
-     * @param buffer The buffer to use to store the messages.
+     * How to handle received messages.
+     * @param connector The connector the message was received from.
+     * @param packet The packet the message was sent from.
      */
-    protected void processMessage(SelectionKey selKey, ByteBuffer buffer) throws Exception {
-        // Since the ready operations are cumulative,
-        // need to check readiness for each operation    
-        if (selKey.isValid() && selKey.isReadable()) {
-            // Get channel with connection request
-            source.read(buffer);
-            buffer.rewind();
-
-            // Get the message from the buffer
-            Message message = MessageAnalyzer.getMessage(buffer);
+    //@Override
+    public void OnDataReceive(UDPConnector connector, DatagramPacket packet) {
+        try {
+            // Retrieve the message
+            Message message = MessageAnalyzer.getMessage(packet.getData());
             
-            if (message == null)
-            	return;
-            
-            if(message.getPlayerId() == engine.localPlayer.getPlayerID())
+            // Ignore messages that are sent to yourself
+            if(message.getPlayerId() == engine.localPlayer.getPlayerID() ||
+               message.getPlayerId() == -1)
                 return;
-
+            
             switch(message.getMessageType()) {
                 case PlayerMotion:
-                    engine.processPlayerMotion((PlayerMotionMessage)message);
-                    System.out.printf("PlayerMotion: %d moved to\t(%.2f,%.2f)\n", message.getPlayerId(), ((PlayerMotionMessage)message).getPosition().getX(), ((PlayerMotionMessage)message).getPosition().getY());
+                    PlayerMotionMessage pm = (PlayerMotionMessage)message;
+                    // New player was added?
+                    engine.processPlayerMotion(pm);
+                    logger.log(Level.INFO,"PlayerMotion: " + pm.getPlayerId()
+                                                           + " "
+                                                           + pm.getPosition() 
+                                                           + " "
+                                                           + pm.getVelocity() 
+                                                           + " "
+                                                           + pm.getTime());
                     break;
                 case PlayerJoin:
-                    PlayerJoinMessage msg = (PlayerJoinMessage) message;
-                    System.out.println("PlayerJoin: " + msg.getName() + " wants to join");
-                    engine.processPlayerJoin(msg);
-                    registerPlayer(msg.getPlayerId(),msg.getAddress());
+                    PlayerJoinMessage pj = (PlayerJoinMessage) message;
+                    logger.log(Level.INFO,"PlayerJoin: " + pj.getPlayerId());
+                    
+                    // Prepare the message for the engine
+                    // Waiting for the server to make a connection
+                    if(!isConnected && message.isAck()) {
+                        // Message intended for me?
+                        if(pj.getName().equals(engine.localPlayer.getPlayerName())) {
+                            engine.localPlayer.setPlayerID(pj.getPlayerId());
+                            isConnected = true;
+                        }
+                        
+                    }
+                    engine.processPlayerJoin(pj);
                     break;
-                default:
-                    System.out.println("Got Undefined Message");
+                case Projectile:
+                    ProjectileMessage p = (ProjectileMessage) message;
+                    logger.log(Level.INFO,"Projectile: " + p.getPlayerId()
+                                                         + " "
+                                                         + p.getStartPosition()
+                                                         + " "
+                                                         + p.getDirection());
+                    engine.processProjectile(p);
                     break;
             }
-        }
-    }
-
-    /**
-     * Sends a message through the multicast socket.  Client does not subscribe to their
-     * own multicast group.
-     * @param The message to be sent.
-     */
-    public void sendMessage(Message message) throws Exception {
-        byte[] byteMessage = message.getByteMessage();
-        DatagramPacket packet = new DatagramPacket(byteMessage,byteMessage.length,
-                                                   myMCastGroup,myMCastPort);
-        mSocket.send(packet);
-    }
-
-    /**
-     * 
-     */
-    protected void registerPlayer(int playerId, InetSocketAddress mcastAddress) {
-        
-    }
-
-    /**
-     *  
-     */
-    public void actionPerformed(ActionEvent e) {
-        try {
-            checkMessages();
-
-            // Send motion message for this player
-//            sendMessage(new PlayerMotionMessage((byte)engine.localPlayer.getPlayerID(),
-//                                            engine.localPlayer.getPosition(),
-//                                            engine.localPlayer.getVelocity(),
-//                                            (float)System.currentTimeMillis()));
-            sendMessage(engine.localPlayer.getMotionPacket(engine.currentTime));
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+    }
+    
+    /**
+     * Add a new connector to this client that can be either unicast or multicast.
+     * @param name is the name of the connector.
+     * @param readBufferSize is maximum number of bytes the connector can read at a time.
+     * @param readTimeOut is the maximum time in milliseconds the connector can use to read incoming data.
+     * @param serverIP is the server's ip address the connector will use to send data.
+     * @param serverPort is the server's udp port.
+     * @return the connector.
+     */
+    public UDPConnector AddConnector(String name, int readBufferSize, int readTimeOut, InetAddress serverIP, int serverPort, boolean isMulticast)
+    {
+        UDPConnector connector;
+        connector = isMulticast ? new MulticastConnector(this, name, readBufferSize, readTimeOut, serverIP, serverPort) :
+                                  new UDPConnector(this, name, readBufferSize, readTimeOut, serverIP, serverPort);
+        getConnectors().add(connector);
+        return connector;
+    }
+    
+    /**
+     * Sends a Sphereority message via all the connectors.
+     */
+    public void SendMessage(Message message) throws Exception {
+        byte[] msgToSend = message.getByteMessage();
+        super.SendData(msgToSend, 0, msgToSend.length);
+    }
+    
+    /**
+     * Start sending the messages.
+     */
+    public void StartSendingMessages() {
+        StopSendingMessages();
+        fSendUpdateMessagesThread = new SendUpdateMessages(this,engine);
+        fSendUpdateMessagesThread.start();
+    }
+ 
+    /**
+     * Stop sending the messages.
+     */
+    public void StopSendingMessages() {
+        if (fSendUpdateMessagesThread != null)
+        {
+            fSendUpdateMessagesThread.Dispose();
+            fSendUpdateMessagesThread.interrupt();
+        }
+    }
+}
+ 
+/**
+ * Thread used for sending messages
+ */
+class SendUpdateMessages extends Thread implements Constants
+{
+    private ClientConnection fMyClient;
+    private GameEngine engine;
+    private boolean fActive = true;
+
+    public SendUpdateMessages(ClientConnection client, GameEngine engine)
+    {
+        fMyClient = client;
+        this.engine = engine;
     }
 
-    /**
-     *
-     */
-    public void start() {
-//        timer = new javax.swing.Timer(TIMER_TICK, this);
-//        timer.start();
-//		timer.setCoalesce(true);
+    //@Override
+    public void run()
+    {
+        int messageCount = 0;
+        for (int checkNames = 0; fActive; checkNames++)
+        {
+            try
+            {
+                Player localPlayer = engine.localPlayer;
+                byte playerId = (byte)localPlayer.getPlayerID();
+                
+                // Send where the player is now
+                fMyClient.SendMessage(new PlayerMotionMessage((byte)localPlayer.getPlayerID(),
+                                                              localPlayer.getPosition(),
+                                                              localPlayer.getVelocity(),
+                                                              (float)System.currentTimeMillis()));
+                
+                // Go through all the projectiles in the game
+                for(common.Projectile p : engine.bulletList) {
+                    // Check if this is our own projectile and whether
+                    // we have sent information about it
+                    if(!p.isDelivered() && !(p.getOwner() != playerId)) {
+                        // Deliver the information about the projectile
+                        fMyClient.SendMessage(new ProjectileMessage(playerId,
+                                                                    p.getStartPosition(),
+                                                                    p.getDirection()));
+                        p.delivered();
+                    }
+                }
+                
+                // Resolve names that have not been found
+                if(checkNames == 10) {
+                    for(Player player : engine.playerList) {
+                        if (player.getPlayerName().equals(RESOLVING_NAME)) {
+                            fMyClient.SendMessage(new PlayerJoinMessage((byte)player.getPlayerID(),
+                                                    RESOLVING_NAME,
+                                                    new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
+                                                    new SpawnPoint(player.getPosition())));
+                        }
+                    }
+                }
+                
+                Thread.sleep(500);
+            }
+            catch (Exception ex)
+            {
+                Dispose();
+                fMyClient.StopSendingMessages();
+            }
+        }
+    }
+    
+    public void Dispose()
+    {
+        fActive = false;
     }
 }

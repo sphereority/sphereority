@@ -1,14 +1,20 @@
 package common.messages;
 
-import java.nio.ByteBuffer;
-import java.net.InetSocketAddress;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import common.Constants;
 
 /**
  * MulticastGroupMessage - Notifies that a player should join or leave a multicast group.
  * @author rlagman
  */
-public class MulticastGroupMessage extends Message implements MessageConstants {
+public class MulticastGroupMessage extends Message implements MessageConstants, Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private InetSocketAddress mcastAddress;
     private boolean join;
 

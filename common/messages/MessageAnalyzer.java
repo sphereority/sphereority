@@ -22,6 +22,7 @@ public abstract class MessageAnalyzer {
     public static final byte PLAYER_JOIN    = 7;
     public static final byte PLAYER_LEAVE   = 8;
 	public static final byte MULTI_MESSAGE  = 9;
+    public static final byte PJTILE_MESSAGE = 10;
 	public static final byte UNDEFINED      = -1;
 	public static final int  INIT           = 0;
 	public static final int  MESSAGE_TYPE   = 0;
@@ -64,6 +65,9 @@ public abstract class MessageAnalyzer {
                 break;
             case MULTI_MESSAGE:
                 message = MessageType.MulticastGroup;
+                break;
+            case PJTILE_MESSAGE:
+                message = MessageType.Projectile;
                 break;
 			default:
 				message = MessageType.Undefined;
@@ -110,6 +114,9 @@ public abstract class MessageAnalyzer {
                 break;
             case MulticastGroup:
                 message = MULTI_MESSAGE;
+                break;
+            case Projectile:
+                message = PJTILE_MESSAGE;
                 break;
 			default:
 				message = UNDEFINED;
@@ -162,11 +169,19 @@ public abstract class MessageAnalyzer {
                 receivedMessage = new DeathMessage(byteHeader,byteData);
 				break;
             case Login:
-                //receivedMessage = new LoginMessage(byteHeader,byteData);
+                receivedMessage = new LoginMessage(byteHeader,byteData);
+                break;
+            case PlayerJoin:
+                receivedMessage = new PlayerJoinMessage(byteHeader,byteData);
                 break;
             case MulticastGroup:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
                 break;
+            case Projectile:
+                receivedMessage = new ProjectileMessage(byteHeader,byteData);
+                break;
+            default:
+            	System.out.println("Unknown packet.");
 		}
 		return receivedMessage;
     }

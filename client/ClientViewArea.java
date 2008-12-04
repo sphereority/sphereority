@@ -1,21 +1,23 @@
 package client;
 
+import client.gui.*;
+import common.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
-
-import javax.swing.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Vector;
-
-import client.gui.*;
-import common.*;
+import javax.swing.*;
 
 /**
  * This class manages displaying the current play area
  * @author dvanhumb
  */
-public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener
-{
+public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	private static final long serialVersionUID = 23498751L;
 	public static final int MAP_WIDTH = 16;
 	public static final int MAP_HEIGHT = 16;

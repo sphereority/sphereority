@@ -1,12 +1,15 @@
 package common;
 
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Random;
 
 /**
  * These are some constants that are useful to have quickly
  * @author dvanhumb
  */
+
 public interface Constants
 {
 	public static final Random RANDOM = new Random();
@@ -15,17 +18,32 @@ public interface Constants
 	 * Default port for TCP network listener
 	 */
 	public static final int DEFAULT_PORT = 44000;
+     
+    /**
+     * Address for players playing a game.
+     */
+    public static final String PLAYER_MCAST_ADDRESS = "224.1.1.15";
 
     /**
-     * Address for UDP Mutlicast
+     * Port for multicast socket
      */
-    public static final String MCAST_ADDRESS = "224.1.1.10";
+    public static final int MCAST_PORT = 44000;
+	
+     /**
+     * Address for receiving UDP Login requests.
+     */
+    public static final String SERVER_ADDRESS = "224.1.1.20";
+
+    /**
+     * Port for the server socket.
+     */
+    public static final int SERVER_PORT = 45000;
     
     /**
-     * Port for multicas socket
+     * Placeholder string while we try to figure out a player's name.
      */
-    public static final int MCAST_PORT = 50000;
-	
+    public static final String RESOLVING_NAME = "Resolving Name...";
+    
 	/**
 	 * The fastest an object can move in units per second
 	 */
@@ -179,10 +197,12 @@ public interface Constants
 	 */
 	public static final float BULLET_SPEED = 15;
 	
+	public static final String CLIENT_VERSION = "v0.5 beta";
+
 	/**
 	 * The name of the client application window
 	 */
-	public static final String CLIENT_WINDOW_NAME = "Sphereority - v0.5beta";
+	public static final String CLIENT_WINDOW_NAME = "Sphereority" + " - " + CLIENT_VERSION;
 	
 	/**
 	 * The amount of time between game steps
@@ -209,4 +229,15 @@ public interface Constants
 	 * The amount of time in seconds that must pass between shots fired
 	 */
 	public static final float RELOAD_TIME = 0.5f;
+	
+	
+	public static String LOG_FOLDER = "logs/";
+
+	public static String CLIENT_LOG_FILE_NAME = "client.log";
+	public static String CLIENT_LOG_PATH = LOG_FOLDER + CLIENT_LOG_FILE_NAME;
+	public static String CLIENT_LOGGER_NAME = "Sphereority Client";
+
+	public static String SERVER_LOG_FILE_NAME = "server.log";
+	public static String SERVER_LOG_PATH = LOG_FOLDER + SERVER_LOG_FILE_NAME;
+	public static String SERVER_LOGGER_NAME = "Sphereority Server";
 }

@@ -1,11 +1,16 @@
 package client.gui;
 
+import common.Constants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class SimpleButton extends InteractiveWidget
-{
+public class SimpleButton extends InteractiveWidget implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Vector<ActionCallback> callbacks;
 	protected Polygon outline, fill;
 	
