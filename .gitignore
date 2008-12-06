@@ -6,6 +6,7 @@
 *.project
 *.swo
 *.swp
+*.ucls
 *~
 .DS_Store
 TODO
