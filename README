@@ -20,6 +20,12 @@ To run the server:
 $ java server/SphereorityServer
 
 
+OPTIONS:
+You can specify the server logger level with an optional logger level parameter:
+$ java server/SphereorityServer FINEST
+
+
+
 
 CLIENT
 ======
@@ -31,17 +37,15 @@ To run the client application:
 $ java client/Sphereority
 
 
-
-OPTIONS USING THE LOGGER
-========================
-
-You can specify the logger level when running the:
-- Client:
-e.g.
-$ java client/Sphereority FINE
+OPTIONS:
+You can specify the server logger level with an optional logger level parameter:
+$ java client/Sphereority INFO
 
 
-Logger levels:
+
+LOGGER LEVELS
+=============
+
 SEVERE (highest value)
 WARNING
 INFO
