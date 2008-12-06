@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 /**
  * This class describes a stone which will serve as a building block for a wall
- * @author smaboshe
  *
  */
 public class Stone extends Actor {

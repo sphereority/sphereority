@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 /**
  * This (presently) represents a player
  * @author dvanhumb
- * @author smaboshe
  *
  */
 public abstract class Player extends WeightedPosition {

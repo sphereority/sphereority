@@ -9,8 +9,6 @@ import java.util.logging.Logger;
  * This class describes a human player who has local access to the keyboard and
  * mouse
  * 
- * @author smaboshe
- * 
  */
 public class LocalPlayer extends Player {
 	// SINGLETONS

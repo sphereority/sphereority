@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 /**
  * This class describes projectile in the game
- * @author smaboshe
  */
 public class Projectile extends Actor {
 	// SINGLETONS
