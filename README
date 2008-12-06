@@ -30,3 +30,23 @@ $ javac client/Sphereority.java
 To run the client application:
 $ java client/Sphereority
 
+
+
+OPTIONS USING THE LOGGER
+========================
+
+You can specify the logger level when running the:
+- Client:
+e.g.
+$ java client/Sphereority FINE
+
+
+Logger levels:
+SEVERE (highest value)
+WARNING
+INFO
+CONFIG
+FINE
+FINER
+FINEST (lowest value)
+
