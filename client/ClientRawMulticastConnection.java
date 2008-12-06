@@ -15,7 +15,7 @@ import java.nio.channels.*;
 /**
  * Client connection to the server and other clients.
  */
-public class ClientConnection extends Thread implements ActionListener, Constants {
+public class ClientRawMutlicastConnection extends Thread implements ActionListener, Constants {
     private GameEngine engine;
     //private Selector selector;
     //private SocketChannel sockChannel;
@@ -39,7 +39,7 @@ public class ClientConnection extends Thread implements ActionListener, Constant
      * @param port
      * @param userName
      */
-	public ClientConnection(GameEngine engine)  {
+	public ClientRawMutlicastConnection(GameEngine engine)  {
         try {
             this.engine = engine;
             //this.sockChannel = SocketChannel.open();
