@@ -108,6 +108,10 @@ public class Sphereority extends Thread implements Constants {
         }
     }
  
+	/*
+	 * Allow the logger level to be set as a command-line paramater.
+	 * The default logger level is CONFIG by default.
+	 */
   public static void initialiseLogger(String[] args) {
     // Client application logging
     logger = Logger.getLogger(CLIENT_LOGGER_NAME);
