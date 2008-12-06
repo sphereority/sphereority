@@ -11,7 +11,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
-import java.net.InetAddress;
 import javax.swing.*;
  
 public class Sphereority extends Thread implements Constants {
@@ -60,7 +59,11 @@ public class Sphereority extends Thread implements Constants {
 
         // Attempt to start a connection
         try {
-            connection = new ClientConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT,game);
+        	// Raw multicasting connection
+        	// ***** Unknown *****
+        	// ExtaSys multicasting connection
+        	//connection = new ClientExtaSysConnection(InetAddress. getByName(SERVER_ADDRESS),SERVER_PORT, game);
+        	connection = new ClientExtaSysConnection(game);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -102,7 +105,7 @@ public class Sphereority extends Thread implements Constants {
             // Start the game
             game.play();
             // Start the client connection
-            connection.Start();
+            connection.start();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

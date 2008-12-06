@@ -9,7 +9,6 @@ import java.awt.Component;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.Window;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Vector;
 import javax.swing.Timer;
@@ -324,6 +323,17 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         actor2 = playerList.get(j);
         bounds2 = actor2.getBounds();
         
+/*/<<<<<<< HEAD:client/GameEngine.java
+		if (fixed)
+		{
+	        for(byte i = 0; i < 6; i++) {
+	            if(i != localPlayer.getPlayerID()) {
+	                processPlayerJoin(
+	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
+	            }
+	        }
+		}
+//=======*/
         if (bounds1.intersects(bounds2))
         {
           actor1.collision(actor2);

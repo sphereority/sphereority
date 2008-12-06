@@ -1,10 +1,12 @@
 package client.gui;
 
 import java.awt.*;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class StringLabel extends Widget {
+import common.Constants;
+
+public class StringLabel extends Widget implements Constants {
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
