@@ -23,8 +23,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
   public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
  
   public static GameEngine gameEngine;
-  
-    public boolean gameOver;
+
+	public boolean gameOver;
   public Map gameMap;
   public ClientViewArea gameViewArea;
   public LocalPlayer localPlayer;
