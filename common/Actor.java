@@ -30,8 +30,8 @@ public abstract class Actor implements Constants {
 
 	// CONSTRUCTORS
 	public Actor() {
-		// Get access to the logger
-		logger.log(Level.INFO, "Created an Actor");
+		// Log this action
+		logger.log(Level.INFO, "Created: " + this);
 		
 		position = new Position();
 		velocity = new Position();
@@ -53,6 +53,9 @@ public abstract class Actor implements Constants {
 	}
 
 	public Actor(Position initialPosition, int initialHeight, int initialWidth) {
+		// Log this action
+		logger.log(Level.INFO, "Created: " + this);
+
 		position = initialPosition;
 		velocity = new Position();
 		alive = true;
