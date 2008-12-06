@@ -15,7 +15,7 @@ import java.net.InetAddress;
 import javax.swing.*;
  
 public class Sphereority extends Thread implements Constants {
-  public static final String[] MAP_LIST = new String[] { "circles", "mercury", "random_1", "sample-map", "widefield" };
+  public static final String[] MAP_LIST = new String[] { "circles", "mercury", "random_1", "sample_map", "widefield" };
  
   public static Logger logger;
  

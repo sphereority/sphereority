@@ -30,42 +30,35 @@ public abstract class Actor implements Constants {
 
 	// CONSTRUCTORS
 	public Actor() {
-		// Log this action
-		logger.log(Level.INFO, "Created: " + this);
-		
 		position = new Position();
 		velocity = new Position();
 		alive = true;
 		team = 0;
 		state = 0;
 		
-		health = DEFAULT_ACTOR_HEALTH;
-		
-		/* Old values:
-		 * height = 1;
-		 * width = 1;
-		 */
-		
+		health = DEFAULT_ACTOR_HEALTH;		
 		height = DEFAULT_ACTOR_HEIGHT;
+		weight = DEFAULT_ACTOR_WEIGHT;
 		width = DEFAULT_ACTOR_WIDTH;
 
-		weight = DEFAULT_ACTOR_WEIGHT;
+		// Log this action
+		logger.log(Level.INFO, "Created: " + this);
 	}
 
 	public Actor(Position initialPosition, int initialHeight, int initialWidth) {
-		// Log this action
-		logger.log(Level.INFO, "Created: " + this);
-
 		position = initialPosition;
 		velocity = new Position();
 		alive = true;
 		team = 0;
 		state = 0;
 
-		weight = DEFAULT_ACTOR_WEIGHT;
-		
+		health = DEFAULT_ACTOR_HEALTH;		
 		height = initialHeight;
+		weight = DEFAULT_ACTOR_WEIGHT;
 		width = initialWidth;
+
+		// Log this action
+		logger.log(Level.INFO, "Created: " + this);
 	}
 
 	
