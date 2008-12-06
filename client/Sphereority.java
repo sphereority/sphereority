@@ -69,10 +69,12 @@ public class Sphereority extends Thread implements Constants
             try
             {
                 // Raw multicasting connection
-                connection = new ClientRawMulticastConnection(game);
+                //connection = new ClientRawMulticastConnection(game);
+
                 // ExtaSys multicasting connection
                 // connection = new
                 // ClientExtaSysConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT,
+                connection = new ClientExtaSysConnection(java.net.InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT,game);
                 // game);
             } catch (Exception ex)
             {
