@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.Window;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.Vector;
 import javax.swing.Timer;
  
