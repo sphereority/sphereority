@@ -1,5 +1,7 @@
+*.bat
 *.class
 *.classpath
+*.log*
 *.prefs
 *.project
 *.swo

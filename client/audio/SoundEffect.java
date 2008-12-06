@@ -1,14 +1,19 @@
 package client.audio;
 
+import common.Constants;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.*;
 
 /**
  * A handy sound-clip wrapper 
  * @author dvanhumb
  */
-public class SoundEffect implements LineListener
-{	
+public class SoundEffect implements LineListener, Constants {	
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected float volume;
 	protected File soundFile;
 	protected Clip soundClip;

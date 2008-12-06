@@ -1,19 +1,24 @@
 package	common;
 
 import java.awt.BasicStroke;
-import java.awt.Stroke;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class describes projectile in the game
  * @author smaboshe
  */
-public class Projectile extends Actor
-{
+public class Projectile extends Actor {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	protected Position startPos;
 	protected Position direction;
 	protected byte owner;
-	
+	protected boolean isDelivered;
+    
 	public Projectile(Position startPos, Position direction, float startTime, float curTime, byte owner, int team)
 	{
 		this.startPos = new Position(startPos);	// Duplicate this one so we're not following somebody else
@@ -23,8 +28,31 @@ public class Projectile extends Actor
 		position = new Position(startPos);
 		position.move(direction, (curTime - startTime) * BULLET_SPEED);
 		this.owner = owner;
+        isDelivered = false;
 	}
 	
+    /**
+     * Check to see if this projectile has been delivered as a packet.
+     */
+    public boolean isDelivered() {
+        return isDelivered;
+    }
+    
+    /**
+     * Make a note that this projectile has been delivered.
+     */ 
+    public void delivered() {
+        isDelivered = true;
+    }
+    
+    public Position getStartPosition() {
+        return startPos;
+    }
+    
+    public Position getDirection() {
+        return direction;
+    }
+    
 	public boolean animate(float dTime, float currentTime)
 	{
 		position.move(direction, dTime * BULLET_SPEED);

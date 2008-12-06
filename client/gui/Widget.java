@@ -2,8 +2,7 @@ package client.gui;
 
 import java.awt.*;
 
-public abstract class Widget
-{	
+public abstract class Widget {	
 	protected int x, y, width, height;
 	protected Color color;
 	

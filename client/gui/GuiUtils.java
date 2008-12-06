@@ -1,14 +1,19 @@
 package client.gui;
 
+import common.Constants;
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class has static methods for drawing common aspects of the user interface
  * @author Daryl Van Humbeck
  */
-public final class GuiUtils
-{
+public final class GuiUtils implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public static final int BEVEL_CORNER_TOP_LEFT = 0xf01;
 	public static final int BEVEL_CORNER_TOP_RIGHT = 0xf02;
 	public static final int BEVEL_CORNER_BOTTOM_RIGHT = 0xf04;

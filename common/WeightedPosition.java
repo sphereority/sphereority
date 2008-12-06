@@ -1,6 +1,8 @@
 package common;
 
 import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * TODO: I'm in the process of splitting the speed stuff into two parts:
@@ -14,8 +16,10 @@ import java.awt.Graphics2D;
  * @author dvanhumb
  *
  */
-public class WeightedPosition extends Actor implements Constants
-{
+public class WeightedPosition extends Actor implements Constants {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	public WeightedPosition()
 	{
 		this(0, 0);

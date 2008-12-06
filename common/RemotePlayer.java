@@ -1,18 +1,21 @@
 package	common;
 
 import common.messages.PlayerMotionMessage;
-
-import java.util.ConcurrentModificationException;
-import java.util.Vector;
 import java.util.concurrent.*;
+import java.util.ConcurrentModificationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.Vector;
 
 /**
  * This class describes a player who is playing the game via the network
  * @author smaboshe
  *
  */
-public class RemotePlayer extends Player
-{
+public class RemotePlayer extends Player {
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
 	/**
 	 * The most messages that we want to use at any one time
 	 */

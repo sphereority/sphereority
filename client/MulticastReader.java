@@ -1,21 +1,25 @@
 package client;
 
-import common.*;
 //import common.messages.*;
-
 //import java.awt.event.*;
-//import javax.swing.*;
-import java.net.*;
 //import java.io.*;
-import java.nio.*;
-import java.nio.channels.*;
 //import java.nio.charset.Charset;
 //import java.util.*;
+//import javax.swing.*;
+import common.*;
+import java.net.*;
+import java.nio.*;
+import java.nio.channels.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Client connection to the server and other clients.
  */
 public class MulticastReader extends Thread implements Constants { 
+	// SINGLETONS
+	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+
     private MulticastSocket socket;
     private Pipe.SinkChannel pipe;
     private InetAddress myself;
