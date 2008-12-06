@@ -1,2 +1,0 @@
-java client/Sphereority
-pause
