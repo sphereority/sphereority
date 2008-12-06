@@ -41,7 +41,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
   public Timer timer;
   
   public Vector<MapChangeListener> mapListeners;
-//  public ClientConnection connection;
+  public ClientConnection connection;
   
   // Sound stuff
   public GameSoundSystem soundSystem;
@@ -53,7 +53,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     preSetup(m);
     
     localPlayer = new LocalPlayer(localInputListener, playerID, name);
-    //this.connection = connection;
+    this.connection = connection;
     
     postSetup(true);
   }
@@ -195,6 +195,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     gameOver = true;
     if (timer != null)
       timer.stop();
+    
+    if (connection != null)
+        connection.stop();
     
     // This code finds the Window that contains the gameViewArea and tells it to disapear
     Component c = gameViewArea.getParent();
