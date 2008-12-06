@@ -527,6 +527,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         
         // Do not process a player if they have not been added
         if(playerIndex == -1) {
+            logger.log(Level.INFO,"New Player has been added");
             SpawnPoint sp = new SpawnPoint(message.getPosition());
             processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(),
                                                     RESOLVING_NAME,
@@ -552,12 +553,14 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         // Creating a new player
         if(playerIndex == -1) {
             player = new RemotePlayer(message.getPlayerId(),message.getName());
+            logger.log(Level.INFO,"Player Added: " + player.getPlayerID());
             gameMap.placePlayer(player,message.getSpawnPoint());
             addActor(player);
         }
         // Updating information about the player
         else {
             player = playerList.get(playerIndex);
+            logger.log(Level.INFO,"Player Info Updated: " + player.getPlayerID());
             player.setPlayerName(message.getName());
         }
     }

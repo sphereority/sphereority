@@ -143,7 +143,11 @@ public class ClientConnection extends ExtasysUDPClient implements IUDPClient, Co
                         }
                         
                     }
-                    engine.processPlayerJoin(pj);
+                    
+                    // Playing the game and message is not about me?
+                    if(isConnected && !pj.getName().equals(engine.localPlayer.getPlayerName())) {
+                        engine.processPlayerJoin(pj);
+                    }
                     break;
                 case Projectile:
                     ProjectileMessage p = (ProjectileMessage) message;
