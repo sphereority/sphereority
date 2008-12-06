@@ -65,6 +65,18 @@ public abstract class Player extends WeightedPosition {
 	{
 		return playerID;
 	}
+    
+    public void setPlayerID(byte playerID) {
+        this.playerID = playerID;
+    }
+    
+    public void setPlayerName(String name) {
+        this.name = name;
+    }
+    
+    public float getCurrentTime() {
+        return curTime;
+    }
 	
 	/**
 	 * Create a player motion packet

@@ -1,6 +1,7 @@
 package common.messages;
 
 import common.Constants;
+import common.SpawnPoint;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -15,17 +16,29 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
 	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
-    private InetSocketAddress mcastAddress;
     private String playerName;
+    private InetSocketAddress mcastAddress;
+    private SpawnPoint sp;
     
     /**
      * Constructor - Creates a new MulticastGroupMessage.
      * @param playerId The id of the player sending the message.
      */
-    public PlayerJoinMessage(byte playerId, InetSocketAddress mcastAddress, String playerName) {
-        super(MessageType.PlayerJoin, playerId, PlayerJoinLength);
+    public PlayerJoinMessage(byte playerId, String playerName,
+                             InetSocketAddress mcastAddress,SpawnPoint sp) {
+        this(playerId,playerName,mcastAddress,sp,false);
+    }
+    /**
+     * Constructor - Creates a new MulticastGroupMessage.
+     * @param playerId The id of the player sending the message.
+     */
+    public PlayerJoinMessage(byte playerId, String playerName,
+                             InetSocketAddress mcastAddress,SpawnPoint sp,
+                             boolean isAck) {
+        super(MessageType.PlayerJoin, playerId, PlayerJoinLength, isAck);
         this.mcastAddress = mcastAddress;
         this.playerName = playerName;
+        this.sp = sp;
     }
 
     /**
@@ -40,14 +53,13 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
         // Wrap the stream of bytes into a buffer       
         ByteBuffer buffer = ByteBuffer.wrap(data);
 		
-		// Process the information to create the object.
-        int messageLength = (int) buffer.get();
-        byte[] messageArray = new byte[messageLength];
-
-        for(int i = INIT; i < messageLength; i++)
-            messageArray[i] = buffer.get();
-
         try {
+            // Process the information to create the object.
+            int messageLength = (int) buffer.get();
+            byte[] messageArray = new byte[messageLength];
+
+            for(int i = INIT; i < messageLength; i++)
+                messageArray[i] = buffer.get();
             InetAddress address = InetAddress.getByAddress(messageArray);
             // Get the port number
             int port = buffer.getInt();
@@ -58,8 +70,11 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
             
             for(int i = INIT; i < messageLength; i++)
                 messageArray[i] = buffer.get();
-
+            // Recreate the player name
             playerName = new String(messageArray);
+            // Get the spawn point
+            sp = new SpawnPoint(buffer.getInt(),buffer.getInt());
+
         } catch (Exception e) { System.err.println("Unable to get address");}
     }
     
@@ -88,18 +103,43 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
         buffer.putInt(playerName.length());
         buffer.put(playerName.getBytes());
 
+        // Put the co-ordinates of the spawn point
+        buffer.putInt(sp.getX());
+        buffer.putInt(sp.getY());
+        
         // Return the fully created message
         return message;
 	}
 
     /**
      * Retrieve the address of the multicast group.
+     * @return Get the multicast address for the player.
      */
     public InetSocketAddress getAddress() {
         return mcastAddress;
     }
 
+    /**
+     * Get the name of a player.
+     * @return The name of the player.
+     */
     public String getName() {
         return playerName;
     }	
+    
+    /**
+     * Retrieves the Spawn Point of a player.
+     * @return The spawn point for the player.
+     */
+    public SpawnPoint getSpawnPoint() {
+        return sp;
+    }
+    
+    /**
+     * Sets the name of a player.
+     * @param playerName The new name for the player.
+     */
+    public void setName(String playerName) {
+        this.playerName = playerName;
+    }
 }

@@ -16,7 +16,8 @@ public interface MessageConstants {
                      LoginMessageLength = 255,
                      PlayerLeaveLength = 0,
                      PlayerJoinLength  = 40,
-                     MulticastGroupLength = 40;
+                     MulticastGroupLength = 40,
+                     ProjectileLength = 16;
     
     public final int MessageCap = 255;
     public final int INIT = 0;

@@ -1,9 +1,11 @@
+*.bat
 *.class
 *.classpath
-*.log
+*.log*
 *.prefs
 *.project
 *.swo
 *.swp
 *~
 .DS_Store
+TODO

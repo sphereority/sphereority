@@ -13,7 +13,16 @@ public abstract class Message implements MessageConstants {
      * @param type The type of message
      */
     protected Message(MessageType type, byte playerId, int dataLength) {
-        header = new Header(type,DefaultGameId,playerId);
+        this(type,playerId,dataLength,false);
+    }
+    
+        /**
+     * Constructor - Creates a new message.
+     * @param type The type of message
+     */
+    protected Message(MessageType type, byte playerId, int dataLength,
+                      boolean isAck) {
+        header = new Header(type,DefaultGameId,playerId,isAck);
         this.dataLength = dataLength;
     }
     
@@ -63,5 +72,27 @@ public abstract class Message implements MessageConstants {
      */
     public MessageType getMessageType() {
         return header.getMessageType();
+    }
+    
+    /**
+     * Specify the this message is acknowledging another one.
+     */
+    public boolean isAck() {
+        return header.getIsAck();
+    }
+    
+    /**
+     * Specify whether a message is an ACK or not.
+     */
+    public void setAck(boolean isAck) {
+        header.setAck(isAck);
+    }
+    
+    /**
+     * Set the playerId of the message.
+     * @param playerId The new playerId
+     */
+    public void setPlayerId(byte playerId) {
+        header.setPlayerId(playerId);
     }
 }

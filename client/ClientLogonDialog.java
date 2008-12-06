@@ -32,9 +32,9 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher, Co
 		dialog = new JDialog(owner, true);
 		dialog.setContentPane(new JPanel(new BorderLayout()));
 		
-		entryServer = new JTextField();
+		entryServer = new JTextField("SphereorityServer");
 		entryServer.addActionListener(this);
-		entryName = new JTextField();
+		entryName = new JTextField("User");
 		entryName.addActionListener(this);
 		entryPassword = new JPasswordField();
 		entryPassword.addActionListener(this);

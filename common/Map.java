@@ -193,7 +193,7 @@ public class Map implements Constants {
     }
 
     public void placePlayer(Player p, SpawnPoint sp) {
-        p.setPosition(spawnPoints.get(2).getPosition());
+        p.setPosition(sp.getPosition());
     }
     
     /**

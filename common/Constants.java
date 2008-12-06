@@ -1,8 +1,8 @@
 package common;
 
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import java.util.Random;
 
 /**
@@ -18,17 +18,37 @@ public interface Constants
 	 * Default port for TCP network listener
 	 */
 	public static final int DEFAULT_PORT = 44000;
+     
+	/**
+	* Address for UDP Mutlicast
+	*/
+	public static final String MCAST_ADDRESS = "237.75.31.125";
+	
+	 /**
+     * Address for players playing a game.
+     */
+    public static final String PLAYER_MCAST_ADDRESS = "224.1.1.15";
 
     /**
-     * Address for UDP Mutlicast
+     * Port for multicast socket
      */
-    public static final String MCAST_ADDRESS = "237.75.31.125";
+    public static final int MCAST_PORT = 44000;
+	
+     /**
+     * Address for receiving UDP Login requests.
+     */
+    public static final String SERVER_ADDRESS = "224.1.1.20";
+
+    /**
+     * Port for the server socket.
+     */
+    public static final int SERVER_PORT = 45000;
     
     /**
-     * Port for multicas socket
+     * Placeholder string while we try to figure out a player's name.
      */
-    public static final int MCAST_PORT = 50000;
-	
+    public static final String RESOLVING_NAME = "Resolving Name...";
+    
 	/**
 	 * The fastest an object can move in units per second
 	 */
