@@ -54,9 +54,9 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     // @Override
     public void start()  {
         try {    
+            System.out.println("Starting...");
             // Restart all the connectors
             super.Start();
-            System.out.println("Starting...");
             // Start sending the messages.
             startSendingMessages();
         } catch (Exception ex) {
@@ -73,7 +73,6 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
         super.Stop();
         System.out.println("Stoping...");
         stopSendingMessages();
-        
     }
 
     /**
@@ -112,7 +111,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             }
         }
         
-
+        super.Stop();
         logger.log(logger.getLevel(),"Sent login message");
     }
     
@@ -151,17 +150,16 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                     
                     // Prepare the message for the engine
                     // Waiting for the server to make a connection
-                    if(!isConnected && message.isAck()) {
+                    if(!isConnected) {
                         // Message intended for me?
-                        if(pj.getName().equals(engine.localPlayer.getPlayerName())) {
+                        if(message.isAck() && pj.getName().equals(engine.localPlayer.getPlayerName())) {
                             engine.localPlayer.setPlayerID(pj.getPlayerId());
                             isConnected = true;
                         }
                         
                     }
-                    
                     // Playing the game and message is not about me?
-                    if(isConnected && !pj.getName().equals(engine.localPlayer.getPlayerName())) {
+                    else if(!pj.getName().equals(engine.localPlayer.getPlayerName())) {
                         engine.processPlayerJoin(pj);
                     }
                     break;
