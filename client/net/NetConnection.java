@@ -76,10 +76,10 @@ public class NetConnection implements Constants {
 			}
 			
 			ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(tcpSocket.getInputStream()));
-			ObjectOutputStream out = new ObjectOutputStream(tcpSocket.getOutputStream());
+			//ObjectOutputStream out = new ObjectOutputStream(tcpSocket.getOutputStream());
 			
 			// Send login information
-			out.writeObject(LoginMessage.getLoginMessage(name, password));
+			//out.writeObject(LoginMessage.getLoginMessage(name, password));
 			
 			// Get response
 			Object response = in.readObject();
