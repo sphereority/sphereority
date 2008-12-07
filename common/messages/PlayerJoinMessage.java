@@ -19,6 +19,8 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
     private InetSocketAddress mcastAddress;
     private SpawnPoint sp;
     
+    private long startTime=-1;
+    
     /**
      * Constructor - Creates a new MulticastGroupMessage.
      * @param playerId The id of the player sending the message.
@@ -73,8 +75,16 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
             playerName = new String(messageArray);
             // Get the spawn point
             sp = new SpawnPoint(buffer.getInt(),buffer.getInt());
+            startTime = buffer.getLong();
 
         } catch (Exception e) { System.err.println("Unable to get address");}
+    }
+    
+    /*
+     * add a game start time to playerJoinMessage
+     */
+    public void setStartTime(long startTime){
+    	this.startTime = startTime;
     }
     
     /**
@@ -105,6 +115,7 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
         // Put the co-ordinates of the spawn point
         buffer.putInt(sp.getX());
         buffer.putInt(sp.getY());
+        buffer.putLong(startTime);
         
         // Return the fully created message
         return message;
