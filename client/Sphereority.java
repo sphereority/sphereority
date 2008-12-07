@@ -75,6 +75,7 @@ public class Sphereority extends Thread implements Constants
                 connection = new ClientExtaSysConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT, game);
             } catch (Exception ex)
             {
+                JOptionPane.showMessageDialog(null, "Failed to connect to server.", "Sphereority", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
                 System.exit(1);
             }
