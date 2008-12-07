@@ -17,6 +17,8 @@ public class ComputerPlayer extends LocalPlayer {
 	private boolean[] keysPressed;
 	protected java.util.Random random;
     
+    protected int direction;
+    protected long lastTime;
     protected GameEngine engine;
 	protected Rectangle2D bounds = null;
 	protected float timeSinceLastShot;
@@ -27,6 +29,8 @@ public class ComputerPlayer extends LocalPlayer {
 		super(null,playerID, name);
 		width = height = PLAYER_SIZE;
         random = new java.util.Random();
+        lastTime = System.currentTimeMillis();
+        direction = random.nextInt(101);
         this.engine = engine;
 		System.out.printf("New player with ID %d\n", playerID);
 	}
@@ -48,20 +52,24 @@ public class ComputerPlayer extends LocalPlayer {
 	{
 		timeSinceLastShot += dTime;
 		
-        int value = random.nextInt(101);
-        
-        // Go right
-        if (value < 25)  accelerate(-PLAYER_ACCELERATION*dTime, 0);
-        // Go Up
-        if (value > 45 && value < 70) accelerate(PLAYER_ACCELERATION*dTime, 0);
         // Go left
-        if (value > 20 && value < 50)    accelerate(0, -PLAYER_ACCELERATION*dTime);
+        if (direction < 25)  accelerate(-PLAYER_ACCELERATION*dTime, 0);
+        // Go right
+        if (direction > 45 && direction < 70) accelerate(PLAYER_ACCELERATION*dTime, 0);
         // Go down
-        if (value > 65)  accelerate(0, PLAYER_ACCELERATION*dTime);
+        if (direction > 65)    accelerate(0, -PLAYER_ACCELERATION*dTime);
+        // Go up
+        if (direction > 20 && direction < 50)  accelerate(0, PLAYER_ACCELERATION*dTime);
         // Fire
-        if (value % 3 == 0)    fire();
+        if (random.nextInt(101) % 3 == 0)    fire();
 		
-		boolean result = super.animate(dTime, currentTime);
+        // Change directions every 5 seconds
+        if(System.currentTimeMillis() - lastTime > 1000) {
+            direction = random.nextInt(101);
+            lastTime = System.currentTimeMillis();
+        }
+        
+        boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)
 		{
 			bounds.setRect(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height); 
@@ -69,7 +77,6 @@ public class ComputerPlayer extends LocalPlayer {
 		return result;
 	}
     
-    private void updateMousePosition(java.awt.event.MouseEvent e)
-	{
+    private void updateMousePosition(java.awt.event.MouseEvent e) {
 	}
 }

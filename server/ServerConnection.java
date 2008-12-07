@@ -75,7 +75,7 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     // Asking for information about an existing user
                     else {
                         pj.setName(engine.getPlayerName(pj.getPlayerId()));
-                        
+                        logger.log(Level.INFO,"Notified Players About " + pj.getName());
                         SendMessage(listener,
                                     pj,
                                     listener.getIPAddress(),

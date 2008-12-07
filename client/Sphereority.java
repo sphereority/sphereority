@@ -48,13 +48,14 @@ public class Sphereority extends Thread implements Constants
         loginWindow = new ClientLogonDialog(null);
 
         boolean bot = false;
+        
         // Do this if we are not in debug mode
-        if( args.length > 0 && !(bot = args[0].equals("-debug"))) { 
-            // If the user quit the dialog, we must quit
-            if (!loginWindow.show())
-                System.exit(0);
+        if(args.length > 0) {
+            bot = args[0].equals("-debug");
         }
-        System.out.println(bot);
+            // If the user quit the dialog, we must quit
+        if (!bot && !loginWindow.show())
+            System.exit(0);
         
         // Else play the game
         logger.config("Server Name: " + loginWindow.getServerName());
