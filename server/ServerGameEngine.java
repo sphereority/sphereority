@@ -21,7 +21,7 @@ class ServerGameEngine implements Constants {
     private final byte INIT = 0;
     private final byte MAX_PLAYERS = 32;
     
-    public ServerGameEngine (){
+    public ServerGameEngine (long gamestarttime){
         avaliableUserIDs = new LinkedList<Byte>();
         // Populate the set with the avaliable userIds
         for(byte i = 0; i < MAX_PLAYERS; i++)

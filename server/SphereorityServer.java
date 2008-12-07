@@ -19,10 +19,11 @@ class SphereorityServer implements Constants {
 	    logger.log(logger.getLevel(), "Log Level set to: " +  logger.getLevel());
 
 	    try {
-	        ServerGameEngine engine = new ServerGameEngine();
+	    	long starttime = System.currentTimeMillis();
+	        ServerGameEngine engine = new ServerGameEngine(starttime);
 	        ServerConnection connection = new ServerConnection(InetAddress.getByName(SERVER_ADDRESS),
 	                                                           SERVER_PORT,
-	                                                           engine);
+	                                                           engine, starttime);
 	        connection.Start();
 	        // System.out.println("Server Started: Waiting for connections");
 			    logger.log(Level.INFO, "Server Started: Waiting for connections");
