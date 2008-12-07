@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class ServerGameEngine implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
 
     private Queue<Byte> avaliableUserIDs;
@@ -78,10 +77,9 @@ class ServerGameEngine implements Constants {
             userNames.put(playerId,message.getName());
             addresses.put(playerId,message.getAddress());
             
-            logger.log(logger.getLevel(), "New Player Added: " 
-                                            + message.getName());
-            System.out.println("New Player Added: " 
-                                            + message.getName());
+            //logger.log(logger.getLevel(), "New Player Added: " + message.getName());
+            //System.out.println("New Player Added: " + message.getName());
+            logger.log(Level.INFO, "New Player Added: " + message.getName());
         }
         return playerId;
     }

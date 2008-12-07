@@ -12,7 +12,6 @@ import common.Constants;
  * @author rlagman
  */
 public class MulticastGroupMessage extends Message implements MessageConstants, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
     private InetSocketAddress mcastAddress;

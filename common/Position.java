@@ -8,7 +8,6 @@ import java.util.logging.Logger;
  *
  */
 public class Position implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// INSTANCE VARIABLES

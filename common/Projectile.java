@@ -10,7 +10,6 @@ import java.util.logging.Logger;
  * This class describes projectile in the game
  */
 public class Projectile extends Actor {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Position startPos;

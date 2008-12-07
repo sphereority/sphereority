@@ -15,7 +15,6 @@ import javax.swing.*;
  * @author dvanhumb
  */
 public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	private static final long serialVersionUID = 23498751L;

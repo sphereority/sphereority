@@ -6,7 +6,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -15,13 +15,12 @@ import java.util.logging.Logger;
  *
  */
 public abstract class Player extends WeightedPosition {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected float timeSinceLastSound;
 	protected int playerID;
 	protected String name;
-	protected Position aim = new Position(0, AIM_LENGTH);
+	protected Position aim = new Position(0, 1);
 	protected float curTime;
 	// INSTANCE METHODS
 	
@@ -180,6 +179,6 @@ public abstract class Player extends WeightedPosition {
 			return;
 		aim.x = p.x - position.x;
 		aim.y = p.y - position.y;
-		aim.scale(AIM_LENGTH / aim.getMagnitude());
+		aim.scale(0.4f / aim.getMagnitude());
 	}
 }

@@ -13,7 +13,6 @@ import java.util.logging.Logger;
  * @author rlagman
  */
 public class PlayerJoinMessage extends Message implements MessageConstants, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
     private String playerName;

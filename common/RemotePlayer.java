@@ -12,7 +12,6 @@ import java.util.Vector;
  *
  */
 public class RemotePlayer extends Player {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	/**

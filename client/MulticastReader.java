@@ -17,7 +17,6 @@ import java.util.logging.Logger;
  * Client connection to the server and other clients.
  */
 public class MulticastReader extends Thread implements Constants { 
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
     private MulticastSocket socket;

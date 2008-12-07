@@ -11,7 +11,6 @@ import java.util.logging.Logger;
  * 
  */
 public class LocalPlayer extends Player {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected InputListener inputDevice;

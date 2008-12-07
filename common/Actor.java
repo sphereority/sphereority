@@ -10,7 +10,6 @@ import java.util.logging.Logger;
  *
  */
 public abstract class Actor implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// INSTANCE VARIABLES
@@ -107,7 +106,11 @@ public abstract class Actor implements Constants {
 	public abstract boolean animate(float dTime, float currentTime);
 	public abstract void draw(Graphics2D g, float scale);
 	public void kill() { this.alive = false; }
-	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }
+	public boolean isAlive()
+    {
+        return alive;
+        //&& (this.health >= MINIMUM_ACTOR_HEALTH));
+    }
 
 
 	public Rectangle2D getBounds()	{
