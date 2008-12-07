@@ -117,7 +117,7 @@ public class RemotePlayer extends Player {
             if(messageList.peek() != null)
                 currentPosition = messageList.poll().getPosition();
             // Do nothing if we do not
-                return false;
+            return false;
         }
         // Check if we still have interpolating points to go through
         else if(renderQueue.peek() != null) {
@@ -142,7 +142,7 @@ public class RemotePlayer extends Player {
             
             // Avoid divide by zero!
             if(divs != 0) {
-                for(float i = 1f; i <= DIV_SIZE; i++) {
+                for(float i = 0f; i < DIV_SIZE; i++) {
                     float thisDiv = currentPosition.getX() + (divs * i);
                     renderQueue.add(new PlayerMotionMessage((byte)playerID,
                                         new Position(thisDiv,getLinearInterpolant(msgPosition,currentPosition,thisDiv)),
@@ -150,7 +150,6 @@ public class RemotePlayer extends Player {
                                         (float)System.currentTimeMillis()));
                                                      
                 }
-            
                 currentPosition = renderQueue.poll().getPosition();
             }
         }

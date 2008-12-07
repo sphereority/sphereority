@@ -37,7 +37,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
      * Creates a client connection
      */
     public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) throws Exception{
-        super("SphereorityClient", "The client connection for sphereority", 8,16);
+        super("SphereorityClient", "The client connection for sphereority", 8,64);
         this.engine = engine;
         isConnected = false;
         // Add a UDP connector to this UDP client.
@@ -295,28 +295,32 @@ class SendUpdateMessages extends Thread implements Constants
                                                               gameConnector);
                 
                 // Go through all the projectiles in the game
-                for(common.Projectile p : engine.bulletList) {
-                    // Check if this is our own projectile and whether
-                    // we have sent information about it
-                    if(!p.isDelivered() && !(p.getOwner() != playerId)) {
-                        // Deliver the information about the projectile
-                        fMyClient.sendMessage(new ProjectileMessage(playerId,
-                                                                    p.getStartPosition(),
-                                                                    p.getDirection()),
-                                                                    gameConnector);
-                        p.delivered();
+                synchronized(engine.bulletList) {
+                    for(common.Projectile p : engine.bulletList) {
+                        // Check if this is our own projectile and whether
+                        // we have sent information about it
+                        if(!p.isDelivered() && !(p.getOwner() != playerId)) {
+                            // Deliver the information about the projectile
+                            fMyClient.sendMessage(new ProjectileMessage(playerId,
+                                                                        p.getStartPosition(),
+                                                                        p.getDirection()),
+                                                                        gameConnector);
+                            p.delivered();
+                        }
                     }
                 }
                 
                 // Resolve names that have not been found
                 if(checkNames == 4) {
-                    for(Player player : engine.playerList) {
-                        if (player.getPlayerName().equals(RESOLVING_NAME)) {
-                            fMyClient.sendMessage(new PlayerJoinMessage((byte)player.getPlayerID(),
-                                                    RESOLVING_NAME,
-                                                    new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
-                                                    new SpawnPoint(player.getPosition())),
-                                                    serverConnector);
+                    synchronized(engine.playerList) {
+                        for(Player player : engine.playerList) {
+                            if (player.getPlayerName().equals(RESOLVING_NAME)) {
+                                fMyClient.sendMessage(new PlayerJoinMessage((byte)player.getPlayerID(),
+                                                        RESOLVING_NAME,
+                                                        new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
+                                                        new SpawnPoint(player.getPosition())),
+                                                        serverConnector);
+                            }
                         }
                     }
                 }
@@ -325,6 +329,7 @@ class SendUpdateMessages extends Thread implements Constants
             }
             catch (Exception ex)
             {
+                ex.printStackTrace();
                 Dispose();
                 fMyClient.stopSendingMessages();
             }

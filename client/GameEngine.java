@@ -577,13 +577,13 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
 
         // Do not process a player if they have not been added
         if(playerIndex == -1) {
-            logger.log(Level.INFO,"New Player has been added");
             SpawnPoint sp = new SpawnPoint(message.getPosition());
             processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(), RESOLVING_NAME, null, sp));
         }
         
         if (playerIndex < 0)
             return;
+            
         try
         {
             // Update the co-ordinates of the player
