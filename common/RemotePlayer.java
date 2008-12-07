@@ -26,7 +26,7 @@ public class RemotePlayer extends Player {
     
     public static final boolean JUST_USE_LAST_MESSAGE = false;
 	
-    public final float DIV_SIZE = 8f;
+    public final float DIV_SIZE = 15f;
     
 	protected float currentTime;
     
@@ -111,26 +111,34 @@ public class RemotePlayer extends Player {
 		float timeD, totalWeight;
 		totalWeight = 1;
         
-        // Check if there is a message 
-        if (messageList.peek() == null) {
-            return false;
-        }
-        
-        // Do we have a position for this remote player yet?
+        System.out.println(messageList.size() + " " + renderQueue.size());
+        // Do we have a starting position for this remote player yet?
         if(currentPosition == null) {
-           currentPosition = messageList.poll().getPosition(); 
+            // Do we have an initial message?
+            if(messageList.peek() != null)
+                currentPosition = messageList.poll().getPosition();
+            // Do nothing if we do not
+                return false;
         }
         // Check if we still have interpolating points to go through
         else if(renderQueue.peek() != null) {
             currentPosition = renderQueue.poll().getPosition();
         }
-        // Interpolate between the point and the next one
-        // and add the points to the rendering queue
-        else {
+        // Extrapolate the next point and then interpolate between the current
+        // position and that point.  Add the points to the rendering queue.
+        else if(messageList.peek() != null) {
             PlayerMotionMessage pm = messageList.poll();
-            System.out.println(messageList.size());
+            
             // Get 4 seperate interpolation points
             Position msgPosition = pm.getPosition();
+            Position msgVelocity = pm.getVelocity();
+            
+            // Extrapolation not working.
+            //System.out.println(System.currentTimeMillis() - pm.getTime());
+            //float extrapolatedX = msgPosition.getX() + (msgVelocity.getX() / 3f);
+            //msgPosition = new Position(extrapolatedX,
+            //              getLinearInterpolant(currentPosition,msgPosition,extrapolatedX));
+            
             float divs = (msgPosition.getX() - currentPosition.getX()) / DIV_SIZE;
             
             // Avoid divide by zero!
@@ -147,7 +155,6 @@ public class RemotePlayer extends Player {
                 currentPosition = renderQueue.poll().getPosition();
             }
         }
-        
         
         /*
 		if (totalWeight < 0.0001f)
