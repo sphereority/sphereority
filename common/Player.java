@@ -9,6 +9,8 @@ import java.awt.Stroke;
 //import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 /**
  * This (presently) represents a player
  * @author dvanhumb
@@ -146,6 +148,9 @@ public abstract class Player extends WeightedPosition {
 		// We show up again after bumping into a wall
 		if (a == null || a instanceof Stone)
 			timeSinceLastSound = 0;
+		else if (a instanceof Projectile && ((Projectile) a).getOwner() != playerID)
+			if (this.getBounds().intersects(a.getBounds()))
+				health -= ((Projectile) a).getDamage();
 	}
 	
 	public void collideLeft()
