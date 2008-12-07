@@ -106,7 +106,11 @@ public abstract class Actor implements Constants {
 	public abstract boolean animate(float dTime, float currentTime);
 	public abstract void draw(Graphics2D g, float scale);
 	public void kill() { this.alive = false; }
-	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }
+	public boolean isAlive()
+    {
+        return alive;
+        //&& (this.health >= MINIMUM_ACTOR_HEALTH));
+    }
 
 
 	public Rectangle2D getBounds()	{
@@ -124,4 +128,14 @@ public abstract class Actor implements Constants {
 		String s = this.getClass().getName() + ": Position: " + position + ", Velocity: " + velocity + ", width: " + this.width + " height: " + this.height;
 		return s;
 	}
+
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
 }
