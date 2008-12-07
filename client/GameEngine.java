@@ -18,7 +18,6 @@ import javax.swing.Timer;
  */
 
 public class GameEngine implements Constants, ActionListener, ActionCallback {
-  // SINGLETONS
   public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
  
   public static GameEngine gameEngine;
