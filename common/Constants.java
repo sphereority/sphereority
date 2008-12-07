@@ -37,7 +37,7 @@ public interface Constants
      /**
      * Address for receiving UDP Login requests.
      */
-    public static final String SERVER_ADDRESS = "224.1.1.20";
+    public static final String SERVER_ADDRESS = "224.1.1.154";
 
     /**
      * Port for the server socket.
@@ -231,7 +231,7 @@ public interface Constants
 	/**
 	 * The amount of time between game steps
 	 */
-	public static final int TIMER_TICK = 50;
+	public static final int TIMER_TICK = 25;
 	
 	/**
 	 * The amount of time (in seconds) that a player shows up for after they fire

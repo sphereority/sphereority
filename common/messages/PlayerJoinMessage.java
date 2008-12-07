@@ -18,7 +18,6 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
     private String playerName;
     private InetSocketAddress mcastAddress;
     private SpawnPoint sp;
-    
     private long startTime=-1;
     
     /**
@@ -76,7 +75,6 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
             // Get the spawn point
             sp = new SpawnPoint(buffer.getInt(),buffer.getInt());
             startTime = buffer.getLong();
-
         } catch (Exception e) { System.err.println("Unable to get address");}
     }
     
@@ -151,5 +149,13 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
      */
     public void setName(String playerName) {
         this.playerName = playerName;
+    }
+    
+    /**
+     * Sets the address to be used.
+     * @param address The new InetSocketAddress;
+     */
+    public void setAddress(InetSocketAddress address) {
+        this.mcastAddress = address;
     }
 }

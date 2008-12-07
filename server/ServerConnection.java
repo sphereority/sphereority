@@ -60,7 +60,8 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     PlayerJoinMessage pj = (PlayerJoinMessage) message;
                     pj.setAck(true);
                     pj.setStartTime(gameStartTime);
-                        
+                    pj.setAddress(gameAddress);
+                    
                     // Processing a new player?
                     if(pj.getPlayerId() == -1) {
                         pj.setPlayerId(engine.processPlayerJoin(pj));
@@ -74,13 +75,12 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     // Asking for information about an existing user
                     else {
                         pj.setName(engine.getPlayerName(pj.getPlayerId()));
-                        
+                        logger.log(Level.INFO,"Notified Players About " + pj.getName());
                         SendMessage(listener,
                                     pj,
                                     listener.getIPAddress(),
                                     listener.getPort());
                     }
-                    
                     break;
                     
             }

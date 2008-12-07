@@ -259,6 +259,10 @@ class ReadIncomingData extends Thread
                 fMyConnector.fBytesIn += receivedPacket.getLength();
                 fMyConnector.fLastIncomingPacket = new IncomingUDPClientPacket(fMyConnector, receivedPacket, fMyConnector.fLastIncomingPacket);
             }
+            catch (java.net.SocketTimeoutException ex)
+            {
+                System.out.println(fMyConnector.getName() + " timed out.");
+            }
             catch (IOException ex)
             {
                 ex.printStackTrace();
