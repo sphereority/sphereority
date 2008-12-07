@@ -86,15 +86,17 @@ public class RemotePlayer extends Player {
 				
                 if (JUST_USE_LAST_MESSAGE)
                 {
-                    PlayerMotionMessage mostRecent = messageList.get(0);
+                    int index = messageList.size() - 1;
+                    PlayerMotionMessage mostRecent = messageList.get(index);
+                    /*
                     for (PlayerMotionMessage m : messageList)
                     {
                         if (mostRecent.getTime() < m.getTime())
                             mostRecent = m;
-                    }
+                    }*/
                     timeD = curTime - mostRecent.getTime();
-                    x = timeD * mostRecent.getVelocity().getX() + mostRecent.getPosition().getX();
-                    y = timeD * mostRecent.getVelocity().getY() + mostRecent.getPosition().getY();
+                    x = mostRecent.getPosition().getX();
+                    y = mostRecent.getPosition().getY();
     				totalWeight = 1;
                 }
                 else
@@ -135,7 +137,7 @@ public class RemotePlayer extends Player {
 		}
 		
 		setPosition(x / totalWeight, y / totalWeight);
-        System.out.println(position);
+        //System.out.println(position);
 		
 		return true;
 	}

@@ -60,7 +60,8 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     PlayerJoinMessage pj = (PlayerJoinMessage) message;
                     pj.setAck(true);
                     pj.setStartTime(gameStartTime);
-                        
+                    pj.setAddress(gameAddress);
+                    
                     // Processing a new player?
                     if(pj.getPlayerId() == -1) {
                         pj.setPlayerId(engine.processPlayerJoin(pj));
@@ -80,7 +81,6 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                                     listener.getIPAddress(),
                                     listener.getPort());
                     }
-                    
                     break;
                     
             }

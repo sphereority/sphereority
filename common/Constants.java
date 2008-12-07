@@ -37,7 +37,7 @@ public interface Constants
      /**
      * Address for receiving UDP Login requests.
      */
-    public static final String SERVER_ADDRESS = "224.1.1.20";
+    public static final String SERVER_ADDRESS = "224.1.1.154";
 
     /**
      * Port for the server socket.
