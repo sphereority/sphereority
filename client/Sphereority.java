@@ -73,31 +73,29 @@ public class Sphereority extends Thread implements Constants
                 //connection = new ClientRawMulticastConnection(game);
                 // ExtaSys multicasting connection
                 connection = new ClientExtaSysConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT, game);
+                
+                // Set up the game gameWindow
+                gameWindow = new JDialog();
+                gameWindow.setTitle(CLIENT_WINDOW_NAME);
+                gameWindow.setModal(true);
+     
+                gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+     
+                gameWindow.pack();
+                gameWindow.setLocationRelativeTo(null);
+     
+                Sphereority s = new Sphereority(game, connection);
+     
+                s.start();
+     
+                game.registerActionListeners(gameWindow);
+                // Play the game once:
+                gameWindow.setVisible(true);
+                game.unregisterActionListeners(gameWindow);
             } catch (Exception ex)
             {
                 JOptionPane.showMessageDialog(null, "Failed to connect to server.", "Sphereority", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-                System.exit(1);
             }
- 
-            // Set up the game gameWindow
-            gameWindow = new JDialog();
-            gameWindow.setTitle(CLIENT_WINDOW_NAME);
-            gameWindow.setModal(true);
- 
-            gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
- 
-            gameWindow.pack();
-            gameWindow.setLocationRelativeTo(null);
- 
-            Sphereority s = new Sphereority(game, connection);
- 
-            s.start();
- 
-            game.registerActionListeners(gameWindow);
-            // Play the game once:
-            gameWindow.setVisible(true);
-            game.unregisterActionListeners(gameWindow);
  
             // Show the login dialog again
         } while (loginWindow != null && loginWindow.show());
