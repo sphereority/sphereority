@@ -141,6 +141,8 @@ public class SoundEffect implements LineListener, Constants {
 	 */
 	public void setVolume(float v)
 	{
+		logger.info(String.format("client.audio.SoundEffect.setVolume(): Settings a volume of %.1f on audio clip %s.", v, soundFile.getName()));
+		
 		volume = v;
 		if (volumeControl != null)
 			volumeControl.setValue(volume);
