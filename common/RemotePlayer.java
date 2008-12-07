@@ -3,7 +3,7 @@ package	common;
 import common.messages.PlayerMotionMessage;
 import java.util.concurrent.*;
 import java.util.ConcurrentModificationException;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Vector;
 
@@ -43,7 +43,7 @@ public class RemotePlayer extends Player {
 	
 	public void addMotionPacket(PlayerMotionMessage msg)
 	{
-		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE)
+		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE && currentTime > 0)
 			return;
 		
 		try
@@ -66,7 +66,7 @@ public class RemotePlayer extends Player {
 	{
 		this.currentTime = currentTime;
 		
-		float x, y, totalWeight;
+		float x, y, timeD, totalWeight, posX, posY, weight;
 		x = y = totalWeight = 0;
 		// float weight;
 		
@@ -88,15 +88,17 @@ public class RemotePlayer extends Player {
 				
 				for (PlayerMotionMessage m : messageList)
 				{
-                    if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
+				    timeD = currentTime - m.getTime();
+                    if (timeD < 0)
                     {
-                        messageList.remove(m);
+//                        System.out.print("&");
                         continue;
                     }
-					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
-					weight = weight*weight;
-					x += weight * m.getVelocity().getX() + m.getPosition().getX();
-					y += weight * m.getVelocity().getY() + m.getPosition().getY();
+					posX = timeD * m.getVelocity().getX() + m.getPosition().getX();
+					posY = timeD * m.getVelocity().getY() + m.getPosition().getY();
+                    weight = MAX_SAVED_MESSAGES - timeD;
+                    x += weight * posX;
+                    y += weight * posY;
 					totalWeight += weight;
 				}
 				//lock.release();
@@ -117,12 +119,9 @@ public class RemotePlayer extends Player {
 			// TODO: Add hook for missing packets here
 			return false;
 		}
-//		else System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
 		
-		x /= totalWeight;
-		y /= totalWeight;
-		
-		setPosition(x, y);
+		setPosition(x / totalWeight, y / totalWeight);
+        System.out.println(position);
 		
 		return true;
 	}

@@ -1,6 +1,6 @@
 package	common;
 
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -119,7 +119,6 @@ public class Position implements Constants {
 	}
 	
 	public String toString() {
-		String s = "(" + this.x + ", " + this.y + ")";
-		return s;
+		return String.format("Position at (%.2f, %.2f)", x, y);
 	}
 }
