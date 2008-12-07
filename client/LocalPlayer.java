@@ -102,6 +102,14 @@ public class LocalPlayer extends Player {
 					velocity.bounceY();
 			}
 		}
+		else if (a instanceof Projectile && ((Projectile) a).getOwner() != playerID)
+		{
+			if (this.getBounds().intersects(a.getBounds()))
+			{
+				health -= ((Projectile) a).getDamage();
+				System.out.printf(name + " health: %d\n", health);
+			}
+		}
 	} // end collision()
 	
 	public Rectangle2D getBounds()
