@@ -417,22 +417,28 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         // repaint = true;
         // }
 
-        for (Actor a : playerList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
+        synchronized(playerList) {
+            for (Actor a : playerList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
+        }
+        
+        synchronized(bulletList) {
+            for (Actor a : bulletList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
         }
 
-        for (Actor a : bulletList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
-        }
-
-        for (Actor a : miscList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
+        synchronized(miscList) {
+            for (Actor a : miscList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
         }
 
         lastTime = thisTime;

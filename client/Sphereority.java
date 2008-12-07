@@ -51,7 +51,9 @@ public class Sphereority extends Thread implements Constants
         
         // Do this if we are not in debug mode
         if(args.length > 0) {
-            bot = args[0].equals("-debug");
+            for(String arg : args)
+                if (bot = arg.equals("-debug"))
+                    break;
         }
             // If the user quit the dialog, we must quit
         if (!bot && !loginWindow.show())

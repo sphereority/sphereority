@@ -146,7 +146,7 @@ public class RemotePlayer extends Player {
                     float thisDiv = currentPosition.getX() + (divs * i);
                     renderQueue.add(new PlayerMotionMessage((byte)playerID,
                                         new Position(thisDiv,getLinearInterpolant(msgPosition,currentPosition,thisDiv)),
-                                        new Position(0,0),
+                                        msgVelocity,
                                         (float)System.currentTimeMillis()));
                                                      
                 }
