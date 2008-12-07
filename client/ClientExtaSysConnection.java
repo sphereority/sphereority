@@ -195,7 +195,6 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             throw new Exception("Unable to login!");
         }
         else {
-            System.out.println("Got here!");
             engine.localPlayer.setPlayerID(message.getPlayerId());
             AddConnector("GameConnector", 10240, 8000,
                           message.getAddress().getAddress(),
@@ -280,7 +279,7 @@ class SendUpdateMessages extends Thread implements Constants
     {
         int messageCount = 0;
         int gameConnector = 1, serverConnector = 0;
-        System.out.println(fMyClient.getConnectors().get(gameConnector).getName());
+        
         for (int checkNames = 0; fActive; checkNames++)
         {
             try
