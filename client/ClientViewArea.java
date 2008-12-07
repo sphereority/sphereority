@@ -5,7 +5,7 @@ import common.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Vector;
 import javax.swing.*;
@@ -15,7 +15,6 @@ import javax.swing.*;
  * @author dvanhumb
  */
 public class ClientViewArea extends JComponent implements MouseMotionListener, MouseListener, KeyListener, Constants, MapChangeListener {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	private static final long serialVersionUID = 23498751L;
@@ -37,6 +36,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	// Game-related stuff:
 	protected LocalPlayer localPlayer;
+    protected PlayerHealthMeter healthMeter;
 	protected TrackingObject viewTracker;
 	protected Map map;
 	protected int mapWidth, mapHeight;
@@ -83,6 +83,9 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		lastOffset = new Point();
 		
+        healthMeter = new PlayerHealthMeter(-50, -5, 100, 20, Color.green, null);
+        addWidget(healthMeter);
+        
 		setFocusable(true);
 	}
 	
@@ -94,6 +97,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	public void setLocalPlayer(LocalPlayer p)
 	{
 		localPlayer = p;
+        healthMeter.setPlayer(p);
 		
 //		if (viewTracker == null)
 //		{
@@ -327,7 +331,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	
 	public void keyPressed(KeyEvent e)
 	{
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) // TODO: replace this with a quit call so we go back to the login screen
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 		{
 			if (gameEngine != null)
 				gameEngine.gameOver();

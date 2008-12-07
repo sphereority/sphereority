@@ -8,11 +8,9 @@ import java.util.logging.Logger;
 
 /**
  * This class describes a stone which will serve as a building block for a wall
- * @author smaboshe
  *
  */
 public class Stone extends Actor {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Rectangle2D bounds = null;

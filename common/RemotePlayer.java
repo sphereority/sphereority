@@ -3,17 +3,15 @@ package	common;
 import common.messages.PlayerMotionMessage;
 import java.util.concurrent.*;
 import java.util.ConcurrentModificationException;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Vector;
 
 /**
  * This class describes a player who is playing the game via the network
- * @author smaboshe
  *
  */
 public class RemotePlayer extends Player {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	/**
@@ -24,6 +22,8 @@ public class RemotePlayer extends Player {
 	 * The oldest message we want to consider, in seconds
 	 */
 	public static final float OLDEST_SAVED_MESSAGE = 5;
+    
+    public static final boolean JUST_USE_LAST_MESSAGE = true;
 	
 	protected float currentTime;
 	protected Vector<PlayerMotionMessage> messageList;
@@ -45,7 +45,7 @@ public class RemotePlayer extends Player {
 	
 	public void addMotionPacket(PlayerMotionMessage msg)
 	{
-		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE)
+		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE && currentTime > 0)
 			return;
 		
 		try
@@ -68,7 +68,7 @@ public class RemotePlayer extends Player {
 	{
 		this.currentTime = currentTime;
 		
-		float x, y, totalWeight;
+		float x, y, timeD, totalWeight, posX, posY, weight;
 		x = y = totalWeight = 0;
 		// float weight;
 		
@@ -84,18 +84,37 @@ public class RemotePlayer extends Player {
 				if (messageList.size() < 1)
 					return false;
 				
-				x = messageList.get(messageList.size()-1).getPosition().getX();
-				y = messageList.get(messageList.size()-1).getPosition().getY();
-				totalWeight = 1;
-				
-//				for (PlayerMotionMessage m : messageList)
-//				{
-//					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
-//					weight = weight*weight;
-//					x += weight * m.getVelocity().getX() + m.getPosition().getX();
-//					y += weight * m.getVelocity().getY() + m.getPosition().getY();
-//					totalWeight += weight;
-//				}
+                if (JUST_USE_LAST_MESSAGE)
+                {
+                    PlayerMotionMessage mostRecent = messageList.get(0);
+                    for (PlayerMotionMessage m : messageList)
+                    {
+                        if (mostRecent.getTime() < m.getTime())
+                            mostRecent = m;
+                    }
+                    timeD = curTime - mostRecent.getTime();
+                    x = timeD * mostRecent.getVelocity().getX() + mostRecent.getPosition().getX();
+                    y = timeD * mostRecent.getVelocity().getY() + mostRecent.getPosition().getY();
+    				totalWeight = 1;
+                }
+                else
+                {
+    				for (PlayerMotionMessage m : messageList)
+    				{
+    				    timeD = currentTime - m.getTime();
+                        if (timeD < 0)
+                        {
+    //                        System.out.print("&");
+                            continue;
+                        }
+    					posX = timeD * m.getVelocity().getX() + m.getPosition().getX();
+    					posY = timeD * m.getVelocity().getY() + m.getPosition().getY();
+                        weight = MAX_SAVED_MESSAGES - timeD;
+                        x += weight * posX;
+                        y += weight * posY;
+    					totalWeight += weight;
+    				}
+                }
 				//lock.release();
 			}
 //			catch (InterruptedException er)
@@ -114,12 +133,9 @@ public class RemotePlayer extends Player {
 			// TODO: Add hook for missing packets here
 			return false;
 		}
-//		else System.out.printf("Player %d has %d motion packets\n", playerID, messageList.size());
 		
-		x /= totalWeight;
-		y /= totalWeight;
-		
-		setPosition(x, y);
+		setPosition(x / totalWeight, y / totalWeight);
+        System.out.println(position);
 		
 		return true;
 	}

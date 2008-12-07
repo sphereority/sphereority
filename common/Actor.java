@@ -7,11 +7,9 @@ import java.util.logging.Logger;
 
 /**
  * This class describes an abstract class for an Actor in this game
- * @author smaboshe
  *
  */
 public abstract class Actor implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// INSTANCE VARIABLES
@@ -31,26 +29,19 @@ public abstract class Actor implements Constants {
 
 	// CONSTRUCTORS
 	public Actor() {
-		// Get access to the logger
-		logger.log(Level.INFO, "Created an Actor");
-		
 		position = new Position();
 		velocity = new Position();
 		alive = true;
 		team = 0;
 		state = 0;
 		
-		health = DEFAULT_ACTOR_HEALTH;
-		
-		/* Old values:
-		 * height = 1;
-		 * width = 1;
-		 */
-		
+		health = DEFAULT_ACTOR_HEALTH;		
 		height = DEFAULT_ACTOR_HEIGHT;
+		weight = DEFAULT_ACTOR_WEIGHT;
 		width = DEFAULT_ACTOR_WIDTH;
 
-		weight = DEFAULT_ACTOR_WEIGHT;
+		// Log this action
+		logger.log(Level.INFO, "Created: " + this);
 	}
 
 	public Actor(Position initialPosition, int initialHeight, int initialWidth) {
@@ -60,10 +51,13 @@ public abstract class Actor implements Constants {
 		team = 0;
 		state = 0;
 
-		weight = DEFAULT_ACTOR_WEIGHT;
-		
+		health = DEFAULT_ACTOR_HEALTH;		
 		height = initialHeight;
+		weight = DEFAULT_ACTOR_WEIGHT;
 		width = initialWidth;
+
+		// Log this action
+		logger.log(Level.INFO, "Created: " + this);
 	}
 
 	
@@ -112,7 +106,11 @@ public abstract class Actor implements Constants {
 	public abstract boolean animate(float dTime, float currentTime);
 	public abstract void draw(Graphics2D g, float scale);
 	public void kill() { this.alive = false; }
-	public boolean isAlive() { return (this.alive && (this.health >= MINIMUM_ACTOR_HEALTH)); }
+	public boolean isAlive()
+    {
+        return alive;
+        //&& (this.health >= MINIMUM_ACTOR_HEALTH));
+    }
 
 
 	public Rectangle2D getBounds()	{
@@ -130,4 +128,14 @@ public abstract class Actor implements Constants {
 		String s = this.getClass().getName() + ": Position: " + position + ", Velocity: " + velocity + ", width: " + this.width + " height: " + this.height;
 		return s;
 	}
+
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
 }

@@ -8,14 +8,13 @@ import java.util.logging.Logger;
 
 /**
  * This class describes projectile in the game
- * @author smaboshe
  */
 public class Projectile extends Actor {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Position startPos;
 	protected Position direction;
+	protected int damage;
 	protected byte owner;
 	protected boolean isDelivered;
     
@@ -29,6 +28,11 @@ public class Projectile extends Actor {
 		position.move(direction, (curTime - startTime) * BULLET_SPEED);
 		this.owner = owner;
         isDelivered = false;
+        
+        height = DEFAULT_PROJECTILE_HEIGHT;
+        width = DEFAULT_PROJECTILE_WIDTH;
+        
+        damage = DEFAULT_PROJECTILE_DAMAGE;
 	}
 	
     /**
@@ -95,6 +99,10 @@ public class Projectile extends Actor {
 	public byte getOwner()
 	{
 		return owner;
+	}
+	
+	public int getDamage(){
+		return damage;
 	}
 	
 }

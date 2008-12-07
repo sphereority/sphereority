@@ -10,7 +10,6 @@ import java.util.logging.Logger;
  *  @author Raphael Lagman
  */
 public class Header implements MessageConstants, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
     /**

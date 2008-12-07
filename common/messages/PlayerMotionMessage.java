@@ -11,7 +11,6 @@ import java.util.logging.Logger;
  * @author rlagman
  */
 public class PlayerMotionMessage extends Message implements MessageConstants, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Position position, velocity;

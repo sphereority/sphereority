@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SimpleButton extends InteractiveWidget implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Vector<ActionCallback> callbacks;
@@ -27,6 +26,7 @@ public class SimpleButton extends InteractiveWidget implements Constants {
 	public void trigger(int buttons)
 	{
 		System.out.printf("%s button pressed.\n", label);
+		logger.log(Level.INFO, "" + label + " button pressed");
 		
 		for (ActionCallback ac : callbacks)
 			ac.actionCallback(this, buttons);

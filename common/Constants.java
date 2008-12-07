@@ -179,8 +179,7 @@ public interface Constants
 	 * Default weight of an actor in world units
 	 */
 	public static final float DEFAULT_ACTOR_WIDTH = 0.5f;
-
-
+	
 	/**
 	 * Default weight of an actor in world units
 	 */
@@ -207,6 +206,21 @@ public interface Constants
 	 */
 	public static final float BULLET_SPEED = 15;
 	
+	/**
+	 * Default height of a projectile in wolrd units
+	 */
+	public static final float DEFAULT_PROJECTILE_HEIGHT = 0.1f;
+
+	/**
+	 * Default width of a projectile in wolrd units
+	 */
+	public static final float DEFAULT_PROJECTILE_WIDTH = 0.1f;
+	
+	/**
+	 * Damage from a default projectile
+	 */
+	public static final int DEFAULT_PROJECTILE_DAMAGE = 100;
+
 	public static final String CLIENT_VERSION = "v0.5 beta";
 
 	/**
@@ -243,11 +257,11 @@ public interface Constants
 	
 	public static String LOG_FOLDER = "logs/";
 
-	public static String CLIENT_LOG_FILE_NAME = "client.log";
+	public static String CLIENT_LOG_FILE_NAME = "client." + System.currentTimeMillis() + ".log";
 	public static String CLIENT_LOG_PATH = LOG_FOLDER + CLIENT_LOG_FILE_NAME;
 	public static String CLIENT_LOGGER_NAME = "Sphereority Client";
 
-	public static String SERVER_LOG_FILE_NAME = "server.log";
+	public static String SERVER_LOG_FILE_NAME = "server." + System.currentTimeMillis() + ".log";
 	public static String SERVER_LOG_PATH = LOG_FOLDER + SERVER_LOG_FILE_NAME;
 	public static String SERVER_LOGGER_NAME = "Sphereority Server";
 }

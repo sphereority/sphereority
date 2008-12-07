@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MapRadar extends Widget implements MapChangeListener, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	public static final Color RADAR_COLOR = new Color(120, 120, 120);

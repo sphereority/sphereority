@@ -30,16 +30,18 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
     protected ServerGameEngine engine;
     protected InetSocketAddress gameAddress;
     public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
+    protected long gameStartTime;
     
     /**
      * Start the connection to the server.
      */ 
-    public ServerConnection(InetAddress listenerIP, int port, ServerGameEngine engine) throws Exception
+    public ServerConnection(InetAddress listenerIP, int port, ServerGameEngine engine, long gameStartTime) throws Exception
     {
         super("SphereorityClient", "The server connection for Sphereority", 8, 32);
         this.engine = engine;
         this.gameAddress = new InetSocketAddress(InetAddress.getByName(PLAYER_MCAST_ADDRESS),MCAST_PORT);
         this.AddListener("SphereorityServer", listenerIP, port, 10240, 10000, true);
+        this.gameStartTime = gameStartTime;
     }
 
     @Override
@@ -57,6 +59,7 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                 case PlayerJoin:
                     PlayerJoinMessage pj = (PlayerJoinMessage) message;
                     pj.setAck(true);
+                    pj.setStartTime(gameStartTime);
                         
                     // Processing a new player?
                     if(pj.getPlayerId() == -1) {

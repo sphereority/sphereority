@@ -1,15 +1,13 @@
 package	common;
 
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Describes a two-dimensional postion on a coordinate plane.
- * @author smaboshe
  *
  */
 public class Position implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// INSTANCE VARIABLES
@@ -121,7 +119,6 @@ public class Position implements Constants {
 	}
 	
 	public String toString() {
-		String s = "(" + this.x + ", " + this.y + ")";
-		return s;
+		return String.format("Position at (%.2f, %.2f)", x, y);
 	}
 }

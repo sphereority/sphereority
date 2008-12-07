@@ -9,11 +9,8 @@ import java.util.logging.Logger;
  * This class describes a human player who has local access to the keyboard and
  * mouse
  * 
- * @author smaboshe
- * 
  */
 public class LocalPlayer extends Player {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected InputListener inputDevice;
@@ -103,6 +100,14 @@ public class LocalPlayer extends Player {
 			{
 				if ((difference.getY() > 0.01f && velocity.getY() > 0.01f) || (difference.getY() < -0.01f && velocity.getY() < -0.01f))
 					velocity.bounceY();
+			}
+		}
+		else if (a instanceof Projectile && ((Projectile) a).getOwner() != playerID)
+		{
+			if (this.getBounds().intersects(a.getBounds()))
+			{
+				health -= ((Projectile) a).getDamage();
+				System.out.printf(name + " health: %d\n", health);
 			}
 		}
 	} // end collision()

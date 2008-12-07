@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import common.Constants;
 
 public class StringLabel extends Widget implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected String label;

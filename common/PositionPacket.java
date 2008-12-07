@@ -1,17 +1,15 @@
 package	common;
 
-//import java.util.logging.Level;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import common.Constants;
 
 /**
  * This class describes a position set to or received from the network
- * @author smaboshe
  *
  */
 public class PositionPacket implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Position position, velocity;

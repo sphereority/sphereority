@@ -4,11 +4,10 @@ import common.*;
 import common.messages.*;
 import java.io.*;
 import java.net.*;
-//import java.util.logging.Level;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class NetConnection implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected static String failReason = null;

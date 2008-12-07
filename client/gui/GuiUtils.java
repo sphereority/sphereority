@@ -3,7 +3,6 @@ package client.gui;
 import common.Constants;
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -11,7 +10,6 @@ import java.util.logging.Logger;
  * @author Daryl Van Humbeck
  */
 public final class GuiUtils implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	public static final int BEVEL_CORNER_TOP_LEFT = 0xf01;
