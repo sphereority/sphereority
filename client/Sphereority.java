@@ -102,7 +102,8 @@ public class Sphereority extends Thread implements Constants
         // If quit, don't loop
  
         // TEMP: this is for testing only:
-        gameWindow.dispose();
+        if (gameWindow != null)
+        	gameWindow.dispose();
  
         logger.log(Level.INFO, "Exiting game");
         System.exit(0);
