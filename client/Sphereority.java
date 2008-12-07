@@ -7,7 +7,7 @@ package client;
 import common.*;
 import java.awt.BorderLayout;
 import java.io.IOException;
-// import java.net.InetAddress;
+import java.net.InetAddress;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,11 +69,9 @@ public class Sphereority extends Thread implements Constants
             try
             {
                 // Raw multicasting connection
-                connection = new ClientRawMulticastConnection(game);
+                //connection = new ClientRawMulticastConnection(game);
                 // ExtaSys multicasting connection
-                // connection = new
-                // ClientExtaSysConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT,
-                // game);
+                connection = new ClientExtaSysConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT, game);
             } catch (Exception ex)
             {
                 ex.printStackTrace();

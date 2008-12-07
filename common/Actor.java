@@ -125,4 +125,14 @@ public abstract class Actor implements Constants {
 		String s = this.getClass().getName() + ": Position: " + position + ", Velocity: " + velocity + ", width: " + this.width + " height: " + this.height;
 		return s;
 	}
+
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
 }

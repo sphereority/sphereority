@@ -3,7 +3,6 @@ package client.gui;
 import common.Constants;
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
