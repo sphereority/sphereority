@@ -52,11 +52,12 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     public SoundEffect soundBump, soundDeath, soundFire;
 
     // CONSTRUCTORS
-    public GameEngine(Map m, byte playerID, String name, ClientConnection connection)
+    public GameEngine(Map m, byte playerID, String name, boolean bot)
     {
         preSetup(m);
 
-        localPlayer = new LocalPlayer(localInputListener, playerID, name);
+        localPlayer = bot ? new ComputerPlayer(playerID,name,this)
+                          : new LocalPlayer(localInputListener, playerID, name);
         this.connection = connection;
 
         postSetup(true);
@@ -106,13 +107,16 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         // else
         gameMap.placePlayer(localPlayer);
 
-        MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+
+        MouseTracker mouseTracker = localPlayer instanceof ComputerPlayer ?
+                                    new RandomMouseTracker(localInputListener, gameViewArea) :
+                                    new MouseTracker(localInputListener, gameViewArea);
         localPlayer.setAimingTarget(mouseTracker);
 
         DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
 
         TrackingObject playerTracker = new TrackingObject(doubleTracker);
-
+        
         gameViewArea.viewTracker = playerTracker;
         gameViewArea.setLocalPlayer(localPlayer);
 

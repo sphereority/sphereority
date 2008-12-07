@@ -46,7 +46,7 @@ public class ClientWindow extends Thread implements Constants {
             Random random = new Random();
             byte playerId = (byte) random.nextInt(6);
             //System.out.println(playerId);
-			game = new GameEngine(map, playerId, loginWindow.getUserName(), null);
+			game = new GameEngine(map, playerId, loginWindow.getUserName(), false);
 			
 			// Set up the game gameWindow
 			gameWindow = new JDialog();

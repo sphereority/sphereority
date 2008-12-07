@@ -43,28 +43,35 @@ public class Sphereority extends Thread implements Constants
  
         // Report the current log level to the log file
         logger.log(logger.getLevel(), "Log Level set to: " + logger.getLevel());
- 
+
         // Create and display the LoginDialog
         loginWindow = new ClientLogonDialog(null);
- 
-        // If the user quit the dialog, we must quit
-        if (!loginWindow.show())
-            System.exit(0);
+
+        boolean bot = false;
+        // Do this if we are not in debug mode
+        if( args.length > 0 && !(bot = args[0].equals("-debug"))) { 
+            // If the user quit the dialog, we must quit
+            if (!loginWindow.show())
+                System.exit(0);
+        }
+        System.out.println(bot);
+        
         // Else play the game
- 
         logger.config("Server Name: " + loginWindow.getServerName());
  
         Map map;
         GameEngine game;
         ClientConnection connection = null;
- 
+        
         do
         {
             // This grabs a random map on startup
             map = new Map(MAP_LIST[4]);
             Random random = new Random();
             byte playerId = (byte) random.nextInt(255);
-            game = new GameEngine(map, playerId, loginWindow.getUserName(), null);
+            
+            
+            game = new GameEngine(map, playerId, loginWindow.getUserName() + playerId, bot);
  
             // Attempt to start a connection
             try
@@ -131,7 +138,10 @@ public class Sphereority extends Thread implements Constants
     {
         // Client application logging
         logger = Logger.getLogger(CLIENT_LOGGER_NAME);
- 
+        
+        // Set the default log level if it is not specified
+        logger.setLevel(Level.CONFIG);
+        
         // Get the log level from the command-line if one is supplied
         if (args.length > 0)
         {
@@ -164,11 +174,7 @@ public class Sphereority extends Thread implements Constants
             {
                 logger.setLevel(Level.FINEST);
             }
-        } else
-        {
-            // Set the default log level if it is not specified
-            logger.setLevel(Level.CONFIG);
-        }
+        } 
  
         try
         {
