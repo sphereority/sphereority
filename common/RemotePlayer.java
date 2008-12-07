@@ -111,7 +111,6 @@ public class RemotePlayer extends Player {
 		float timeD, totalWeight;
 		totalWeight = 1;
         
-        System.out.println(messageList.size() + " " + renderQueue.size());
         // Do we have a starting position for this remote player yet?
         if(currentPosition == null) {
             // Do we have an initial message?

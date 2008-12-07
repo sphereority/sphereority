@@ -105,7 +105,10 @@ public class Sphereority extends Thread implements Constants
             {
                 JOptionPane.showMessageDialog(null, "Failed to connect to server.", "Sphereority", JOptionPane.ERROR_MESSAGE);
             }
- 
+            
+            // Stop the game and the connection
+            game.gameOver();
+            connection.stop();
             // Show the login dialog again
         } while (loginWindow != null && loginWindow.show());
         // If quit, don't loop

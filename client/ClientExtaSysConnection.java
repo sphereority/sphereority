@@ -75,8 +75,8 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     // @Override
     public void stop()  {    
         super.Stop();
-        System.out.println("Stopping...");
         stopSendingMessages();
+        System.out.println("Stopping...");
     }
 
     /**

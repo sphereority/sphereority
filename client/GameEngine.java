@@ -45,7 +45,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     public Timer frameRate;
     
     public Vector<MapChangeListener> mapListeners;
-    public ClientConnection connection;
 
     // Sound stuff
     public GameSoundSystem soundSystem;
@@ -58,7 +57,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
 
         localPlayer = bot ? new ComputerPlayer(playerID,name,this)
                           : new LocalPlayer(localInputListener, playerID, name);
-        this.connection = connection;
+        
 
         postSetup(true);
     }
@@ -217,9 +216,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         gameOver = true;
         if (timer != null)
             timer.stop();
-
-        if (connection != null)
-            connection.stop();
 
         // This code finds the Window that contains the gameViewArea and tells
         // it to disapear
