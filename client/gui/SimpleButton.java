@@ -27,6 +27,7 @@ public class SimpleButton extends InteractiveWidget implements Constants {
 	public void trigger(int buttons)
 	{
 		System.out.printf("%s button pressed.\n", label);
+		logger.log(Level.INFO, "" + label + " button pressed");
 		
 		for (ActionCallback ac : callbacks)
 			ac.actionCallback(this, buttons);

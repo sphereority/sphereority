@@ -19,15 +19,15 @@ class SphereorityServer implements Constants {
 	    // Report the current log level to the log file
 	    logger.log(logger.getLevel(), "Log Level set to: " +  logger.getLevel());
 
-    
 	    try {
 	        ServerGameEngine engine = new ServerGameEngine();
 	        ServerConnection connection = new ServerConnection(InetAddress.getByName(SERVER_ADDRESS),
 	                                                           SERVER_PORT,
 	                                                           engine);
 	        connection.Start();
-	        System.out.println("Server Started: Waiting for connections");
-        
+	        // System.out.println("Server Started: Waiting for connections");
+			    logger.log(Level.INFO, "Server Started: Waiting for connections");
+
 	        while(true) {
 	            Thread.yield();
 	        }
@@ -36,7 +36,7 @@ class SphereorityServer implements Constants {
 	        e.printStackTrace();
 	    }
 	}
-    
+
 	/*
 	 * Allow the logger level to be set as a command-line paramater.
 	 * The default logger level is CONFIG by default.
@@ -80,7 +80,7 @@ class SphereorityServer implements Constants {
 	    }
 	    else if (level.equals("FINEST")) {
 	      logger.setLevel(Level.FINEST);
-	    }      
+	    }
 	  }
 	  else {
 	    // Set the default log level if it is not specified
