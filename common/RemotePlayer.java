@@ -3,9 +3,10 @@ package	common;
 import common.messages.PlayerMotionMessage;
 import java.util.concurrent.*;
 import java.util.ConcurrentModificationException;
-//import java.util.logging.Level;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * This class describes a player who is playing the game via the network
@@ -23,11 +24,16 @@ public class RemotePlayer extends Player {
 	 */
 	public static final float OLDEST_SAVED_MESSAGE = 5;
     
-    public static final boolean JUST_USE_LAST_MESSAGE = true;
+    public static final boolean JUST_USE_LAST_MESSAGE = false;
 	
+    public final float DIV_SIZE = 8f;
+    
 	protected float currentTime;
-	protected Vector<PlayerMotionMessage> messageList;
-	
+    
+    protected Position currentPosition;
+	protected Queue<PlayerMotionMessage> messageList;
+	protected Queue<PlayerMotionMessage> renderQueue;
+    
 	private Semaphore lock = new Semaphore(1);
 	
 	/**
@@ -39,85 +45,55 @@ public class RemotePlayer extends Player {
 	{
 		super(playerID, name);
 		
-		messageList = new Vector<PlayerMotionMessage>();
-		currentTime = -1;
+		messageList = new LinkedList<PlayerMotionMessage>();
+		renderQueue = new LinkedList<PlayerMotionMessage>();
+        currentTime = -1;
 	}
 	
 	public void addMotionPacket(PlayerMotionMessage msg)
 	{
-		if ((currentTime - msg.getTime()) > OLDEST_SAVED_MESSAGE && currentTime > 0)
-			return;
-		
-		try
-		{
-			lock.acquire();
-			messageList.add(msg);
-			
-			if (messageList.size() > MAX_SAVED_MESSAGES)
-				messageList.removeElementAt(0);
-			
-			lock.release();
-		}
-		catch (InterruptedException er)
-		{
-			
-		}
+        messageList.add(msg);
 	}
 	
 	public boolean animate(float dTime, float currentTime)
 	{
-		this.currentTime = currentTime;
-		
-		float x, y, timeD, totalWeight, posX, posY, weight;
-		x = y = totalWeight = 0;
 		// float weight;
 		
-		do
-		{
-			try
-			{
-				//lock.acquire();
+        /*
+        lock.acquire();
 //				for (PlayerMotionMessage m : messageList)
 //					if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
 //						messageList.remove(m);
-				
-				if (messageList.size() < 1)
-					return false;
-				
-                if (JUST_USE_LAST_MESSAGE)
-                {
-                    int index = messageList.size() - 1;
-                    PlayerMotionMessage mostRecent = messageList.get(index);
-                    /*
-                    for (PlayerMotionMessage m : messageList)
-                    {
-                        if (mostRecent.getTime() < m.getTime())
-                            mostRecent = m;
-                    }*/
-                    timeD = curTime - mostRecent.getTime();
-                    x = mostRecent.getPosition().getX();
-                    y = mostRecent.getPosition().getY();
-    				totalWeight = 1;
-                }
-                else
-                {
-    				for (PlayerMotionMessage m : messageList)
-    				{
-    				    timeD = currentTime - m.getTime();
-                        if (timeD < 0)
-                        {
-    //                        System.out.print("&");
-                            continue;
-                        }
-    					posX = timeD * m.getVelocity().getX() + m.getPosition().getX();
-    					posY = timeD * m.getVelocity().getY() + m.getPosition().getY();
-                        weight = MAX_SAVED_MESSAGES - timeD;
-                        x += weight * posX;
-                        y += weight * posY;
-    					totalWeight += weight;
-    				}
-                }
-				//lock.release();
+        
+        // Don't process if we do not have at least on message
+        if (messageList.size() < 2)
+            return false;
+        
+        if (JUST_USE_LAST_MESSAGE)
+        {
+            int index = messageList.size() - 1;
+            PlayerMotionMessage mostRecent = messageList.get(index);
+            /*
+            for (PlayerMotionMessage m : messageList)
+            {
+                if (mostRecent.getTime() < m.getTime())
+                    mostRecent = m;
+            }
+            timeD = curTime - mostRecent.getTime();
+            x = mostRecent.getPosition().getX();
+            y = mostRecent.getPosition().getY();
+            totalWeight = 1;
+        }
+        else
+        {
+            for (PlayerMotionMessage m : messageList)
+            {
+            
+            }
+        }
+        lock.release();*/
+                
+        /*        
 			}
 //			catch (InterruptedException er)
 //			{
@@ -128,17 +104,65 @@ public class RemotePlayer extends Player {
 				//continue;
 				return false;
 			}
-		} while (false);
+		} while (false);*/
 		
+        this.currentTime = currentTime;
+		
+		float timeD, totalWeight;
+		totalWeight = 1;
+        
+        // Check if there is a message 
+        if (messageList.peek() == null) {
+            return false;
+        }
+        
+        // Do we have a position for this remote player yet?
+        if(currentPosition == null) {
+           currentPosition = messageList.poll().getPosition(); 
+        }
+        // Check if we still have interpolating points to go through
+        else if(renderQueue.peek() != null) {
+            currentPosition = renderQueue.poll().getPosition();
+        }
+        // Interpolate between the point and the next one
+        // and add the points to the rendering queue
+        else {
+            PlayerMotionMessage pm = messageList.poll();
+            System.out.println(messageList.size());
+            // Get 4 seperate interpolation points
+            Position msgPosition = pm.getPosition();
+            float divs = (msgPosition.getX() - currentPosition.getX()) / DIV_SIZE;
+            
+            // Avoid divide by zero!
+            if(divs != 0) {
+                for(float i = 1f; i <= DIV_SIZE; i++) {
+                    float thisDiv = currentPosition.getX() + (divs * i);
+                    renderQueue.add(new PlayerMotionMessage((byte)playerID,
+                                        new Position(thisDiv,getLinearInterpolant(msgPosition,currentPosition,thisDiv)),
+                                        new Position(0,0),
+                                        (float)System.currentTimeMillis()));
+                                                     
+                }
+            
+                currentPosition = renderQueue.poll().getPosition();
+            }
+        }
+        
+        
+        /*
 		if (totalWeight < 0.0001f)
 		{
 			// TODO: Add hook for missing packets here
 			return false;
-		}
+		}*/
 		
-		setPosition(x / totalWeight, y / totalWeight);
+		setPosition(currentPosition.getX()/totalWeight, currentPosition.getY()/totalWeight);
         //System.out.println(position);
 		
 		return true;
 	}
+    
+    protected float getLinearInterpolant(Position p1, Position p2, float x) {
+        return p1.getY() + ((x - p1.getX()) * ((p2.getY() - p1.getY()) / (p2.getX() - p1.getX())));
+    }
 }
