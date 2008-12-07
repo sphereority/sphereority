@@ -665,7 +665,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             SpawnPoint sp = new SpawnPoint(message.getPosition());
             processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(), RESOLVING_NAME, null, sp));
         }
-
+        
+        if (playerIndex < 0)
+            return;
         try
         {
             // Update the co-ordinates of the player

@@ -82,18 +82,23 @@ public class RemotePlayer extends Player {
 				if (messageList.size() < 1)
 					return false;
 				
-				x = messageList.get(messageList.size()-1).getPosition().getX();
-				y = messageList.get(messageList.size()-1).getPosition().getY();
-				totalWeight = 1;
+//				x = messageList.get(messageList.size()-1).getPosition().getX();
+//				y = messageList.get(messageList.size()-1).getPosition().getY();
+//				totalWeight = 1;
 				
-//				for (PlayerMotionMessage m : messageList)
-//				{
-//					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
-//					weight = weight*weight;
-//					x += weight * m.getVelocity().getX() + m.getPosition().getX();
-//					y += weight * m.getVelocity().getY() + m.getPosition().getY();
-//					totalWeight += weight;
-//				}
+				for (PlayerMotionMessage m : messageList)
+				{
+                    if ((currentTime - m.getTime()) > OLDEST_SAVED_MESSAGE)
+                    {
+                        messageList.remove(m);
+                        continue;
+                    }
+					weight = OLDEST_SAVED_MESSAGE - (currentTime - m.getTime());
+					weight = weight*weight;
+					x += weight * m.getVelocity().getX() + m.getPosition().getX();
+					y += weight * m.getVelocity().getY() + m.getPosition().getY();
+					totalWeight += weight;
+				}
 				//lock.release();
 			}
 //			catch (InterruptedException er)
