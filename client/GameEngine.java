@@ -57,11 +57,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
 
         localPlayer = bot ? new ComputerPlayer(playerID, name, this)
                           : new LocalPlayer(localInputListener, playerID, name);
-<<<<<<< HEAD:client/GameEngine.java
-        //this.connection = connection;
-=======
-        
->>>>>>> 41833ee02ba8d6fd71bc5217d6b499545eba77f9:client/GameEngine.java
 
         postSetup(true);
     }
