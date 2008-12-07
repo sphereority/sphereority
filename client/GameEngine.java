@@ -9,8 +9,8 @@ import java.awt.Component;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.Window;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.Vector;
 import javax.swing.Timer;
  
@@ -42,7 +42,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
   public Timer timer;
   
   public Vector<MapChangeListener> mapListeners;
-//  public ClientConnection connection;
+  public ClientConnection connection;
   
   // Sound stuff
   public GameSoundSystem soundSystem;
@@ -54,7 +54,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     preSetup(m);
     
     localPlayer = new LocalPlayer(localInputListener, playerID, name);
-    //this.connection = connection;
+    this.connection = connection;
     
     postSetup(true);
   }
@@ -197,6 +197,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     if (timer != null)
       timer.stop();
     
+    if (connection != null)
+        connection.stop();
+    
     // This code finds the Window that contains the gameViewArea and tells it to disapear
     Component c = gameViewArea.getParent();
     while (!(c instanceof Window) && c != null)
@@ -324,6 +327,17 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         actor2 = playerList.get(j);
         bounds2 = actor2.getBounds();
         
+/*/<<<<<<< HEAD:client/GameEngine.java
+		if (fixed)
+		{
+	        for(byte i = 0; i < 6; i++) {
+	            if(i != localPlayer.getPlayerID()) {
+	                processPlayerJoin(
+	                    new PlayerJoinMessage(i,new java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i));
+	            }
+	        }
+		}
+//=======*/
         if (bounds1.intersects(bounds2))
         {
           actor1.collision(actor2);
@@ -527,6 +541,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         
         // Do not process a player if they have not been added
         if(playerIndex == -1) {
+            logger.log(Level.INFO,"New Player has been added");
             SpawnPoint sp = new SpawnPoint(message.getPosition());
             processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(),
                                                     RESOLVING_NAME,
@@ -552,12 +567,14 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         // Creating a new player
         if(playerIndex == -1) {
             player = new RemotePlayer(message.getPlayerId(),message.getName());
+            logger.log(Level.INFO,"Player Added: " + player.getPlayerID());
             gameMap.placePlayer(player,message.getSpawnPoint());
             addActor(player);
         }
         // Updating information about the player
         else {
             player = playerList.get(playerIndex);
+            logger.log(Level.INFO,"Player Info Updated: " + player.getPlayerID());
             player.setPlayerName(message.getName());
         }
     }
