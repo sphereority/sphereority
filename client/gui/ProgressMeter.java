@@ -48,7 +48,7 @@ public class ProgressMeter extends Widget
 
     public void setValue(int value)
     {
-        this.value = value;
+        this.value = Math.max(0, value);
     }
 
     public void draw(Graphics2D g, int windowWidth, int windowHeight)
