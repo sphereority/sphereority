@@ -231,7 +231,7 @@ public interface Constants
 	/**
 	 * The amount of time between game steps
 	 */
-	public static final int TIMER_TICK = 35;
+	public static final int TIMER_TICK = 25;
 	
 	/**
 	 * The amount of time (in seconds) that a player shows up for after they fire

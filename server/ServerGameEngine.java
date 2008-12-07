@@ -15,13 +15,13 @@ class ServerGameEngine implements Constants {
     private Queue<Byte> avaliableUserIDs;
     private Vector<PlayerInfo> playerInfo;
     
-    private final byte INIT = 0;
+    private final byte INIT = 1;
     private final byte MAX_PLAYERS = 32;
     
     public ServerGameEngine (long gamestarttime){
         avaliableUserIDs = new LinkedList<Byte>();
         // Populate the set with the avaliable userIds
-        for(byte i = 0; i < MAX_PLAYERS; i++)
+        for(byte i = INIT; i <= MAX_PLAYERS; i++)
             avaliableUserIDs.offer(i);
         
     	playerInfo = new Vector<PlayerInfo>();

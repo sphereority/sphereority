@@ -167,28 +167,44 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     // OPERATIONS
     public void addActor(Actor a)
     {
-        actorList.add(a);
-        if (a instanceof Stone)
-            stoneList.add((Stone) a);
-        else if (a instanceof Projectile)
-            bulletList.add((Projectile) a);
-        else if (a instanceof Player)
-            playerList.add((Player) a);
-        else
-            miscList.add(a);
+        synchronized(actorList) {
+            actorList.add(a);
+            if (a instanceof Stone)
+                synchronized(stoneList) {
+                    stoneList.add((Stone) a);
+                }
+            else if (a instanceof Projectile)
+                synchronized(bulletList) {
+                    bulletList.add((Projectile) a);
+                }
+            else if (a instanceof Player)
+                synchronized(playerList) {
+                    playerList.add((Player) a);
+                }
+            else
+                synchronized(miscList) {
+                    miscList.add(a);
+                }
+        }
     }
 
     public void removeActor(Actor a)
     {
-        actorList.remove(a);
-        if (a instanceof Stone)
-            stoneList.remove(a);
-        else if (a instanceof Projectile)
-            bulletList.remove(a);
-        else if (a instanceof Player)
-            playerList.remove(a);
-        else
-            miscList.remove(a);
+        synchronized(actorList) {
+            actorList.remove(a);
+            if (a instanceof Projectile)
+                synchronized(bulletList) {
+                    bulletList.remove((Projectile) a);
+                }
+            else if (a instanceof Player)
+                synchronized(playerList) {
+                    playerList.remove((Player) a);
+                }
+            else
+                synchronized(miscList) {
+                    miscList.remove(a);
+                }
+        }
     }
 
     public boolean isGameOver()

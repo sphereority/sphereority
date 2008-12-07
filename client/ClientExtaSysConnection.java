@@ -309,7 +309,7 @@ class SendUpdateMessages extends Thread implements Constants
                 }
                 
                 // Resolve names that have not been found
-                if(checkNames == 10) {
+                if(checkNames == 4) {
                     for(Player player : engine.playerList) {
                         if (player.getPlayerName().equals(RESOLVING_NAME)) {
                             fMyClient.sendMessage(new PlayerJoinMessage((byte)player.getPlayerID(),
@@ -321,7 +321,7 @@ class SendUpdateMessages extends Thread implements Constants
                     }
                 }
                 
-                Thread.sleep(500);
+                Thread.sleep(1000);
             }
             catch (Exception ex)
             {
