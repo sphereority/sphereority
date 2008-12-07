@@ -22,6 +22,8 @@ public class RemotePlayer extends Player {
 	 * The oldest message we want to consider, in seconds
 	 */
 	public static final float OLDEST_SAVED_MESSAGE = 5;
+    
+    public static final boolean JUST_USE_LAST_MESSAGE = true;
 	
 	protected float currentTime;
 	protected Vector<PlayerMotionMessage> messageList;
@@ -82,25 +84,30 @@ public class RemotePlayer extends Player {
 				if (messageList.size() < 1)
 					return false;
 				
-//				x = messageList.get(messageList.size()-1).getPosition().getX();
-//				y = messageList.get(messageList.size()-1).getPosition().getY();
-//				totalWeight = 1;
-				
-				for (PlayerMotionMessage m : messageList)
-				{
-				    timeD = currentTime - m.getTime();
-                    if (timeD < 0)
-                    {
-//                        System.out.print("&");
-                        continue;
-                    }
-					posX = timeD * m.getVelocity().getX() + m.getPosition().getX();
-					posY = timeD * m.getVelocity().getY() + m.getPosition().getY();
-                    weight = MAX_SAVED_MESSAGES - timeD;
-                    x += weight * posX;
-                    y += weight * posY;
-					totalWeight += weight;
-				}
+                if (JUST_USE_LAST_MESSAGE)
+                {
+    				x = messageList.get(messageList.size()-1).getPosition().getX();
+    				y = messageList.get(messageList.size()-1).getPosition().getY();
+    				totalWeight = 1;
+                }
+                else
+                {
+    				for (PlayerMotionMessage m : messageList)
+    				{
+    				    timeD = currentTime - m.getTime();
+                        if (timeD < 0)
+                        {
+    //                        System.out.print("&");
+                            continue;
+                        }
+    					posX = timeD * m.getVelocity().getX() + m.getPosition().getX();
+    					posY = timeD * m.getVelocity().getY() + m.getPosition().getY();
+                        weight = MAX_SAVED_MESSAGES - timeD;
+                        x += weight * posX;
+                        y += weight * posY;
+    					totalWeight += weight;
+    				}
+                }
 				//lock.release();
 			}
 //			catch (InterruptedException er)
