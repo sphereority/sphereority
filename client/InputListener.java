@@ -14,7 +14,6 @@ import java.util.logging.Logger;
  * @author dvanhumb
  */
 public class InputListener implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// Key event-related variables

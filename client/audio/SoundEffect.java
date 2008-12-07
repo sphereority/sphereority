@@ -11,7 +11,6 @@ import javax.sound.sampled.*;
  * @author dvanhumb
  */
 public class SoundEffect implements LineListener, Constants {	
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected float volume;

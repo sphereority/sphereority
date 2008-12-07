@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SimpleButton extends InteractiveWidget implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected Vector<ActionCallback> callbacks;

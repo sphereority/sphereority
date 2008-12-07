@@ -11,7 +11,6 @@ import java.util.logging.Logger;
  * @author Daryl Van Humbeck
  */
 public final class GuiUtils implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	public static final int BEVEL_CORNER_TOP_LEFT = 0xf01;

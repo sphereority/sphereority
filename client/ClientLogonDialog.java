@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import javax.swing.*;
 
 public class ClientLogonDialog implements ActionListener, KeyEventDispatcher, Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected JDialog dialog;
@@ -16,8 +15,10 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher, Co
 	// Entry widgets
 	protected JTextField entryServer, entryName;
 	protected JPasswordField entryPassword;
+
 	// Buttons
 	protected JButton buttonOkay, buttonCancel;
+
 	// Labels
 	protected JLabel statusMessage, labelServer, labelName, labelPassword;
 	
@@ -105,6 +106,7 @@ public class ClientLogonDialog implements ActionListener, KeyEventDispatcher, Co
 	{
 		result = false;
 		dialog.setVisible(false);
+		logger.log(Level.INFO, "Exiting game");
 	}
 	
 	protected boolean login()

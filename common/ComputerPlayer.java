@@ -8,7 +8,6 @@ import java.util.logging.Logger;
  *
  */
 public class ComputerPlayer extends Player {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 	
 }

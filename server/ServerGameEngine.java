@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class ServerGameEngine implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
 
     private Queue<Byte> avaliableUserIDs;

@@ -39,6 +39,7 @@ public class Sphereority extends Thread implements Constants
     {
         // Get the log level from the command-line if one is supplied
         initialiseLogger(args);
+        logger.log(Level.INFO, "Started game");
  
         // Report the current log level to the log file
         logger.log(logger.getLevel(), "Log Level set to: " + logger.getLevel());
@@ -106,6 +107,7 @@ public class Sphereority extends Thread implements Constants
         // TEMP: this is for testing only:
         gameWindow.dispose();
  
+        logger.log(Level.INFO, "Exiting game");
         System.exit(0);
     }
  

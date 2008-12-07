@@ -2,12 +2,12 @@ package client;
 
 import common.*;
 import java.awt.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
 import javax.swing.*;
 
 public class ClientWindow extends Thread implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	public static final String[] MAP_LIST = new String[]

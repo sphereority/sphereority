@@ -10,7 +10,6 @@ import java.util.logging.Logger;
  *
  */
 public abstract class Actor implements Constants {
-	// SINGLETONS
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// INSTANCE VARIABLES
