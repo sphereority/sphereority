@@ -45,7 +45,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     public Timer frameRate;
     
     public Vector<MapChangeListener> mapListeners;
-    public ClientConnection connection;
 
     // Sound stuff
     public GameSoundSystem soundSystem;
@@ -58,7 +57,11 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
 
         localPlayer = bot ? new ComputerPlayer(playerID, name, this)
                           : new LocalPlayer(localInputListener, playerID, name);
+<<<<<<< HEAD:client/GameEngine.java
         //this.connection = connection;
+=======
+        
+>>>>>>> 41833ee02ba8d6fd71bc5217d6b499545eba77f9:client/GameEngine.java
 
         postSetup(true);
     }
@@ -217,9 +220,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         gameOver = true;
         if (timer != null)
             timer.stop();
-
-        if (connection != null)
-            connection.stop();
 
         // This code finds the Window that contains the gameViewArea and tells
         // it to disapear
@@ -421,22 +421,28 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         // repaint = true;
         // }
 
-        for (Actor a : playerList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
+        synchronized(playerList) {
+            for (Actor a : playerList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
+        }
+        
+        synchronized(bulletList) {
+            for (Actor a : bulletList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
         }
 
-        for (Actor a : bulletList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
-        }
-
-        for (Actor a : miscList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
+        synchronized(miscList) {
+            for (Actor a : miscList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
         }
 
         lastTime = thisTime;
@@ -575,13 +581,13 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
 
         // Do not process a player if they have not been added
         if(playerIndex == -1) {
-            logger.log(Level.INFO,"New Player has been added");
             SpawnPoint sp = new SpawnPoint(message.getPosition());
             processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(), RESOLVING_NAME, null, sp));
         }
         
         if (playerIndex < 0)
             return;
+            
         try
         {
             // Update the co-ordinates of the player

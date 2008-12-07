@@ -117,39 +117,42 @@ public class MapRadar extends Widget implements MapChangeListener, Constants {
 		final int localID = localPlayer.getPlayerID();
 		float time;
 		int px, py;
-		for (Player p : engine.playerList)
-		{
-			// The local player
-			if (p.getPlayerID() == localID || p.equals(localPlayer))
-				g.setColor(Color.green);
-			// A player with no team
-			else if (p.getTeam() != TEAM_A && p.getTeam() != TEAM_B)
-			{
-				time = p.getTimeSinceLastSound();
-				if (time > BLIP_TIME)
-					continue;
-				g.setColor(GuiUtils.modulateColor(TEAMLESS_COLOR, 1 - (float)time/BLIP_TIME));
-			}
-			// A player on the same team
-			else if (p.getTeam() == localPlayer.getTeam())
-				g.setColor(Color.blue);
-			// An enemy player
-			else
-			{
-				time = p.getTimeSinceLastSound();
-				if (time > BLIP_TIME)
-					continue;
-				g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
-			}
-			
-			px = Math.round(p.getPosition().getX() * scale) + offsetX;
-			py = Math.round(p.getPosition().getY() * scale) + offsetY;
-			px = Math.min(getFixedX(windowWidth) + width, Math.max(getFixedX(windowWidth), px));
-			py = Math.min(getFixedY(windowHeight) + height, Math.max(getFixedY(windowHeight), py));
-			
-			g.fillRect(px - 1, py - 1, 3, 3);
-		} // end if draw players
-		
+        
+        synchronized(engine.playerList) {
+    		for (Player p : engine.playerList)
+    		{
+    			// The local player
+    			if (p.getPlayerID() == localID || p.equals(localPlayer))
+    				g.setColor(Color.green);
+    			// A player with no team
+    			else if (p.getTeam() != TEAM_A && p.getTeam() != TEAM_B)
+    			{
+    				time = p.getTimeSinceLastSound();
+    				if (time > BLIP_TIME)
+    					continue;
+    				g.setColor(GuiUtils.modulateColor(TEAMLESS_COLOR, 1 - (float)time/BLIP_TIME));
+    			}
+    			// A player on the same team
+    			else if (p.getTeam() == localPlayer.getTeam())
+    				g.setColor(Color.blue);
+    			// An enemy player
+    			else
+    			{
+    				time = p.getTimeSinceLastSound();
+    				if (time > BLIP_TIME)
+    					continue;
+    				g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
+    			}
+    			
+    			px = Math.round(p.getPosition().getX() * scale) + offsetX;
+    			py = Math.round(p.getPosition().getY() * scale) + offsetY;
+    			px = Math.min(getFixedX(windowWidth) + width, Math.max(getFixedX(windowWidth), px));
+    			py = Math.min(getFixedY(windowHeight) + height, Math.max(getFixedY(windowHeight), py));
+    			
+    			g.fillRect(px - 1, py - 1, 3, 3);
+    		} // end if draw players
+		}
+        
 		if (showName)
 		{
 			String name = map.getName();

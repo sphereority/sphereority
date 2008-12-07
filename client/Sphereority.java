@@ -51,7 +51,9 @@ public class Sphereority extends Thread implements Constants
         
         // Do this if we are not in debug mode
         if(args.length > 0) {
-            bot = args[0].equals("-debug");
+            for(String arg : args)
+                if (bot = arg.equals("-debug"))
+                    break;
         }
             // If the user quit the dialog, we must quit
         if (!bot && !loginWindow.show())
@@ -67,12 +69,12 @@ public class Sphereority extends Thread implements Constants
         do
         {
             // This grabs a random map on startup
-            map = new Map(MAP_LIST[4]);
+            map = new Map(MAP_LIST[3]);
             Random random = new Random();
             byte playerId = (byte) random.nextInt(255);
             
-            
-            game = new GameEngine(map, playerId, loginWindow.getUserName() + playerId, bot);
+            String userName = bot ? "bot" + playerId : loginWindow.getUserName();
+            game = new GameEngine(map, playerId, userName, bot);
  
             // Attempt to start a connection
             try
@@ -85,7 +87,7 @@ public class Sphereority extends Thread implements Constants
                 
                 // Set up the game gameWindow
                 gameWindow = new JDialog();
-                gameWindow.setTitle(CLIENT_WINDOW_NAME);
+                gameWindow.setTitle(CLIENT_WINDOW_NAME + " - " + userName);
                 gameWindow.setModal(true);
      
                 gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
@@ -105,7 +107,10 @@ public class Sphereority extends Thread implements Constants
             {
                 JOptionPane.showMessageDialog(null, "Failed to connect to server.", "Sphereority", JOptionPane.ERROR_MESSAGE);
             }
- 
+            
+            // Stop the game and the connection
+            game.gameOver();
+            connection.stop();
             // Show the login dialog again
         } while (loginWindow != null && loginWindow.show());
         // If quit, don't loop

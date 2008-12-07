@@ -68,6 +68,12 @@ public class ComputerPlayer extends LocalPlayer {
             direction = random.nextInt(101);
             lastTime = System.currentTimeMillis();
         }
+        // Reverse direction if there is a collision
+        else if(collisionX || collisionY) {
+            direction = ( (direction + 40) % 100);
+            lastTime = System.currentTimeMillis();
+            collisionX = collisionY = false;
+        }
         
         boolean result = super.animate(dTime, currentTime);
 		if (result && bounds != null)
