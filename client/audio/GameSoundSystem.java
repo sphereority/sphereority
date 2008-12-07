@@ -35,16 +35,19 @@ public class GameSoundSystem implements Constants {
 		catch (UnsupportedAudioFileException e)
 		{
 			System.err.printf("client.audio.GameSoundSyste: Error: File '%s' is an unsupported type!\n", fileName);
+			logger.warning(String.format("client.audio.GameSoundSystem.loadSoundEffect(): Audio file '%s' of an unknown audio format.", fileName));
 			return null;
 		}
 		catch (LineUnavailableException e)
 		{
 			System.err.printf("client.audio.GameSoundSyste: Error: Can't find an audio line to play the sound on!\n");
+			logger.warning("client.audio.GameSoundSystem.loadSoundEffect(): No audio lines available to play sound on.");
 			return null;
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			logger.severe(String.format("client.audio.GameSoundSystem.loadSoundEffect(): Failed to read audio file '%s'.", fileName));
 			return null;
 		}
 	}
