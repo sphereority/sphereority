@@ -24,10 +24,6 @@ OPTIONS:
 You can specify the server logger level with an optional logger level parameter:
 $ java server/SphereorityServer FINEST
 
-You can specify to run a client as a bot with an optional -debug flag.  Note
-that if you want to sepcify a logger level you must do that before using this flag.
-$ java client/Sphereority -debug
-
 
 
 CLIENT
@@ -43,6 +39,10 @@ $ java client/Sphereority
 OPTIONS:
 You can specify the server logger level with an optional logger level parameter:
 $ java client/Sphereority INFO
+
+You can specify to run a client as a bot with an optional -debug flag.  Note
+that if you want to sepcify a logger level you must do that before using this flag.
+$ java client/Sphereority -debug
 
 
 
