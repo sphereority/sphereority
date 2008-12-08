@@ -628,13 +628,18 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
             return;
 
         Player player = playerList.get(playerIndex);
-        if (player instanceof RemotePlayer)
+        
+        if (player instanceof RemotePlayer) {
+            // Add the projectile to the list
             addActor(new Projectile(message.getStartPosition(),
                                     message.getDirection(),
                                     player.getCurrentTime(),
                                     player.getCurrentTime(),
                                     (byte) player.getPlayerID(),
                                     player.getTeam()));
+            // Signal that the remote player has fired
+            player.fire();
+        }
     }
 
     

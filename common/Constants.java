@@ -246,7 +246,7 @@ public interface Constants
 	/**
 	 * The amount of time (in seconds) that a player shows up for after they fire
 	 */
-	public static final float BLIP_TIME = 10.0f;
+	public static final float BLIP_TIME = 1.5f;
 	
 	/**
 	 * The amount to shove the player when they bump into a wall

@@ -141,7 +141,7 @@ public class MapRadar extends Widget implements MapChangeListener, Constants {
     				time = p.getTimeSinceLastSound();
     				if (time > BLIP_TIME)
     					continue;
-    				g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
+                    g.setColor(GuiUtils.modulateColor(Color.red, 1 - (float)time/BLIP_TIME));
     			}
     			
     			px = Math.round(p.getPosition().getX() * scale) + offsetX;
