@@ -82,6 +82,8 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
         try {
             // Logout if we are still connected to the server
             stopSendingMessages();
+            // Allow time for the sending of the messages to stop
+            Thread.sleep(750);
             endServerConnection();
         } catch (Exception ex) {
             ex.printStackTrace();
