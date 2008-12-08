@@ -6,6 +6,7 @@ import common.SpawnPoint;
 import common.messages.Message;
 import common.messages.MessageAnalyzer;
 import common.messages.PlayerJoinMessage;
+import common.messages.PlayerLeaveMessage;
 import common.messages.PlayerMotionMessage;
 import common.messages.ProjectileMessage;
 import common.messages.LoginMessage;
@@ -28,15 +29,20 @@ import java.util.logging.Logger;
  */
 public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPClient, Constants, ClientConnection
 {
+    public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
+    public static final int GAME_CONNECTOR = 1;
+    public static final int SERVER_CONNECTOR = 0;
+    public static final byte ERROR_ID = -2;
+    
     private SendUpdateMessages fSendUpdateMessagesThread;
     private GameEngine engine;
     private boolean isConnected;
-    public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
- 
+    private boolean waitingForLeaveAck;
+    
     /**
      * Creates a client connection
      */
-    public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) throws Exception{
+    public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine){
         super("SphereorityClient", "The client connection for sphereority", 8,64);
         this.engine = engine;
         isConnected = false;
@@ -73,30 +79,38 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
      */
     // @Override
     public void stop()  {    
+        try {
+            // Logout if we are still connected to the server
+            stopSendingMessages();
+            endServerConnection();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+            
         super.Stop();
-        stopSendingMessages();
-        logger.log(Level.INFO,"Starting ClientExtasysConnection");
+        logger.log(Level.INFO,"Stopping ClientExtasysConnection");
     }
 
     /**
      * Attempts to establish a connection to the server.
      */
-    public void establishServerConnection() throws Exception {
+    protected void establishServerConnection() throws Exception {
         logger.log(Level.INFO,"Establishing Server Connection");
         
         InetSocketAddress serverAddress
-                    = new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT);
+            = new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT);
         SpawnPoint sp = new SpawnPoint(engine.localPlayer.getPosition());
         
         // Request to the server that we log in.
         // Note: Do not need to specify address here.
         // Is here just to avoid a nullpointer when writing the message
-        sendMessage(new PlayerJoinMessage((byte)-1,
-                                          engine.localPlayer.getPlayerName(),
-                                          serverAddress,
-                                          sp,
-                                          false),
-                                          0);
+        sendMessage(
+            new PlayerJoinMessage((byte)-1,
+                                  engine.localPlayer.getPlayerName(),
+                                  serverAddress,
+                                  sp,
+                                  false),
+                                  SERVER_CONNECTOR);
     
         // Make sure that we only wait at most 10 seconds
         long waitTime = System.currentTimeMillis() + 10000;
@@ -114,6 +128,35 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
         logger.log(Level.INFO,"Server Connection Established!");
         super.Start();
     }
+    
+    /**
+     * Ends the connection to the server.
+     */
+    protected void endServerConnection() throws Exception {
+        logger.log(Level.INFO,"Ending Server Connection");
+        
+        // Stop if we already disconnected from the server
+        if(!isConnected)
+            return;
+        
+        waitingForLeaveAck = true;
+        sendMessage(new PlayerLeaveMessage(engine.localPlayer.getPlayerID()),
+                                           SERVER_CONNECTOR);
+                                           
+        // Make sure that we only wait at most 5 seconds
+        long waitTime = System.currentTimeMillis() + 5000;
+        
+        // Wait until we have logged out (received an ACK that it is ok to
+        // to disconnect).
+        while(isConnected) {
+            Thread.yield();
+            
+            // Stop attempting to connect if 10 seconds has past
+            if(System.currentTimeMillis() > waitTime) {
+                throw new Exception("Unable to contact to server!");
+            }
+        }
+    }    
     
     /**
      * How to handle received messages.
@@ -153,9 +196,20 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                         handleLogin(pj);
                     }
                     // Playing the game and message is not about me?
-                    else if(pj.getPlayerId() != -2 && !pj.getName().equals(myName)) {
+                    else if(pj.getPlayerId() != ERROR_ID && !pj.getName().equals(myName)) {
                         engine.processPlayerJoin(pj);
                     }
+                    break;
+                case PlayerLeave:
+                    logger.log(Level.FINE,"PlayerLeave: " + message.getPlayerId());
+                    
+                    // Connected?
+                    if(isConnected) {
+                        // Handle a logout message if it came from the server.
+                        handleLogout((PlayerLeaveMessage)message);
+                    }
+                    // Ignore otherwise
+                    
                     break;
                 case Projectile:
                     ProjectileMessage p = (ProjectileMessage) message;
@@ -186,7 +240,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             return;
         
         // Check for success or failure
-        if(message.getPlayerId() == -2) {
+        if(message.getPlayerId() == ERROR_ID) {
             throw new Exception("Unable to login!");
         }
         else {
@@ -196,6 +250,28 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                           message.getAddress().getPort(),true);
             isConnected = true;
         }
+    }
+    
+    /**
+     * Handles logout of players given a PlayerLeave Message.
+     */
+    protected void handleLogout(PlayerLeaveMessage message) throws Exception { 
+        // Message did not come from server?
+        if(!message.isAck())
+            return;
+             
+        // Message is not intended for me remove that player from the game.
+        if(!(message.getPlayerId() == engine.localPlayer.getPlayerID())) {
+            engine.removeActor(engine.getPlayer(message.getPlayerId()));
+            logger.log(Level.INFO,"Removed a player");
+        }
+        // Message is for me so am I actually waiting to disconnect?
+        else if(waitingForLeaveAck) {
+            waitingForLeaveAck = false;
+            isConnected = false;
+        }
+        
+        
     }
     
     /**
@@ -273,50 +349,12 @@ class SendUpdateMessages extends Thread implements Constants
     public void run()
     {
         int messageCount = 0;
-        int gameConnector = 1, serverConnector = 0;
-        
+
         for (int checkNames = 0; fActive; checkNames++)
         {
             try
             {
-                LocalPlayer localPlayer = engine.localPlayer;
-                byte playerId = (byte)localPlayer.getPlayerID();
-                
-                // Send where the player is now
-                fMyClient.sendMessage(localPlayer.getMotionPacket((float)System.currentTimeMillis()),gameConnector);
-                
-                // Go through all the projectiles in the game
-                synchronized(engine.bulletList) {
-                    for(common.Projectile p : engine.bulletList) {
-                        // Check if this is our own projectile and whether
-                        // we have sent information about it
-                        if(!p.isDelivered() && !(p.getOwner() != playerId)) {
-                            // Deliver the information about the projectile
-                            fMyClient.sendMessage(new ProjectileMessage(playerId,
-                                                                        p.getStartPosition(),
-                                                                        p.getDirection()),
-                                                                        gameConnector);
-                            p.delivered();
-                        }
-                    }
-                }
-                
-                // Resolve names that have not been found
-                if(checkNames == 4) {
-                    synchronized(engine.playerList) {
-                        for(Player player : engine.playerList) {
-                            if (player.getPlayerName().equals(RESOLVING_NAME)) {
-                                fMyClient.sendMessage(new PlayerJoinMessage((byte)player.getPlayerID(),
-                                                        RESOLVING_NAME,
-                                                        new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
-                                                        new SpawnPoint(player.getPosition())),
-                                                        serverConnector);
-                            }
-                        }
-                    }
-                }
-                
-                Thread.sleep(RESEND_DELAY);
+                sendGameMessages(checkNames);
             }
             catch (Exception ex)
             {
@@ -325,6 +363,54 @@ class SendUpdateMessages extends Thread implements Constants
                 fMyClient.stopSendingMessages();
             }
         }
+    }
+    
+    /**
+     * Send messages about the local player to the game's multicast channel.
+     * @param checkNames Counter used for knowing when to resolve names.
+     */
+    protected void sendGameMessages(int checkNames) throws Exception {
+        LocalPlayer localPlayer = engine.localPlayer;
+        byte playerId = localPlayer.getPlayerID();
+        float currentTime = (float)System.currentTimeMillis();
+        
+        // Send where the player is now
+        fMyClient.sendMessage(localPlayer.getMotionPacket(currentTime),
+                              fMyClient.GAME_CONNECTOR);
+        
+        // Go through all the projectiles in the game
+        synchronized(engine.bulletList) {
+            for(common.Projectile p : engine.bulletList) {
+                // Check if this is our own projectile and whether
+                // we have sent information about it
+                if(!p.isDelivered() && !(p.getOwner() != playerId)) {
+                    // Deliver the information about the projectile
+                    fMyClient.sendMessage(new ProjectileMessage(playerId,
+                                            p.getStartPosition(),
+                                            p.getDirection()),
+                                            fMyClient.GAME_CONNECTOR);
+                    p.delivered();
+                }
+            }
+        }
+        
+        // Resolve names that have not been found
+        if(checkNames == 4) {
+            synchronized(engine.playerList) {
+                for(Player player : engine.playerList) {
+                    if (player.getPlayerName().equals(RESOLVING_NAME)) {
+                        fMyClient.sendMessage(new PlayerJoinMessage(
+                            player.getPlayerID(),
+                            RESOLVING_NAME,
+                            new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
+                            new SpawnPoint(player.getPosition())),
+                            fMyClient.SERVER_CONNECTOR);
+                    }
+                }
+            }
+        }
+        
+        Thread.sleep(RESEND_DELAY);
     }
     
     public void Dispose()

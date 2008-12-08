@@ -14,13 +14,20 @@ import java.util.logging.Logger;
 public class PlayerLeaveMessage extends Message implements MessageConstants, Constants {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
-    
     /**
      * Constructor - Creates a new PlayerLeaveMessage.
      * @param playerId The id of the player sending the message.
      */
     public PlayerLeaveMessage(byte playerId) {
-        super(MessageType.PlayerLeave, playerId, PlayerLeaveLength);
+        this(playerId,false);
+    }
+    
+    /**
+     * Constructor - Creates a new PlayerLeaveMessage.
+     * @param playerId The id of the player sending the message.
+     */
+    public PlayerLeaveMessage(byte playerId, boolean isAck) {
+        super(MessageType.PlayerLeave, playerId, PlayerLeaveLength,isAck);
     }
 
     /**

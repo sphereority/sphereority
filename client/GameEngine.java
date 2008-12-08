@@ -189,6 +189,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
 
     public void removeActor(Actor a)
     {
+        if(a == null) return;
+        
         synchronized(actorList) {
             actorList.remove(a);
             if (a instanceof Projectile)
@@ -635,15 +637,13 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
                                     message.getDirection(),
                                     player.getCurrentTime(),
                                     player.getCurrentTime(),
-                                    (byte) player.getPlayerID(),
+                                    player.getPlayerID(),
                                     player.getTeam()));
             // Signal that the remote player has fired
             player.fire();
             logger.log(Level.FINE,"Player " + player.getPlayerID() + " fired!");
         }
-    }
-
-    
+    }    
 
     /**
      * Retrieve a player given their ID.
@@ -660,6 +660,16 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
             }
         }
         return index;
+    }
+    
+    public Player getPlayer(byte playerId) {
+        synchronized(playerList) {
+            for(Player player : playerList) {
+                if(player.getPlayerID() == playerId)
+                    return player;
+            }
+        }
+        return null;
     }
 
 } // end class GameEngine

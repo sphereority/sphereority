@@ -196,7 +196,7 @@ public class RemotePlayer extends Player {
 	}
     
     protected PlayerMotionMessage makeMotionMessage(Position pos, Position velocity,Position aim) {
-        return new PlayerMotionMessage((byte)playerID,pos,velocity,aim,(float)System.currentTimeMillis());
+        return new PlayerMotionMessage(playerID,pos,velocity,aim,(float)System.currentTimeMillis());
     }
     
     /**

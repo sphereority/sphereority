@@ -5,6 +5,7 @@ import common.Player;
 import common.messages.Message;
 import common.messages.MessageAnalyzer;
 import common.messages.PlayerJoinMessage;
+import common.messages.PlayerLeaveMessage;
 import common.messages.PlayerMotionMessage;
 import common.messages.ProjectileMessage;
 import common.messages.LoginMessage;
@@ -65,6 +66,7 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     // Processing a new player?
                     if(pj.getPlayerId() == -1) {
                         pj.setPlayerId(engine.processPlayerJoin(pj));
+                        logger.log(Level.INFO,"Added Player " + pj.getName() + " with ID " + pj.getPlayerId());
                         
                         // Send a message via the Server
                         SendMessage(listener,
@@ -74,13 +76,35 @@ public class ServerConnection extends ExtasysUDPServer implements IUDPServer, Co
                     }
                     // Asking for information about an existing user
                     else {
-                        pj.setName(engine.getPlayerName(pj.getPlayerId()));
-                        logger.log(Level.INFO,"Notified Players About " + pj.getName());
-                        SendMessage(listener,
+                        String playerName = engine.getPlayerName(pj.getPlayerId());
+                        // Asking for information about a user who does not exist
+                        if(playerName == null) {
+                            // Send a message that this player should be removed
+                            SendMessage(listener,
+                                new PlayerLeaveMessage(pj.getPlayerId(),true),
+                                listener.getIPAddress(),
+                                listener.getPort());
+                            logger.log(Level.INFO,"Unknown player. Remove from game");
+                        }
+                        else {
+                            pj.setName(playerName);
+                            logger.log(Level.INFO,"Notified Players About " + pj.getName());
+                            SendMessage(listener,
                                     pj,
                                     listener.getIPAddress(),
                                     listener.getPort());
+                        }
                     }
+                    break;
+                case PlayerLeave:
+                    message.setAck(true);
+                    // Attempt to remove the player
+                    engine.processPlayerLeave((PlayerLeaveMessage)message);
+                    // Send an ACK
+                    SendMessage(listener,
+                                message,
+                                listener.getIPAddress(),
+                                listener.getPort());
                     break;
                     
             }

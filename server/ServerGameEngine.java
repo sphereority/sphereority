@@ -44,10 +44,27 @@ class ServerGameEngine implements Constants {
             playerInfo.add(new PlayerInfo(playerId,
                                           message.getAddress(),
                                           message.getName()));
-            logger.log(Level.FINE, "New Player: PlayerId-" + playerId +
-                                   " Name-" + message.getName());
+            logger.log(Level.INFO, message.getName() + "has joined the game with ID " + playerId);
+            logger.log(Level.INFO,"Avaliable Player IDs: " + avaliableUserIDs.size());
         }
         return playerId;
+    }
+    
+    /**
+     * Processes a PlayerJoin message.
+     * @param message The message for logout.
+     */
+    public synchronized void processPlayerLeave(PlayerLeaveMessage message) {
+        byte playerId = message.getPlayerId();
+        for(int i = 0; i < playerInfo.size() ; i++) {
+            if(playerInfo.get(i).getPlayerId() == playerId) {
+                PlayerInfo info = playerInfo.remove(i);
+                avaliableUserIDs.offer(playerId);
+                logger.log(Level.INFO,info.getName() + " has left the game");
+                logger.log(Level.INFO,"Avaliable Player IDs: " + avaliableUserIDs.size());
+                break;
+            }
+        }
     }
     
     public String getPlayerName(byte playerId) {

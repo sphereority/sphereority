@@ -54,7 +54,7 @@ public class LocalPlayer extends Player {
 		timeSinceLastShot = 0;
 		GameEngine.gameEngine.playFire(1.0f);
 		
-		Projectile p = new Projectile(new Position(position), new Position(aim), curTime, curTime, (byte)playerID, team);
+		Projectile p = new Projectile(new Position(position), new Position(aim), curTime, curTime, playerID, team);
 		GameEngine.gameEngine.addActor(p);
 	}
 	

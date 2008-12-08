@@ -15,7 +15,7 @@ public interface MessageConstants {
 	                 DeathMessageLength = 2,
                      LoginMessageLength = 255,
                      PlayerLeaveLength = 0,
-                     PlayerJoinLength  = 64,
+                     PlayerJoinLength  = 100,
                      MulticastGroupLength = 40,
                      ProjectileLength = 16;
     

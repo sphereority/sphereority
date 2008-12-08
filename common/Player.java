@@ -20,7 +20,7 @@ public abstract class Player extends WeightedPosition {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	protected float timeSinceLastSound;
-	protected int playerID;
+	protected byte playerID;
 	protected String name;
 	protected Position aim = new Position(0, 1);
 	protected float curTime;
@@ -32,7 +32,7 @@ public abstract class Player extends WeightedPosition {
 		super();
 		//timeSinceLastShot = Float.MAX_VALUE;
 		timeSinceLastSound = 0;
-		playerID = RANDOM.nextInt(255);
+		playerID = (byte)RANDOM.nextInt(101);
 	}
 	
 	public Player(byte playerID, String name)
@@ -61,7 +61,7 @@ public abstract class Player extends WeightedPosition {
 		}
 	}
 	
-	public int getPlayerID()
+	public byte getPlayerID()
 	{
 		return playerID;
 	}
@@ -85,7 +85,7 @@ public abstract class Player extends WeightedPosition {
 	 */
 	public PlayerMotionMessage getMotionPacket(float currentTime)
 	{
-		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), 
+		return new PlayerMotionMessage(getPlayerID(), getX(), getY(), 
                 getSpeedX(), getSpeedY(), aim.getX(), aim.getY(), currentTime);
 	}
 	
