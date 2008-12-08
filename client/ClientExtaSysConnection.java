@@ -284,15 +284,11 @@ class SendUpdateMessages extends Thread implements Constants
         {
             try
             {
-                Player localPlayer = engine.localPlayer;
+                LocalPlayer localPlayer = engine.localPlayer;
                 byte playerId = (byte)localPlayer.getPlayerID();
                 
                 // Send where the player is now
-                fMyClient.sendMessage(new PlayerMotionMessage((byte)localPlayer.getPlayerID(),
-                                                              localPlayer.getPosition(),
-                                                              localPlayer.getVelocity(),
-                                                              (float)System.currentTimeMillis()),
-                                                              gameConnector);
+                fMyClient.sendMessage(localPlayer.getMotionPacket((float)System.currentTimeMillis()),gameConnector);
                 
                 // Go through all the projectiles in the game
                 synchronized(engine.bulletList) {
@@ -325,7 +321,7 @@ class SendUpdateMessages extends Thread implements Constants
                     }
                 }
                 
-                Thread.sleep(500);
+                Thread.sleep(RESEND_DELAY);
             }
             catch (Exception ex)
             {

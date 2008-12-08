@@ -85,7 +85,8 @@ public abstract class Player extends WeightedPosition {
 	 */
 	public PlayerMotionMessage getMotionPacket(float currentTime)
 	{
-		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), getSpeedX(), getSpeedY(), currentTime);
+		return new PlayerMotionMessage((byte)getPlayerID(), getX(), getY(), 
+                getSpeedX(), getSpeedY(), aim.getX(), aim.getY(), currentTime);
 	}
 	
     public String getPlayerName() {
@@ -112,7 +113,7 @@ public abstract class Player extends WeightedPosition {
 					   Math.round(position.getY() * scale),
 					   Math.round((position.getX() + aim.getX()) * scale),
 					   Math.round((position.getY() + aim.getY()) * scale));
-			g.setStroke(oldStroke);
+            g.setStroke(oldStroke);
 		}
 		
 		GuiUtils.drawFilledOctagon(g, Math.round(position.getX()*scale), Math.round(position.getY()*scale), scale*PLAYER_SIZE);
@@ -187,5 +188,5 @@ public abstract class Player extends WeightedPosition {
 		aim.x = p.x - position.x;
 		aim.y = p.y - position.y;
 		aim.scale(0.4f / aim.getMagnitude());
-	}
+    }
 }

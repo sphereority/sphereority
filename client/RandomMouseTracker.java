@@ -21,9 +21,9 @@ public class RandomMouseTracker extends MouseTracker {
         super(inputListener,clientViewArea);
         this.random = new Random();
 		
-		width = height = posX = posY = 0;
+		posX = posY = 0;
 		position = null;
-	}
+    }
 
 	public boolean animate(float dTime, float currentTime)
 	{

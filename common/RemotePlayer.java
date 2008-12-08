@@ -26,14 +26,13 @@ public class RemotePlayer extends Player {
     
     public static final boolean JUST_USE_LAST_MESSAGE = false;
 	
-    public final float DIV_SIZE = 15f;
-    
 	protected float currentTime;
     
     protected Position currentPosition;
+    protected Position currentAim;
 	protected Queue<PlayerMotionMessage> messageList;
 	protected Queue<PlayerMotionMessage> renderQueue;
-    
+
 	private Semaphore lock = new Semaphore(1);
 	
 	/**
@@ -114,14 +113,18 @@ public class RemotePlayer extends Player {
         // Do we have a starting position for this remote player yet?
         if(currentPosition == null) {
             // Do we have an initial message?
-            if(messageList.peek() != null)
-                currentPosition = messageList.poll().getPosition();
+            if(messageList.peek() != null) {
+                currentPosition = messageList.peek().getPosition();
+                currentAim      = messageList.poll().getAim();
+            }
             // Do nothing if we do not
-            return false;
+            else
+                return false;
         }
         // Check if we still have interpolating points to go through
         else if(renderQueue.peek() != null) {
-            currentPosition = renderQueue.poll().getPosition();
+            currentPosition = renderQueue.peek().getPosition();
+            currentAim      = renderQueue.poll().getAim();
         }
         // Extrapolate the next point and then interpolate between the current
         // position and that point.  Add the points to the rendering queue.
@@ -131,6 +134,7 @@ public class RemotePlayer extends Player {
             // Get 4 seperate interpolation points
             Position msgPosition = pm.getPosition();
             Position msgVelocity = pm.getVelocity();
+            Position msgAim      = pm.getAim();
             
             // Extrapolation not working.
             //System.out.println(System.currentTimeMillis() - pm.getTime());
@@ -138,19 +142,41 @@ public class RemotePlayer extends Player {
             //msgPosition = new Position(extrapolatedX,
             //              getLinearInterpolant(currentPosition,msgPosition,extrapolatedX));
             
-            float divs = (msgPosition.getX() - currentPosition.getX()) / DIV_SIZE;
-            
+            // Divisions for the positions and aims respectively
+            float posDivs = (msgPosition.getX() - currentPosition.getX()) 
+                                 / INTERPOLATION_SIZE;
+            //float aimDivs      = (msgAim.getX() - currentAim.getX()) 
+            //                     / INTERPOLATION_SIZE;
+
             // Avoid divide by zero!
-            if(divs != 0) {
-                for(float i = 0f; i < DIV_SIZE; i++) {
-                    float thisDiv = currentPosition.getX() + (divs * i);
-                    renderQueue.add(new PlayerMotionMessage((byte)playerID,
-                                        new Position(thisDiv,getLinearInterpolant(msgPosition,currentPosition,thisDiv)),
-                                        msgVelocity,
-                                        (float)System.currentTimeMillis()));
+            if(posDivs != 0) {
+                // Go through all the divisions
+                for(float i = 1f; i <= INTERPOLATION_SIZE; i++) {
+                    // Interpolate the position
+                    float positionX = currentPosition.getX() + (posDivs * i);
+                    float positionY = getLinearInterpolant(msgPosition,
+                                                    currentPosition,positionX);
+                    
+                    // Avoid division by zero
+                    /*
+                    if(aimDivs != 0) {
+                        float aimX = currentAim.getX() + (aimDivs * i);
+                        float aimY = getLinearInterpolant(msgAim,
+                                                      currentAim,
+                                                      aimX);
+                        msgAim = new Position(aimX,aimY);
+                    }*/
+                    
+                    // Add the result to the rendering queue
+                    renderQueue.add(makeMotionMessage(new Position(positionX,
+                                                                   positionY),
+                                                      msgVelocity,
+                                                      msgAim));
                                                      
                 }
-                currentPosition = renderQueue.poll().getPosition();
+                // Use the first interpolated position/aim
+                currentPosition = renderQueue.peek().getPosition();
+                currentAim      = renderQueue.poll().getAim();
             }
         }
         
@@ -162,11 +188,24 @@ public class RemotePlayer extends Player {
 		}*/
 		
 		setPosition(currentPosition.getX()/totalWeight, currentPosition.getY()/totalWeight);
+        aimAt(currentAim);
+       
         //System.out.println(position);
 		
-		return true;
+		return super.animate(dTime,currentTime);
 	}
     
+    protected PlayerMotionMessage makeMotionMessage(Position pos, Position velocity,Position aim) {
+        return new PlayerMotionMessage((byte)playerID,pos,velocity,aim,(float)System.currentTimeMillis());
+    }
+    
+    /**
+     * Used to find the y value of a position given two points and the desired x.
+     * @param p1 The initial position.
+     * @param p2 The final position.
+     * @param x The x value of the position.
+     * @param y The y value of the position.
+     */ 
     protected float getLinearInterpolant(Position p1, Position p2, float x) {
         return p1.getY() + ((x - p1.getX()) * ((p2.getY() - p1.getY()) / (p2.getX() - p1.getX())));
     }
