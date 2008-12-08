@@ -264,6 +264,11 @@ public interface Constants
 	 */
 	public static final float RELOAD_TIME = 0.5f;
 	
+	/**
+	 * THe length of a player's "barrel"
+	 */
+	public static final float PLAYER_AIM_LENGTH = 0.4f;
+	
 	
 	public static String LOG_FOLDER = "logs/";
 

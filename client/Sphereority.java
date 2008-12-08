@@ -111,11 +111,12 @@ public class Sphereority extends Thread implements Constants
             game.gameOver();
             connection.stop();
             // Show the login dialog again
-        } while (loginWindow != null && loginWindow.show());
+        } while (!bot && loginWindow != null && loginWindow.show());
         // If quit, don't loop
  
         // TEMP: this is for testing only:
-        gameWindow.dispose();
+        if (gameWindow != null)
+        	gameWindow.dispose();
  
         logger.log(Level.INFO, "Exiting game");
         System.exit(0);

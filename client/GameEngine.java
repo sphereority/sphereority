@@ -55,9 +55,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     {
         preSetup(m);
 
-        localPlayer = bot ? new ComputerPlayer(playerID,name,this)
+        localPlayer = bot ? new ComputerPlayer(playerID, name, this)
                           : new LocalPlayer(localInputListener, playerID, name);
-        
 
         postSetup(true);
     }
