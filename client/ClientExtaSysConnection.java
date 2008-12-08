@@ -43,9 +43,6 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
         // Add a UDP connector to this UDP client.
         // You can add more than one connectors if you need to.
         AddConnector("ServerConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
-        
-        // Try to connect to the server.
-        establishServerConnection();
     }
 
     /**
@@ -54,16 +51,18 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     // @Override
     public void start()  {
         try {
+            logger.log(Level.INFO,"Starting ClientExtasysConnection");
+            super.Start();
+            
             // Check if we are connected to the server!
             if(!isConnected)
-                throw new Exception("We're not connected to the server!");
+                establishServerConnection();
                 
-            System.out.println("Starting...");
             // Restart all the connectors
-            super.Start();
             // Start sending the messages.
             startSendingMessages();
         } catch (Exception ex) {
+            stop();
             ex.printStackTrace();
         }
         
@@ -76,18 +75,14 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     public void stop()  {    
         super.Stop();
         stopSendingMessages();
-        System.out.println("Stopping...");
+        logger.log(Level.INFO,"Starting ClientExtasysConnection");
     }
 
     /**
      * Attempts to establish a connection to the server.
      */
     public void establishServerConnection() throws Exception {
-        logger.log(logger.getLevel(),"Establishing Server Connection");
-        System.out.println("Establishing Server Connection");
-        
-        // Start the connector to the server.
-        super.Start();
+        logger.log(Level.INFO,"Establishing Server Connection");
         
         InetSocketAddress serverAddress
                     = new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT);
@@ -116,8 +111,8 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             }
         }
         
-        super.Stop();
-        logger.log(logger.getLevel(),"Sent login message");
+        logger.log(Level.INFO,"Server Connection Established!");
+        super.Start();
     }
     
     /**
@@ -141,7 +136,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                     PlayerMotionMessage pm = (PlayerMotionMessage)message;
                     // New player was added?
                     engine.processPlayerMotion(pm);
-                    logger.log(Level.INFO,"PlayerMotion: " + pm.getPlayerId()
+                    logger.log(Level.FINE,"PlayerMotion: " + pm.getPlayerId()
                                                            + " "
                                                            + pm.getPosition() 
                                                            + " "
@@ -151,7 +146,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                     break;
                 case PlayerJoin:
                     PlayerJoinMessage pj = (PlayerJoinMessage) message;
-                    logger.log(Level.INFO,"PlayerJoin: " + pj.getPlayerId());
+                    logger.log(Level.FINE,"PlayerJoin: " + pj.getPlayerId());
                     String myName = engine.localPlayer.getPlayerName();
                     // Waiting for a server message?
                     if(!isConnected) {
@@ -164,7 +159,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                     break;
                 case Projectile:
                     ProjectileMessage p = (ProjectileMessage) message;
-                    logger.log(Level.INFO,"Projectile: " + p.getPlayerId()
+                    logger.log(Level.FINE,"Projectile: " + p.getPlayerId()
                                                          + " "
                                                          + p.getStartPosition()
                                                          + " "

@@ -28,12 +28,12 @@ public class DoubleTracker extends Actor {
 		{
 			if (secondActor == null || secondActor.position == null)
 			{
-				System.out.println("common.DoubleTracker.animate(): Both actors are null!");
+				//System.out.println("common.DoubleTracker.animate(): Both actors are null!");
 				return false;
 			}
 			else
 			{
-				System.out.println("common.DoubleTracker.animate(): First actor is null.");
+				//System.out.println("common.DoubleTracker.animate(): First actor is null.");
 				position.x = secondActor.position.x;
 				position.y = secondActor.position.y;
 			}
@@ -42,7 +42,7 @@ public class DoubleTracker extends Actor {
 		{
 			if (secondActor == null || secondActor.position == null)
 			{
-				System.out.println("common.DoubleTracker.animate(): Second actor is null.");
+				//System.out.println("common.DoubleTracker.animate(): Second actor is null.");
 				position.x = firstActor.position.x;
 				position.y = firstActor.position.y;
 			}

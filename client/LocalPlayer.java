@@ -109,7 +109,7 @@ public class LocalPlayer extends Player {
 			{
 				if(health > 0) {
                     health -= ((Projectile) a).getDamage();
-                    System.out.printf(name + " health: %d\n", health);
+                    logger.log(Level.FINE,name + " health: " + health);
                 }
 			}
 		}

@@ -61,7 +61,7 @@ public class ComputerPlayer extends LocalPlayer {
         // Go up
         if (direction > 20 && direction < 50)  accelerate(0, PLAYER_ACCELERATION*dTime);
         // Fire
-        if (random.nextInt(101) % 3 == 0)    fire();
+        if (random.nextInt(101) % 10 == 0)    fire();
 		
         // Change directions every 5 seconds
         if(System.currentTimeMillis() - lastTime > 1000) {

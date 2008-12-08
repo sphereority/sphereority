@@ -44,7 +44,7 @@ class ServerGameEngine implements Constants {
             playerInfo.add(new PlayerInfo(playerId,
                                           message.getAddress(),
                                           message.getName()));
-            logger.log(Level.INFO, "New Player: PlayerId-" + playerId +
+            logger.log(Level.FINE, "New Player: PlayerId-" + playerId +
                                    " Name-" + message.getName());
         }
         return playerId;

@@ -605,7 +605,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         // Creating a new player
         if(playerIndex == -1) {
             player = new RemotePlayer(message.getPlayerId(),message.getName());
-            logger.log(Level.INFO,"Player Added: " + player.getPlayerID());
+            logger.log(Level.FINE,"Player Added: " + player.getPlayerID());
             gameMap.placePlayer(player,message.getSpawnPoint());
             addActor(player);
         }
@@ -613,7 +613,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         else
         {
             player = playerList.get(playerIndex);
-            logger.log(Level.INFO,"Player Info Updated: " + player.getPlayerID());
+            logger.log(Level.FINE,"Player Info Updated: " + player.getPlayerID());
             player.setPlayerName(message.getName());
         }
     }
@@ -639,6 +639,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
                                     player.getTeam()));
             // Signal that the remote player has fired
             player.fire();
+            logger.log(Level.FINE,"Player " + player.getPlayerID() + " fired!");
         }
     }
 
