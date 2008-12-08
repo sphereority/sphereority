@@ -83,6 +83,7 @@ public class Sphereority extends Thread implements Constants
 
                 // ExtaSys multicasting connection
                 connection = new ClientExtaSysConnection(InetAddress.getByName(SERVER_ADDRESS),SERVER_PORT, game);
+                ((ClientExtaSysConnection)connection).establishServerConnection();
                 
                 // Set up the game gameWindow
                 gameWindow = new JDialog();
@@ -95,7 +96,7 @@ public class Sphereority extends Thread implements Constants
                 gameWindow.setLocationRelativeTo(null);
      
                 Sphereority s = new Sphereority(game, connection);
-     
+            
                 s.start();
      
                 game.registerActionListeners(gameWindow);

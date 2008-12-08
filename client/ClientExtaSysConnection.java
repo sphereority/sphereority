@@ -42,7 +42,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     /**
      * Creates a client connection
      */
-    public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine){
+    public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) {
         super("SphereorityClient", "The client connection for sphereority", 8,64);
         this.engine = engine;
         isConnected = false;
@@ -58,12 +58,11 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     public void start()  {
         try {
             logger.log(Level.INFO,"Starting ClientExtasysConnection");
-            super.Start();
-            
             // Check if we are connected to the server!
             if(!isConnected)
                 establishServerConnection();
-                
+            
+            super.Start();
             // Restart all the connectors
             // Start sending the messages.
             startSendingMessages();
@@ -80,10 +79,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     // @Override
     public void stop()  {    
         try {
-            // Logout if we are still connected to the server
             stopSendingMessages();
-            // Allow time for the sending of the messages to stop
-            Thread.sleep(750);
             endServerConnection();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -98,6 +94,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
      */
     protected void establishServerConnection() throws Exception {
         logger.log(Level.INFO,"Establishing Server Connection");
+        super.Start();
         
         InetSocketAddress serverAddress
             = new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT);
@@ -351,12 +348,15 @@ class SendUpdateMessages extends Thread implements Constants
     public void run()
     {
         int messageCount = 0;
-
-        for (int checkNames = 0; fActive; checkNames++)
+        int checkNames   = 0;
+        while(fActive)
         {
             try
             {
-                sendGameMessages(checkNames);
+                if(checkNames == 5)
+                    checkNames = 0;
+                    
+                sendGameMessages(checkNames++);
             }
             catch (Exception ex)
             {
@@ -396,11 +396,13 @@ class SendUpdateMessages extends Thread implements Constants
             }
         }
         
-        // Resolve names that have not been found
+        // Resolve names that have not been found every 4th time
         if(checkNames == 4) {
             synchronized(engine.playerList) {
+                fMyClient.logger.log(Level.INFO,""+engine.playerList.size());
                 for(Player player : engine.playerList) {
                     if (player.getPlayerName().equals(RESOLVING_NAME)) {
+                        fMyClient.logger.log(Level.INFO,"WHOIS " + player.getPlayerID());
                         fMyClient.sendMessage(new PlayerJoinMessage(
                             player.getPlayerID(),
                             RESOLVING_NAME,
