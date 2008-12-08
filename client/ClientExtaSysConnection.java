@@ -125,7 +125,6 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
         }
         
         logger.log(Level.INFO,"Server Connection Established!");
-        super.Start();
     }
     
     /**
@@ -399,7 +398,6 @@ class SendUpdateMessages extends Thread implements Constants
         // Resolve names that have not been found every 4th time
         if(checkNames == 4) {
             synchronized(engine.playerList) {
-                fMyClient.logger.log(Level.INFO,""+engine.playerList.size());
                 for(Player player : engine.playerList) {
                     if (player.getPlayerName().equals(RESOLVING_NAME)) {
                         fMyClient.logger.log(Level.INFO,"WHOIS " + player.getPlayerID());
