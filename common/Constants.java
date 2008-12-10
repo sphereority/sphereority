@@ -22,7 +22,7 @@ public interface Constants
     /**
      * Amount of positions to interpolate between two points
      */
-    public final float INTERPOLATION_SIZE = 15f;
+    public final float INTERPOLATION_SIZE = 16f;
     
 	/**
 	 * Default port for TCP network listener

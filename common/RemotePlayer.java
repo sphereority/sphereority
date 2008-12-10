@@ -30,6 +30,7 @@ public class RemotePlayer extends Player {
     
     protected Position currentPosition;
     protected Position currentAim;
+    protected int nothingRendered;
 	protected Queue<PlayerMotionMessage> messageList;
 	protected Queue<PlayerMotionMessage> renderQueue;
 
@@ -47,10 +48,13 @@ public class RemotePlayer extends Player {
 		messageList = new LinkedList<PlayerMotionMessage>();
 		renderQueue = new LinkedList<PlayerMotionMessage>();
         currentTime = -1;
-	}
+        nothingRendered = 1;
+        logger.log(Level.FINE,"Interpolation Size: " + INTERPOLATION_SIZE + " Resend Size: " + RESEND_DELAY);
+    }
 	
 	public void addMotionPacket(PlayerMotionMessage msg)
 	{
+        //logger.log(Level.FINE,"Queue Size: " + renderQueue.size());
         messageList.add(msg);
 	}
 	
@@ -130,7 +134,7 @@ public class RemotePlayer extends Player {
         // position and that point.  Add the points to the rendering queue.
         else if(messageList.peek() != null) {
             PlayerMotionMessage pm = messageList.poll();
-            
+            nothingRendered = 1;
             // Get 4 seperate interpolation points
             Position msgPosition = pm.getPosition();
             Position msgVelocity = pm.getVelocity();
@@ -179,6 +183,9 @@ public class RemotePlayer extends Player {
                 currentAim      = renderQueue.poll().getAim();
             }
         }
+        else {
+            //logger.log(Level.FINE,"No Interpolation: " + nothingRendered++);
+        }
         
         /*
 		if (totalWeight < 0.0001f)
@@ -190,6 +197,7 @@ public class RemotePlayer extends Player {
 		setPosition(currentPosition.getX()/totalWeight, currentPosition.getY()/totalWeight);
         aimAt(currentAim);
        
+        
         //System.out.println(position);
 		
 		return super.animate(dTime,currentTime);
