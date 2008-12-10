@@ -127,13 +127,17 @@ public class Sphereority extends Thread implements Constants
     {
         try
         {
+            logger.log(Level.INFO,"Preparing connection...");
             // Start the client connection
             connection.start();
+            
+            logger.log(Level.INFO,"Preparing game...");
             // Start the game
             game.play();
         } catch (Exception ex)
         {
             ex.printStackTrace();
+            System.exit(0);
         }
     }
  

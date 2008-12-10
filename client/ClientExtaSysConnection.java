@@ -42,33 +42,35 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     /**
      * Creates a client connection
      */
-    public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) {
+    public ClientExtaSysConnection(InetAddress remoteHostIP, int remoteHostPort, GameEngine engine) throws Exception {
         super("SphereorityClient", "The client connection for sphereority", 8,64);
         this.engine = engine;
         isConnected = false;
         // Add a UDP connector to this UDP client.
         // You can add more than one connectors if you need to.
-        AddConnector("ServerConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);
+        AddConnector("ServerConnector", 10240, 8000, remoteHostIP, remoteHostPort,true);     
     }
 
     /**
      * Starts the ClientConnection
      */
     // @Override
-    public void start()  {
+    public void start() throws Exception {
         try {
-            logger.log(Level.INFO,"Starting ClientExtasysConnection");
-            // Check if we are connected to the server!
             if(!isConnected)
-                establishServerConnection();
+                establishServerConnection(); 
+            else
+                logger.log(Level.INFO,"Connection Already Established");
             
+            logger.log(Level.INFO,"Starting ClientExtasysConnection");
+               
             super.Start();
             // Restart all the connectors
             // Start sending the messages.
             startSendingMessages();
         } catch (Exception ex) {
             stop();
-            ex.printStackTrace();
+            throw ex;
         }
         
     }
@@ -124,6 +126,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             }
         }
         
+        super.Stop();
         logger.log(Level.INFO,"Server Connection Established!");
     }
     
@@ -348,6 +351,9 @@ class SendUpdateMessages extends Thread implements Constants
     {
         int messageCount = 0;
         int checkNames   = 0;
+        
+        fMyClient.logger.log(Level.INFO,"Beginning to send game messages");
+        
         while(fActive)
         {
             try
