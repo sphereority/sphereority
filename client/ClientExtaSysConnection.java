@@ -38,6 +38,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     private GameEngine engine;
     private boolean isConnected;
     private boolean waitingForLeaveAck;
+    private long currentTime;
     
     /**
      * Creates a client connection
@@ -64,6 +65,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             
             logger.log(Level.INFO,"Starting ClientExtasysConnection");
                
+            currentTime = System.currentTimeMillis();
             super.Start();
             // Restart all the connectors
             // Start sending the messages.
@@ -89,6 +91,17 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             
         super.Stop();
         logger.log(Level.INFO,"Stopping ClientExtasysConnection");
+        
+        long timeElapsed = System.currentTimeMillis() - currentTime;
+        
+        if(timeElapsed != 0) {
+            logger.log(Level.INFO,"Total Bytes In: " + getBytesIn() +
+                " @ rate of " + 
+                (getBytesIn() * 1000) / timeElapsed + " bytes/sec");
+            logger.log(Level.INFO,"Total Bytes Out: " + getBytesOut() + 
+                " @ rate of " + 
+                (getBytesOut() * 1000) / timeElapsed + " bytes/sec");
+        }
     }
 
     /**
