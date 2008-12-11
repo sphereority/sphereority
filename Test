@@ -12,7 +12,7 @@ echo Count is $count
 
 for i in `seq 1 $count`
 do
-	java client/Sphereority -debug -nowindow -fps&
-	sleep 7
+	java client/Sphereority SEVERE -debug -nowindow -fps&
+	sleep 10
 done
 echo "Finished starting $count bots"

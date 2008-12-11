@@ -70,7 +70,6 @@ public class MessageCollectorTCPClientPacket implements Runnable
         fDone.Set();
     }
 
-    @Override
     public void run()
     {
         try

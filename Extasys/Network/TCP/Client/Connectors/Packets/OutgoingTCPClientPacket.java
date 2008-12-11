@@ -78,7 +78,6 @@ public class OutgoingTCPClientPacket implements Runnable
         fDone.Set();
     }
 
-    @Override
     public void run()
     {
         try
