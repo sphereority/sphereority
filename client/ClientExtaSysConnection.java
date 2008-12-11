@@ -38,6 +38,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
     private GameEngine engine;
     private boolean isConnected;
     private boolean waitingForLeaveAck;
+    private long currentTime;
     
     /**
      * Creates a client connection
@@ -64,6 +65,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             
             logger.log(Level.INFO,"Starting ClientExtasysConnection");
                
+            currentTime = System.currentTimeMillis();
             super.Start();
             // Restart all the connectors
             // Start sending the messages.
@@ -89,6 +91,17 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             
         super.Stop();
         logger.log(Level.INFO,"Stopping ClientExtasysConnection");
+        
+        long timeElapsed = System.currentTimeMillis() - currentTime;
+        
+        if(timeElapsed != 0) {
+            logger.log(Level.INFO,"Total Bytes In: " + getBytesIn() +
+                " @ rate of " + 
+                (getBytesIn() * 1000) / timeElapsed + " bytes/sec");
+            logger.log(Level.INFO,"Total Bytes Out: " + getBytesOut() + 
+                " @ rate of " + 
+                (getBytesOut() * 1000) / timeElapsed + " bytes/sec");
+        }
     }
 
     /**
@@ -114,7 +127,7 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                                   SERVER_CONNECTOR);
     
         // Make sure that we only wait at most 10 seconds
-        long waitTime = System.currentTimeMillis() + 10000;
+        long waitTime = System.currentTimeMillis() + WAIT_TIME;
         
         // Wait until we have logged in and prepared the game
         while(!isConnected) {
@@ -145,11 +158,11 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                                            SERVER_CONNECTOR);
                                            
         // Make sure that we only wait at most 5 seconds
-        long waitTime = System.currentTimeMillis() + 5000;
+        long waitTime = System.currentTimeMillis() + WAIT_TIME;
         
         // Wait until we have logged out (received an ACK that it is ok to
         // to disconnect).
-        while(isConnected) {
+        while(waitingForLeaveAck) {
             Thread.yield();
             
             // Stop attempting to connect if 10 seconds has past
@@ -157,6 +170,8 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                 throw new Exception("Unable to contact to server!");
             }
         }
+        
+        logger.log(Level.INFO,"Disconnected from Server");
     }    
     
     /**
@@ -171,7 +186,8 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             Message message = MessageAnalyzer.getMessage(packet.getData());
             
             // Ignore messages that are sent to yourself
-            if(message.getPlayerId() == engine.localPlayer.getPlayerID() ||
+            if( (message.getPlayerId() == engine.localPlayer.getPlayerID() 
+                 && !message.isAck()) ||
                message.getPlayerId() == -1)
                 return;
             
@@ -203,14 +219,12 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
                     break;
                 case PlayerLeave:
                     logger.log(Level.FINE,"PlayerLeave: " + message.getPlayerId());
-                    
                     // Connected?
                     if(isConnected) {
                         // Handle a logout message if it came from the server.
                         handleLogout((PlayerLeaveMessage)message);
                     }
                     // Ignore otherwise
-                    
                     break;
                 case Projectile:
                     ProjectileMessage p = (ProjectileMessage) message;
@@ -260,9 +274,9 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
         // Message did not come from server?
         if(!message.isAck())
             return;
-             
+        
         // Message is not intended for me remove that player from the game.
-        if(!(message.getPlayerId() == engine.localPlayer.getPlayerID())) {
+        if(message.getPlayerId() != engine.localPlayer.getPlayerID()) {
             engine.removeActor(engine.getPlayer(message.getPlayerId()));
             logger.log(Level.INFO,"Removed a player");
         }
@@ -271,8 +285,6 @@ public class ClientExtaSysConnection extends ExtasysUDPClient implements IUDPCli
             waitingForLeaveAck = false;
             isConnected = false;
         }
-        
-        
     }
     
     /**

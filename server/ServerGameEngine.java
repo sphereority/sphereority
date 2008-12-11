@@ -16,7 +16,7 @@ class ServerGameEngine implements Constants {
     private Vector<PlayerInfo> playerInfo;
     
     private final byte INIT = 1;
-    private final byte MAX_PLAYERS = 32;
+    private final byte MAX_PLAYERS = 64;
     
     public ServerGameEngine (long gamestarttime){
         avaliableUserIDs = new LinkedList<Byte>();

@@ -74,7 +74,6 @@ public class ProgressMeter extends Widget
                 g.translate(0, windowHeight-height);
         }
         
-        t.translate(getFixedX(windowWidth), getFixedY(windowHeight));
         g.setColor(c);
         g.draw(outline);
         g.fill(fill);

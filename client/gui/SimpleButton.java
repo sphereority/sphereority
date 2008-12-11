@@ -51,9 +51,6 @@ public class SimpleButton extends InteractiveWidget implements Constants {
 		
 		g.draw(outline);
 		
-//		g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 127));	
-//		g.fill(outline);
-		
 		if (cur_state == STATE_HOVERED)
 		{
 			g.setColor(color);
