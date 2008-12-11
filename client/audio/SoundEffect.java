@@ -2,8 +2,7 @@ package client.audio;
 
 import common.Constants;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import javax.sound.sampled.*;
 
 /**
@@ -141,6 +140,8 @@ public class SoundEffect implements LineListener, Constants {
 	 */
 	public void setVolume(float v)
 	{
+		logger.info(String.format("client.audio.SoundEffect.setVolume(): Settings a volume of %.1f on audio clip %s.", v, soundFile.getName()));
+		
 		volume = v;
 		if (volumeControl != null)
 			volumeControl.setValue(volume);

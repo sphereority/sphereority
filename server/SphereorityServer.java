@@ -29,7 +29,9 @@ class SphereorityServer implements Constants {
 			    logger.log(Level.INFO, "Server Started: Waiting for connections");
 
 	        while(true) {
-	            Thread.yield();
+//	            Thread.yield();
+	        	try { Thread.sleep(100); }
+	        	catch (InterruptedException er) { }
 	        }
 	    }
 	    catch (Exception e){

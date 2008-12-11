@@ -1,6 +1,7 @@
 *.bat
 *.class
 *.classpath
+*.ini
 *.log*
 *.prefs
 *.project

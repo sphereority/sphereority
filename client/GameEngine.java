@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.Window;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.Vector;
 import javax.swing.Timer;
 
@@ -41,21 +42,21 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     public long lastTime;
     public float currentTime;
     public Timer timer;
-
+    public Timer frameRate;
+    
     public Vector<MapChangeListener> mapListeners;
-    public ClientConnection connection;
 
     // Sound stuff
     public GameSoundSystem soundSystem;
     public SoundEffect soundBump, soundDeath, soundFire;
 
     // CONSTRUCTORS
-    public GameEngine(Map m, byte playerID, String name, ClientConnection connection)
+    public GameEngine(Map m, byte playerID, String name, boolean bot)
     {
         preSetup(m);
 
-        localPlayer = new LocalPlayer(localInputListener, playerID, name);
-        this.connection = connection;
+        localPlayer = bot ? new ComputerPlayer(playerID, name, this)
+                          : new LocalPlayer(localInputListener, playerID, name);
 
         postSetup(true);
     }
@@ -104,13 +105,16 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         // else
         gameMap.placePlayer(localPlayer);
 
-        MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
+
+        MouseTracker mouseTracker = localPlayer instanceof ComputerPlayer ?
+                                    new RandomMouseTracker(localInputListener, gameViewArea) :
+                                    new MouseTracker(localInputListener, gameViewArea);
         localPlayer.setAimingTarget(mouseTracker);
 
         DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
 
         TrackingObject playerTracker = new TrackingObject(doubleTracker);
-
+        
         gameViewArea.viewTracker = playerTracker;
         gameViewArea.setLocalPlayer(localPlayer);
 
@@ -118,114 +122,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         addActor(mouseTracker);
         addActor(doubleTracker);
         addActor(playerTracker);
-
-/*/=======
-public class GameEngine implements Constants, ActionListener, ActionCallback {
-  public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
- 
-  public static GameEngine gameEngine;
-
-	public boolean gameOver;
-  public Map gameMap;
-  public ClientViewArea gameViewArea;
-  public LocalPlayer localPlayer;
-  public InputListener localInputListener;
-  
-  // Actor lists and sub-lists
-  public Vector<Actor> actorList; // This contains all actors in the game
-  public Vector<Stone> stoneList; // This only contains stones
-  public Vector<Player> playerList; // This only contains players
-  public Vector<Projectile> bulletList; // This only contains bullets
-  public Vector<Actor> miscList; // This contains stuff that doesn't fit in any of the other
-  
-  public long lastTime;
-  public float currentTime;
-  public Timer timer;
-  
-  public Vector<MapChangeListener> mapListeners;
-  public ClientConnection connection;
-  
-  // Sound stuff
-  public GameSoundSystem soundSystem;
-  public SoundEffect soundBump, soundDeath, soundFire;
- 
-  // CONSTRUCTORS
-  public GameEngine(Map m, byte playerID, String name, ClientConnection connection)
-  {
-    preSetup(m);
-    
-    localPlayer = new LocalPlayer(localInputListener, playerID, name);
-    this.connection = connection;
-    
-    postSetup(true);
-  }
-  
-  public GameEngine(Map m)
-  {
-    preSetup(m);
-    
-    localPlayer = new LocalPlayer(localInputListener);
-    
-    postSetup(false);
-  } // end GameEngine() constructor
-  
-  private void preSetup(Map m)
-  {
-    gameEngine = this;
-    gameOver = false;
-    gameMap = m;
-    mapListeners = new Vector<MapChangeListener>();
-    
-    actorList = new Vector<Actor>();
-    stoneList = new Vector<Stone>();
-    playerList = new Vector<Player>();
-    bulletList = new Vector<Projectile>();
-    miscList = new Vector<Actor>();
-    
-    gameViewArea = new ClientViewArea(this);
-    addButton(-5, -5, 45, 15, "Quit", Color.red);
-    
-    localInputListener = new InputListener();
-    localInputListener.attachListeners(gameViewArea);
-    
-    triggerMapListeners();
-    
-    // Sound engine stuff:
-    soundSystem = new GameSoundSystem();
-    soundBump = soundSystem.loadSoundEffect(SOUND_BUMP);
-    soundDeath = soundSystem.loadSoundEffect(SOUND_DEATH);
-    soundFire = soundSystem.loadSoundEffect(SOUND_FIRE);
-  }
-  
-  private void postSetup(boolean fixed)
-  {
-    //if (fixed)
-    //  gameMap.placePlayer(localPlayer, null);
-    //else
-    gameMap.placePlayer(localPlayer);
-    
-    MouseTracker mouseTracker = new MouseTracker(localInputListener, gameViewArea);
-    localPlayer.setAimingTarget(mouseTracker);
-    
-    DoubleTracker doubleTracker = new DoubleTracker(mouseTracker, localPlayer);
-    
-    TrackingObject playerTracker = new TrackingObject(doubleTracker);
-    
-    gameViewArea.viewTracker = playerTracker;
-    gameViewArea.setLocalPlayer(localPlayer);
-    
-    addActor(localPlayer);
-    addActor(mouseTracker);
-    addActor(doubleTracker);
-    addActor(playerTracker);
- 
-//>>>>>>> 431153b0229ff7e321bba807b9b22793823a075c:client/GameEngine.java*/
-        /*
-         * if (fixed) { for(byte i = 0; i < 5; i++) { if(i !=
-         * localPlayer.getPlayerID()) { processPlayerJoin( new
-         * PlayerJoinMessage(i,new
-         * java.net.InetSocketAddress(MCAST_ADDRESS,MCAST_PORT),"User" + i)); } } }
-         */
     }
 
     // GETTERS
@@ -269,28 +165,46 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
     // OPERATIONS
     public void addActor(Actor a)
     {
-        actorList.add(a);
-        if (a instanceof Stone)
-            stoneList.add((Stone) a);
-        else if (a instanceof Projectile)
-            bulletList.add((Projectile) a);
-        else if (a instanceof Player)
-            playerList.add((Player) a);
-        else
-            miscList.add(a);
+        synchronized(actorList) {
+            actorList.add(a);
+            if (a instanceof Stone)
+                synchronized(stoneList) {
+                    stoneList.add((Stone) a);
+                }
+            else if (a instanceof Projectile)
+                synchronized(bulletList) {
+                    bulletList.add((Projectile) a);
+                }
+            else if (a instanceof Player)
+                synchronized(playerList) {
+                    playerList.add((Player) a);
+                }
+            else
+                synchronized(miscList) {
+                    miscList.add(a);
+                }
+        }
     }
 
     public void removeActor(Actor a)
     {
-        actorList.remove(a);
-        if (a instanceof Stone)
-            stoneList.remove(a);
-        else if (a instanceof Projectile)
-            bulletList.remove(a);
-        else if (a instanceof Player)
-            playerList.remove(a);
-        else
-            miscList.remove(a);
+        if(a == null) return;
+        
+        synchronized(actorList) {
+            actorList.remove(a);
+            if (a instanceof Projectile)
+                synchronized(bulletList) {
+                    bulletList.remove((Projectile) a);
+                }
+            else if (a instanceof Player)
+                synchronized(playerList) {
+                    playerList.remove((Player) a);
+                }
+            else
+                synchronized(miscList) {
+                    miscList.remove(a);
+                }
+        }
     }
 
     public boolean isGameOver()
@@ -303,9 +217,6 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         gameOver = true;
         if (timer != null)
             timer.stop();
-
-        if (connection != null)
-            connection.stop();
 
         // This code finds the Window that contains the gameViewArea and tells
         // it to disapear
@@ -507,22 +418,28 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         // repaint = true;
         // }
 
-        for (Actor a : playerList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
+        synchronized(playerList) {
+            for (Actor a : playerList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
+        }
+        
+        synchronized(bulletList) {
+            for (Actor a : bulletList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
         }
 
-        for (Actor a : bulletList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
-        }
-
-        for (Actor a : miscList)
-        {
-            if (a.animate(dTime, currentTime))
-                repaint = true;
+        synchronized(miscList) {
+            for (Actor a : miscList)
+            {
+                if (a.animate(dTime, currentTime))
+                    repaint = true;
+            }
         }
 
         lastTime = thisTime;
@@ -650,8 +567,8 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         localInputListener.detachListeners(w);
     }
 
-    /*
-     * ===================================== Methods for processing messages
+    /* ===================================== 
+     * Methods for processing messages
      * =====================================
      */
     public synchronized void processPlayerMotion(PlayerMotionMessage message)
@@ -660,14 +577,14 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         int playerIndex = getPlayerIndex(message.getPlayerId());
 
         // Do not process a player if they have not been added
-        if (playerIndex == -1)
-        {
+        if(playerIndex == -1) {
             SpawnPoint sp = new SpawnPoint(message.getPosition());
             processPlayerJoin(new PlayerJoinMessage(message.getPlayerId(), RESOLVING_NAME, null, sp));
         }
         
         if (playerIndex < 0)
             return;
+            
         try
         {
             // Update the co-ordinates of the player
@@ -687,16 +604,17 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
         Player player;
 
         // Creating a new player
-        if (playerIndex == -1)
-        {
-            player = new RemotePlayer(message.getPlayerId(), message.getName());
-            gameMap.placePlayer(player, message.getSpawnPoint());
+        if(playerIndex == -1) {
+            player = new RemotePlayer(message.getPlayerId(),message.getName());
+            logger.log(Level.FINE,"Player Added: " + player.getPlayerID());
+            gameMap.placePlayer(player,message.getSpawnPoint());
             addActor(player);
         }
         // Updating information about the player
         else
         {
             player = playerList.get(playerIndex);
+            logger.log(Level.FINE,"Player Info Updated: " + player.getPlayerID());
             player.setPlayerName(message.getName());
         }
     }
@@ -711,41 +629,20 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             return;
 
         Player player = playerList.get(playerIndex);
-        if (player instanceof RemotePlayer)
-            addActor(new Projectile(message.getStartPosition(), message.getDirection(), player.getCurrentTime(), player.getCurrentTime(), (byte) player.getPlayerID(), player.getTeam()));
-
-    }
-
-    public void processScoreUpdate(ScoreUpdateMessage message)
-    {
-
-    }
-
-    public void processPlayerLeave(PlayerLeaveMessage message)
-    {
-
-    }
-
-    public void processMulticastGroup(MulticastGroupMessage message)
-    {
-
-    }
-
-    public void processMapChange(MapChangeMessage message)
-    {
-    }
-
-    public void processHealthUpdateMessage(HealthUpdateMessage message)
-    {
-    }
-
-    public void processDeathMessage(DeathMessage message)
-    {
-    }
-
-    // public void processChatMessage(ChatMessage message) {
-    //
-    // }
+        
+        if (player instanceof RemotePlayer) {
+            // Add the projectile to the list
+            addActor(new Projectile(message.getStartPosition(),
+                                    message.getDirection(),
+                                    player.getCurrentTime(),
+                                    player.getCurrentTime(),
+                                    player.getPlayerID(),
+                                    player.getTeam()));
+            // Signal that the remote player has fired
+            player.fire();
+            logger.log(Level.FINE,"Player " + player.getPlayerID() + " fired!");
+        }
+    }    
 
     /**
      * Retrieve a player given their ID.
@@ -762,6 +659,16 @@ public class GameEngine implements Constants, ActionListener, ActionCallback {
             }
         }
         return index;
+    }
+    
+    public Player getPlayer(byte playerId) {
+        synchronized(playerList) {
+            for(Player player : playerList) {
+                if(player.getPlayerID() == playerId)
+                    return player;
+            }
+        }
+        return null;
     }
 
 } // end class GameEngine

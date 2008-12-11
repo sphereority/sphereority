@@ -261,7 +261,8 @@ class ReadIncomingData extends Thread
             }
             catch (IOException ex)
             {
-                ex.printStackTrace();
+                //System.out.print(fMyConnector.getName() + "- ");    
+                //ex.printStackTrace();
             }
             catch (Exception ex)
             {

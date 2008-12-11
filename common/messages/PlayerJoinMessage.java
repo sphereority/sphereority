@@ -18,20 +18,25 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
     private String playerName;
     private InetSocketAddress mcastAddress;
     private SpawnPoint sp;
-    
     private long startTime=-1;
     
     /**
-     * Constructor - Creates a new MulticastGroupMessage.
+     * Constructor - Creates a new PlayerJoinMessage.
      * @param playerId The id of the player sending the message.
+     * @param mcastAddress The address of the particular player/game.
+     * @param sp The spawn point that the player is joining the map on.
      */
     public PlayerJoinMessage(byte playerId, String playerName,
                              InetSocketAddress mcastAddress,SpawnPoint sp) {
         this(playerId,playerName,mcastAddress,sp,false);
     }
+    
     /**
-     * Constructor - Creates a new MulticastGroupMessage.
+     * Constructor - Creates a new PlayerJoinMessage.
      * @param playerId The id of the player sending the message.
+     * @param mcastAddress The address of the particular player/game.
+     * @param sp The spawn point that the player is joining the map on.
+     * @param isAck Whether this message is acknowledging another packet.
      */
     public PlayerJoinMessage(byte playerId, String playerName,
                              InetSocketAddress mcastAddress,SpawnPoint sp,
@@ -43,7 +48,7 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
     }
 
     /**
-     * Constructor - Creates a new MulticastGroupMessage.
+     * Constructor - Creates a new PlayerJoinMessage.
      * @param header Representation of a Header in bytes.
      * @param data Representation of the data portion in bytes.
      */
@@ -76,15 +81,7 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
             // Get the spawn point
             sp = new SpawnPoint(buffer.getInt(),buffer.getInt());
             startTime = buffer.getLong();
-
         } catch (Exception e) { System.err.println("Unable to get address");}
-    }
-    
-    /*
-     * add a game start time to playerJoinMessage
-     */
-    public void setStartTime(long startTime){
-    	this.startTime = startTime;
     }
     
     /**
@@ -151,5 +148,20 @@ public class PlayerJoinMessage extends Message implements MessageConstants, Cons
      */
     public void setName(String playerName) {
         this.playerName = playerName;
+    }
+    
+    /*
+     * add a game start time to playerJoinMessage
+     */
+    public void setStartTime(long startTime){
+    	this.startTime = startTime;
+    }
+    
+    /**
+     * Sets the address to be used.
+     * @param address The new InetSocketAddress;
+     */
+    public void setAddress(InetSocketAddress address) {
+        this.mcastAddress = address;
     }
 }

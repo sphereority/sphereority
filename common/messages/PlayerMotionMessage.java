@@ -13,24 +13,28 @@ import java.util.logging.Logger;
 public class PlayerMotionMessage extends Message implements MessageConstants, Constants {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
-	protected Position position, velocity;
+	protected Position position, velocity, aim;
 	protected float time;
 	
     /**
      * Constructor - Creates a new PlayerMotionMessage.
      */
     public PlayerMotionMessage(byte playerId, 
-                        float px, float py, float vx, float vy, float time) {
+                               float px, float py, float vx, float vy, float ax,
+                               float ay,float time) {
         super(MessageType.PlayerMotion, playerId, PlayerMotionLength);
         this.position = new Position(px,py);
         this.velocity = new Position(vx,vy);
+        this.aim      = new Position(ax,ay);
         this.time  = time;
     }
 
-    public PlayerMotionMessage(byte playerId, Position position, Position velocity, float time) {
+    public PlayerMotionMessage(byte playerId, Position position, 
+                               Position velocity, Position aim, float time) {
         super(MessageType.PlayerMotion, playerId, PlayerMotionLength);
         this.position = position;
         this.velocity = velocity;
+        this.aim      = aim;
         this.time  = time;
     }
 
@@ -49,6 +53,7 @@ public class PlayerMotionMessage extends Message implements MessageConstants, Co
 		// Process the information to create the object.
         this.position = new Position(buffer.getFloat(),buffer.getFloat());
         this.velocity = new Position(buffer.getFloat(),buffer.getFloat());
+        this.aim      = new Position(buffer.getFloat(),buffer.getFloat());
         this.time  = buffer.getFloat();
     }
     
@@ -71,6 +76,8 @@ public class PlayerMotionMessage extends Message implements MessageConstants, Co
         buffer.putFloat(position.getY());
         buffer.putFloat(velocity.getX());
         buffer.putFloat(velocity.getY());
+        buffer.putFloat(aim.getX());
+        buffer.putFloat(aim.getY());
         buffer.putFloat(time);
         
         // Return the fully created message
@@ -93,6 +100,12 @@ public class PlayerMotionMessage extends Message implements MessageConstants, Co
         return velocity;
 	}
 	
+    /**
+     * Retrieves the position a player is aiming at.
+     */
+    public Position getAim() {
+        return aim;
+    }
 	/**
 	 * Retrives the time that this message was sent
 	 * @return The time the player was at this point

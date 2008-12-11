@@ -41,7 +41,7 @@ public abstract class Actor implements Constants {
 		width = DEFAULT_ACTOR_WIDTH;
 
 		// Log this action
-		logger.log(Level.INFO, "Created: " + this);
+		logger.log(Level.FINE, "Created: " + this);
 	}
 
 	public Actor(Position initialPosition, int initialHeight, int initialWidth) {
@@ -57,7 +57,7 @@ public abstract class Actor implements Constants {
 		width = initialWidth;
 
 		// Log this action
-		logger.log(Level.INFO, "Created: " + this);
+		logger.log(Level.FINE, "Created: " + this);
 	}
 
 	

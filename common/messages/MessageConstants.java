@@ -7,7 +7,7 @@ public interface MessageConstants {
     /**
      * Constant regarding to a particular message's data length.
      */
-	public final int PlayerMotionLength = 25,
+	public final int PlayerMotionLength = 32,
                      MapChangeLength    = 3000,
                      ScoreUpdateLength  = 25,
                      HealthUpdateLength = 25,
@@ -15,7 +15,7 @@ public interface MessageConstants {
 	                 DeathMessageLength = 2,
                      LoginMessageLength = 255,
                      PlayerLeaveLength = 0,
-                     PlayerJoinLength  = 48,
+                     PlayerJoinLength  = 100,
                      MulticastGroupLength = 40,
                      ProjectileLength = 16;
     

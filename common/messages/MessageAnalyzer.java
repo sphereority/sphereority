@@ -174,6 +174,9 @@ public abstract class MessageAnalyzer {
             case PlayerJoin:
                 receivedMessage = new PlayerJoinMessage(byteHeader,byteData);
                 break;
+            case PlayerLeave:
+                receivedMessage = new PlayerLeaveMessage(byteHeader,byteData);
+                break;
             case MulticastGroup:
                 receivedMessage = new MulticastGroupMessage(byteHeader,byteData);
                 break;

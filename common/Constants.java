@@ -14,6 +14,21 @@ public interface Constants
 {
 	public static final Random RANDOM = new Random();
 	
+    /**
+     * How long to wait for login/logout messages.
+     */
+    public final int WAIT_TIME = 7000;
+    
+    /**
+     * Rate in milliseconds to resend data.
+     */
+    public final int RESEND_DELAY = 500;
+    
+    /**
+     * Amount of positions to interpolate between two points
+     */
+    public final float INTERPOLATION_SIZE = 16f;
+    
 	/**
 	 * Default port for TCP network listener
 	 */
@@ -37,7 +52,7 @@ public interface Constants
      /**
      * Address for receiving UDP Login requests.
      */
-    public static final String SERVER_ADDRESS = "224.1.1.20";
+    public static final String SERVER_ADDRESS = "224.1.1.154";
 
     /**
      * Port for the server socket.
@@ -231,12 +246,12 @@ public interface Constants
 	/**
 	 * The amount of time between game steps
 	 */
-	public static final int TIMER_TICK = 50;
+	public static final int TIMER_TICK = 25;
 	
 	/**
 	 * The amount of time (in seconds) that a player shows up for after they fire
 	 */
-	public static final float BLIP_TIME = 2.0f;
+	public static final float BLIP_TIME = 1.5f;
 	
 	/**
 	 * The amount to shove the player when they bump into a wall
@@ -253,6 +268,11 @@ public interface Constants
 	 * The amount of time in seconds that must pass between shots fired
 	 */
 	public static final float RELOAD_TIME = 0.5f;
+	
+	/**
+	 * THe length of a player's "barrel"
+	 */
+	public static final float PLAYER_AIM_LENGTH = 0.4f;
 	
 	
 	public static String LOG_FOLDER = "logs/";

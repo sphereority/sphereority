@@ -17,6 +17,7 @@ public class LocalPlayer extends Player {
 	protected Rectangle2D bounds = null;
 	protected float timeSinceLastShot;
 	protected Actor aimingTarget;
+    protected boolean collisionX, collisionY;
 	
 	/**
 	 * Due to the requirement that this type of Player needs information about
@@ -53,7 +54,7 @@ public class LocalPlayer extends Player {
 		timeSinceLastShot = 0;
 		GameEngine.gameEngine.playFire(1.0f);
 		
-		Projectile p = new Projectile(new Position(position), new Position(aim), curTime, curTime, (byte)playerID, team);
+		Projectile p = new Projectile(new Position(position), new Position(aim), curTime, curTime, playerID, team);
 		GameEngine.gameEngine.addActor(p);
 	}
 	
@@ -106,8 +107,10 @@ public class LocalPlayer extends Player {
 		{
 			if (this.getBounds().intersects(a.getBounds()))
 			{
-				health -= ((Projectile) a).getDamage();
-				System.out.printf(name + " health: %d\n", health);
+				if(health > 0) {
+                    health -= ((Projectile) a).getDamage();
+                    logger.log(Level.FINE,name + " health: " + health);
+                }
 			}
 		}
 	} // end collision()
@@ -129,6 +132,7 @@ public class LocalPlayer extends Player {
 			velocity.setY(velocity.getY() - BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
+        collisionY = true;
 	}
 
 	public void collideLeft()
@@ -140,6 +144,7 @@ public class LocalPlayer extends Player {
 			velocity.setX(velocity.getX() + BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
+        collisionX = true;
 	}
 
 	public void collideRight()
@@ -151,6 +156,7 @@ public class LocalPlayer extends Player {
 			velocity.setX(velocity.getX() - BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
+        collisionX = true;
 	}
 
 	public void collideUp()
@@ -162,6 +168,7 @@ public class LocalPlayer extends Player {
 			velocity.setY(velocity.getY() + BUMP_FORCE);
 			timeSinceLastSound = 0;
 		}
+        collisionY = true;
 	}
 	
 	private void playBump()

@@ -13,52 +13,19 @@ class ServerGameEngine implements Constants {
 	public static Logger logger = Logger.getLogger(SERVER_LOGGER_NAME);
 
     private Queue<Byte> avaliableUserIDs;
-    private Hashtable<Byte,String> userNames;
-    private Hashtable<Byte,InetSocketAddress> addresses;
+    private Vector<PlayerInfo> playerInfo;
     
-    private byte nextPlayer;
-
-    private final byte INIT = 0;
-    private final byte MAX_PLAYERS = 32;
+    private final byte INIT = 1;
+    private final byte MAX_PLAYERS = 64;
     
     public ServerGameEngine (long gamestarttime){
         avaliableUserIDs = new LinkedList<Byte>();
         // Populate the set with the avaliable userIds
-        for(byte i = 0; i < MAX_PLAYERS; i++)
+        for(byte i = INIT; i <= MAX_PLAYERS; i++)
             avaliableUserIDs.offer(i);
         
-    	userNames = new Hashtable<Byte,String>();
-        addresses = new Hashtable<Byte,InetSocketAddress>();
-        nextPlayer = 0;
+    	playerInfo = new Vector<PlayerInfo>();
     }
-    
-    /**
-     * Processes a login message.
-     * @param message The message for login.
-     * @return The id that is assigned to the player.
-     */
-     /*
-    public byte processLoginMessage(LoginMessage message) {
-        byte playerId = message.getPlayerId();
-        
-        synchronized(this) {
-            // Don't process if we are out of avaliable user IDs
-            if(avaliableUserIDs.size() == 0) {
-                playerId = -1;
-            }
-            else {
-                playerId = avaliableUserIDs.poll();
-                userNames.put(playerId,message.getPlayerName());
-                addresses.put(playerId,message.getAddress());
-                
-                logger.log(logger.getLevel(), "New Player Added: " 
-                                                + message.getPlayerName());
-                System.out.println("New Player Added: " 
-                                                + message.getPlayerName());
-            }
-        }
-        return playerId;
-    }*/
     
     /**
      * Processes a PlayerJoin message.
@@ -69,30 +36,90 @@ class ServerGameEngine implements Constants {
         byte playerId = message.getPlayerId();
         
         // Don't process if we are out of avaliable user IDs
-        if(avaliableUserIDs.size() == 0) {
-            playerId = -1;
+        if(avaliableUserIDs.size() == 0 || nameInUse(message.getName())) {
+            playerId = -2;
         }
         else {
             playerId = avaliableUserIDs.poll();
-            userNames.put(playerId,message.getName());
-            addresses.put(playerId,message.getAddress());
-            
-            //logger.log(logger.getLevel(), "New Player Added: " + message.getName());
-            //System.out.println("New Player Added: " + message.getName());
-            logger.log(Level.INFO, "New Player Added: " + message.getName());
+            playerInfo.add(new PlayerInfo(playerId,
+                                          message.getAddress(),
+                                          message.getName()));
+            logger.log(Level.INFO, message.getName() + " has joined the game with ID " + playerId);
+            logger.log(Level.INFO,"Avaliable Player IDs: " + avaliableUserIDs.size());
         }
         return playerId;
     }
     
-    public Set<Byte> getPlayers() {
-        return userNames.keySet();
+    /**
+     * Processes a PlayerJoin message.
+     * @param message The message for logout.
+     */
+    public synchronized void processPlayerLeave(PlayerLeaveMessage message) {
+        byte playerId = message.getPlayerId();
+        for(int i = 0; i < playerInfo.size() ; i++) {
+            if(playerInfo.get(i).getPlayerId() == playerId) {
+                PlayerInfo info = playerInfo.remove(i);
+                avaliableUserIDs.offer(playerId);
+                logger.log(Level.INFO,info.getName() + " has left the game");
+                logger.log(Level.INFO,"Avaliable Player IDs: " + avaliableUserIDs.size());
+                break;
+            }
+        }
     }
     
     public String getPlayerName(byte playerId) {
-        return userNames.get(playerId);
+        for(PlayerInfo player : playerInfo) {
+            if(player.getPlayerId() == playerId)
+                return player.getName();
+        }
+        return null;
     }
     
     public InetSocketAddress getAddress(byte playerId) {
-        return addresses.get(playerId);
+        for(PlayerInfo player : playerInfo) {
+            if(player.getPlayerId() == playerId)
+                return player.getAddress();
+        }
+        return null;
+    }
+    
+    public boolean nameInUse(String name) {
+        for(PlayerInfo player : playerInfo) {
+            if(player.getName().equals(name))
+                return true;
+        }
+        return false;
+    }
+}
+
+class PlayerInfo implements Comparable {
+    private byte playerId;
+    private InetSocketAddress address;
+    private String name;
+    
+    public PlayerInfo(byte playerId, InetSocketAddress address, String name) {
+        this.playerId = playerId;
+        this.address = address;
+        this.name = name;
+    }
+    
+    public int compareTo(Object o) {
+        if(o instanceof PlayerInfo)
+            return new Byte(playerId).compareTo(((PlayerInfo )o).getPlayerId());
+        if(o instanceof Byte)
+            return new Byte(playerId).compareTo((Byte)o);
+        return 0;
+    }
+    
+    public byte getPlayerId() {
+        return playerId;
+    }
+    
+    public InetSocketAddress getAddress() {
+        return address;
+    }
+    
+    public String getName() {
+        return name;
     }
 }
