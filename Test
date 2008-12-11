@@ -1,18 +1,18 @@
 #!/bin/bash
-
+ 
 regex="[0-9]"
-
+ 
 if [[ "$1" =~ $regex ]] ; then
-	count="$1"
+  count="$1"
 else
-	count="10"
+  count="10"
 fi
-
+ 
 echo Count is $count
-
+ 
 for i in `seq 1 $count`
 do
-	java client/Sphereority SEVERE -debug -nowindow -fps&
-	sleep 10
+  java client/Sphereority SEVERE -debug -nowindow -fps&
+  sleep 10
 done
 echo "Finished starting $count bots"
