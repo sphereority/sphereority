@@ -44,9 +44,10 @@ You can specify to run a client as a bot with an optional -debug flag.  Note
 that if you want to sepcify a logger level you must do that before using this flag.
 $ java client/Sphereority -debug
 
-If you want to run a client without a window, add the "-nowindow" flag. Note
-that if you specify the -nowindow flag without specifying the -debug flag, you
-will get a window anyway.
+If you want to run a client without a window, add the "-nowindow" flag. It will
+display a small confirmation dialog that shows the name the bot uses and will stop
+the bot when dismissed. Note that if you specify the -nowindow flag without
+specifying the -debug flag, you will get a window anyway.
 $ java client/Sphereority -debug -nowindow
 
 

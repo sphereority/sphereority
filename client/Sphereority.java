@@ -119,12 +119,8 @@ public class Sphereority extends Thread implements Constants
                 }
                 else
                 {
-                    // Probably not needed, as we kill it with Ctrl-C anyway
-                    while (!game.isGameOver())
-                    {
-                        try { Thread.sleep(1000); }
-                        catch (InterruptedException er) { }
-                    }
+                    JOptionPane.showMessageDialog(null, String.format("<html>Running bot named '<u>%s</u>'.<br>Press '<i>OK</i>' to quit.<html>", game.getLocalPlayer().getPlayerName()), "Sphereority client", JOptionPane.INFORMATION_MESSAGE);
+                    game.gameOver();
                 }
             } catch (Exception ex)
             {
