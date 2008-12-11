@@ -49,18 +49,16 @@ public class ComputerPlayer extends LocalPlayer {
 	
 	public boolean animate(float dTime, float currentTime)
 	{
-		timeSinceLastShot += dTime;
-		
         // Go left
         if (direction < 25)  accelerate(-PLAYER_ACCELERATION*dTime, 0);
         // Go right
         if (direction > 45 && direction < 70) accelerate(PLAYER_ACCELERATION*dTime, 0);
         // Go down
-        if (direction > 65)    accelerate(0, -PLAYER_ACCELERATION*dTime);
+        if (direction > 65)  accelerate(0, -PLAYER_ACCELERATION*dTime);
         // Go up
         if (direction > 20 && direction < 50)  accelerate(0, PLAYER_ACCELERATION*dTime);
         // Fire
-        if (random.nextInt(101) % 10 == 0)    fire();
+        if (random.nextInt(101) % 30 == 0)    fire();
 		
         // Change directions every 5 seconds
         if(System.currentTimeMillis() - lastTime > 1000) {
