@@ -49,7 +49,7 @@ public class ProgressMeter extends Widget
 
     public void setValue(int value)
     {
-        this.value = Math.max(0, value);
+        this.value = value;
     }
 
     public void draw(Graphics2D g, int windowWidth, int windowHeight)
@@ -60,7 +60,7 @@ public class ProgressMeter extends Widget
         if (fill == null || value != lastValue)
         {
             lastValue = value;
-            fill = GuiUtils.getBoxShape(x+2, y+2, value*(width-4)/maxValue, height-4);
+            fill = GuiUtils.getBoxShape(x+2, y+2, Math.max(0, value)*(width-4)/maxValue, height-4);
         }
         
         int px = getFixedX(windowWidth), py = getFixedY(windowHeight);
