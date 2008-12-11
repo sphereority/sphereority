@@ -47,14 +47,23 @@ public class Sphereority extends Thread implements Constants
         // Create and display the LoginDialog
         loginWindow = new ClientLogonDialog(null);
 
-        boolean bot = false;
+        boolean bot = false, window = true;
         
         // Do this if we are not in debug mode
-        if(args.length > 0) {
+        if (args.length > 0) {
             for(String arg : args)
                 if (bot = arg.equals("-debug"))
                     break;
+            for (String arg : args)
+                if (arg.equals("-nowindow"))
+                {
+                    window = false;
+                    break;
+                }
         }
+        if (!bot)
+            window = true;
+        
             // If the user quit the dialog, we must quit
         if (!bot && !loginWindow.show())
             System.exit(0);
@@ -86,23 +95,37 @@ public class Sphereority extends Thread implements Constants
                 ((ClientExtaSysConnection)connection).establishServerConnection();
                 
                 // Set up the game gameWindow
-                gameWindow = new JDialog();
-                gameWindow.setTitle(CLIENT_WINDOW_NAME + " - " + userName);
-                gameWindow.setModal(true);
-     
-                gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-     
-                gameWindow.pack();
-                gameWindow.setLocationRelativeTo(null);
-     
+                if (window)
+                {
+                    gameWindow = new JDialog();
+                    gameWindow.setTitle(CLIENT_WINDOW_NAME + " - " + userName);
+                    gameWindow.setModal(true);
+         
+                    gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+         
+                    gameWindow.pack();
+                    gameWindow.setLocationRelativeTo(null);
+                }
                 Sphereority s = new Sphereority(game, connection);
             
                 s.start();
-     
-                game.registerActionListeners(gameWindow);
-                // Play the game once:
-                gameWindow.setVisible(true);
-                game.unregisterActionListeners(gameWindow);
+                
+                if (window)
+                {
+                    game.registerActionListeners(gameWindow);
+                    // Play the game once:
+                    gameWindow.setVisible(true);
+                    game.unregisterActionListeners(gameWindow);
+                }
+                else
+                {
+                    // Probably not needed, as we kill it with Ctrl-C anyway
+                    while (!game.isGameOver())
+                    {
+                        try { Thread.sleep(1000); }
+                        catch (InterruptedException er) { }
+                    }
+                }
             } catch (Exception ex)
             {
                 JOptionPane.showMessageDialog(null, "Failed to connect to server.", "Sphereority", JOptionPane.ERROR_MESSAGE);
