@@ -47,14 +47,26 @@ public class Sphereority extends Thread implements Constants
         // Create and display the LoginDialog
         loginWindow = new ClientLogonDialog(null);
 
-        boolean bot = false;
+        boolean bot = false, window = true, showFps = false;
         
         // Do this if we are not in debug mode
-        if(args.length > 0) {
-            for(String arg : args)
+        if (args.length > 0) {
+            for (String arg : args)
                 if (bot = arg.equals("-debug"))
                     break;
+            for (String arg : args)
+                if (arg.equals("-nowindow"))
+                {
+                    window = false;
+                    break;
+                }
+            for (String arg : args)
+                if (showFps = arg.equals("-fps"))
+                    break;
         }
+        if (!bot)
+            window = true;
+        
             // If the user quit the dialog, we must quit
         if (!bot && !loginWindow.show())
             System.exit(0);
@@ -71,7 +83,7 @@ public class Sphereority extends Thread implements Constants
             // This grabs a random map on startup
             map = new Map(MAP_LIST[4]);
             Random random = new Random();
-            byte userId = (byte)random.nextInt(100);
+            byte userId = (byte)random.nextInt(999);
             String userName = bot ? "bot" + userId : loginWindow.getUserName();
             game = new GameEngine(map, userId, userName, bot);
  
@@ -86,23 +98,36 @@ public class Sphereority extends Thread implements Constants
                 ((ClientExtaSysConnection)connection).establishServerConnection();
                 
                 // Set up the game gameWindow
-                gameWindow = new JDialog();
-                gameWindow.setTitle(CLIENT_WINDOW_NAME + " - " + userName);
-                gameWindow.setModal(true);
-     
-                gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-     
-                gameWindow.pack();
-                gameWindow.setLocationRelativeTo(null);
-     
+                if (window)
+                {
+                    gameWindow = new JDialog();
+                    gameWindow.setTitle(CLIENT_WINDOW_NAME + " - " + userName);
+                    gameWindow.setModal(true);
+                    
+                    gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
+                    
+                    if (showFps)
+                        game.getGameViewArea().showFPS();
+                    
+                    gameWindow.pack();
+                    gameWindow.setLocationRelativeTo(null);
+                }
                 Sphereority s = new Sphereority(game, connection);
             
                 s.start();
-     
-                game.registerActionListeners(gameWindow);
-                // Play the game once:
-                gameWindow.setVisible(true);
-                game.unregisterActionListeners(gameWindow);
+                
+                if (window)
+                {
+                    game.registerActionListeners(gameWindow);
+                    // Play the game once:
+                    gameWindow.setVisible(true);
+                    game.unregisterActionListeners(gameWindow);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, String.format("<html>Running bot named '<u>%s</u>'.<br>Press '<i>OK</i>' to quit.<html>", game.getLocalPlayer().getPlayerName()), "Sphereority client", JOptionPane.INFORMATION_MESSAGE);
+                    game.gameOver();
+                }
             } catch (Exception ex)
             {
                 JOptionPane.showMessageDialog(null, "Failed to connect to server.", "Sphereority", JOptionPane.ERROR_MESSAGE);

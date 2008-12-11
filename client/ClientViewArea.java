@@ -83,7 +83,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		lastOffset = new Point();
 		
-        healthMeter = new PlayerHealthMeter(-50, -5, 100, 20, Color.green, null);
+        healthMeter = new PlayerHealthMeter(-55, -5, 100, 15, Color.green, null);
         addWidget(healthMeter);
         
 		setFocusable(true);
@@ -155,6 +155,11 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	{
 		widgetList.remove(w);
 	}
+    
+    public void showFPS()
+    {
+        addWidget(new FrameRateCounter(5, 5, 100, 15, Color.lightGray));
+    }
 	
 	public void paint(Graphics g)
 	{

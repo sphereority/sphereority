@@ -3,8 +3,7 @@ package	common;
 import client.*;
 import java.awt.geom.Rectangle2D;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  * This class describes an artificial game player (a "bot")
@@ -14,14 +13,14 @@ public class ComputerPlayer extends LocalPlayer {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// Key event-related variables
-	private boolean[] keysPressed;
+//	private boolean[] keysPressed;
 	protected java.util.Random random;
     
     protected int direction;
     protected long lastTime;
     protected GameEngine engine;
 	protected Rectangle2D bounds = null;
-	protected float timeSinceLastShot;
+//	protected float timeSinceLastShot;
 	protected Actor aimingTarget;
 	
 	public ComputerPlayer(byte playerID, String name,GameEngine engine)

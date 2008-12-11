@@ -15,6 +15,11 @@ public interface Constants
 	public static final Random RANDOM = new Random();
 	
     /**
+     * How long to wait for login/logout messages.
+     */
+    public final int WAIT_TIME = 7000;
+    
+    /**
      * Rate in milliseconds to resend data.
      */
     public final int RESEND_DELAY = 500;
