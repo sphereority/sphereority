@@ -47,11 +47,11 @@ public class Sphereority extends Thread implements Constants
         // Create and display the LoginDialog
         loginWindow = new ClientLogonDialog(null);
 
-        boolean bot = false, window = true;
+        boolean bot = false, window = true, showFps = false;
         
         // Do this if we are not in debug mode
         if (args.length > 0) {
-            for(String arg : args)
+            for (String arg : args)
                 if (bot = arg.equals("-debug"))
                     break;
             for (String arg : args)
@@ -60,6 +60,9 @@ public class Sphereority extends Thread implements Constants
                     window = false;
                     break;
                 }
+            for (String arg : args)
+                if (showFps = arg.equals("-fps"))
+                    break;
         }
         if (!bot)
             window = true;
@@ -100,9 +103,12 @@ public class Sphereority extends Thread implements Constants
                     gameWindow = new JDialog();
                     gameWindow.setTitle(CLIENT_WINDOW_NAME + " - " + userName);
                     gameWindow.setModal(true);
-         
+                    
                     gameWindow.getContentPane().add(game.getGameViewArea(), BorderLayout.CENTER);
-         
+                    
+                    if (showFps)
+                        game.getGameViewArea().showFPS();
+                    
                     gameWindow.pack();
                     gameWindow.setLocationRelativeTo(null);
                 }
