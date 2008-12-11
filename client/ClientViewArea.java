@@ -83,7 +83,7 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 		
 		lastOffset = new Point();
 		
-        healthMeter = new PlayerHealthMeter(-50, -5, 100, 20, Color.green, null);
+        healthMeter = new PlayerHealthMeter(-55, -5, 100, 15, Color.green, null);
         addWidget(healthMeter);
         
 		setFocusable(true);
