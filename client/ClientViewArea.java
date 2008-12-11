@@ -155,6 +155,11 @@ public class ClientViewArea extends JComponent implements MouseMotionListener, M
 	{
 		widgetList.remove(w);
 	}
+    
+    public void showFPS()
+    {
+        addWidget(new FrameRateCounter(5, 5, 100, 15, Color.lightGray));
+    }
 	
 	public void paint(Graphics g)
 	{
