@@ -1,0 +1,6 @@
+for i in `seq 1 10`
+do 
+	java client/Sphereority -debug -nowindow -fps&
+	sleep 3
+done
+echo "Finished This Script"
