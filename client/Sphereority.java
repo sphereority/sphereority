@@ -1,8 +1,5 @@
 package client;
  
-/**
- * This is the main client application
- */
  
 import common.*;
 import java.awt.BorderLayout;
@@ -14,6 +11,9 @@ import java.util.logging.Logger;
 import java.util.Random;
 import javax.swing.*;
  
+/**
+ * This is the main client application
+ */
 public class Sphereority extends Thread implements Constants
 {
     public static final String[] MAP_LIST = new String[]

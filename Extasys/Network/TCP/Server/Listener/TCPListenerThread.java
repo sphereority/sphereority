@@ -39,7 +39,6 @@ public class TCPListenerThread implements Runnable
         fMyListener = myListener;
     }
 
-    @Override
     public void run()
     {
         while (fMyListener.isActive())
