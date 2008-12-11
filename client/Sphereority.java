@@ -48,6 +48,7 @@ public class Sphereority extends Thread implements Constants
         loginWindow = new ClientLogonDialog(null);
 
         boolean bot = false, window = true, showFps = false;
+        int botnum = -1;
         
         // Do this if we are not in debug mode
         if (args.length > 0) {
@@ -63,6 +64,12 @@ public class Sphereority extends Thread implements Constants
             for (String arg : args)
                 if (showFps = arg.equals("-fps"))
                     break;
+            for (String arg : args)
+            	if (arg.startsWith("-botnum=")){
+            		System.out.println(arg);
+            		System.out.println(arg.substring("-botnum=".length()));
+            		botnum = Integer.parseInt(arg.substring("-botnum=".length()));
+            	}
         }
         if (!bot)
             window = true;
@@ -83,7 +90,11 @@ public class Sphereority extends Thread implements Constants
             // This grabs a random map on startup
             map = new Map(MAP_LIST[4]);
             Random random = new Random();
-            byte userId = (byte)random.nextInt(999);
+            byte userId;
+            if (botnum == -1)
+            	userId = (byte)random.nextInt(999);
+            else
+            	userId = (byte) botnum;
             String userName = bot ? "bot" + userId : loginWindow.getUserName();
             game = new GameEngine(map, userId, userName, bot);
  
