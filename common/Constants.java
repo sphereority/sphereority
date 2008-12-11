@@ -15,6 +15,11 @@ public interface Constants
 	public static final Random RANDOM = new Random();
 	
     /**
+     * How long to wait for login/logout messages.
+     */
+    public final int WAIT_TIME = 7000;
+    
+    /**
      * Rate in milliseconds to resend data.
      */
     public final int RESEND_DELAY = 500;
@@ -22,7 +27,7 @@ public interface Constants
     /**
      * Amount of positions to interpolate between two points
      */
-    public final float INTERPOLATION_SIZE = 15f;
+    public final float INTERPOLATION_SIZE = 16f;
     
 	/**
 	 * Default port for TCP network listener

@@ -4,7 +4,7 @@ import common.messages.*;
 
 public interface ClientConnection
 {
-	public void start();
+	public void start() throws Exception;
     public void stop();
     public void stopSendingMessages();
     

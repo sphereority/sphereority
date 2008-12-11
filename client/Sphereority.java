@@ -127,20 +127,24 @@ public class Sphereority extends Thread implements Constants
     {
         try
         {
-            // Start the game
-            game.play();
+            logger.log(Level.INFO,"Preparing connection...");
             // Start the client connection
             connection.start();
+            
+            logger.log(Level.INFO,"Preparing game...");
+            // Start the game
+            game.play();
         } catch (Exception ex)
         {
             ex.printStackTrace();
+            System.exit(0);
         }
     }
  
-		/*
-		 * Allow the logger level to be set as a command-line paramater.
-		 * The default logger level is CONFIG by default.
-		 */
+    /*
+     * Allow the logger level to be set as a command-line paramater.
+     * The default logger level is CONFIG by default.
+     */
     public static void initialiseLogger(String[] args)
     {
         // Client application logging
