@@ -16,6 +16,11 @@ public class FrameRateCounter extends Widget
         ready = false;
     }
     
+    public float getFrameRate()
+    {
+        return 1000.0f * (float)numRepaints / (System.currentTimeMillis() - timeStarted);
+    }
+    
     public void draw(Graphics2D g, int windowWidth, int windowHeight)
     {
         if (timeStarted < 0)
@@ -29,7 +34,7 @@ public class FrameRateCounter extends Widget
         {
             ready = true;
             
-            GuiUtils.drawCenteredText(g, String.format("FPS: %.2f", 1000.0f * (float)numRepaints / (System.currentTimeMillis() - timeStarted)), x, y, width, height, 0.5f, 0.5f, 10);
+            GuiUtils.drawCenteredText(g, String.format("FPS: %.2f", getFrameRate()), x, y, width, height, 0.5f, 0.5f, 10);
         }
         else
         {
