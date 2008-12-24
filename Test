@@ -1,18 +1,30 @@
 #!/bin/bash
  
-regex="[0-9]"
- 
-if [[ "$1" =~ $regex ]] ; then
-  count="$1"
+# regex="[0-9]"
+
+if [ $# -gt 0 ] ; then
+  if [ $1 == "-h" ] ; then
+    echo "Useage: $0 [num_bots [num_start_bot]]"
+    exit
+  else
+    count=$1
+    if [ $# -gt 1 ] ; then
+      startcount=$2
+    else
+      startcount=1
+    fi
+  fi
 else
-  count="10"
+  count=10
+  startcount=1
 fi
  
-echo Count is $count
+echo Starting $count bots, starting with number $startcount
  
 for i in `seq 1 $count`
 do
-  java client/Sphereority SEVERE -debug -nowindow -fps&
+  java client/Sphereority SEVERE -debug -nowindow -fps -botnum=$[startcount+i-1]&
   sleep 10
 done
+
 echo "Finished starting $count bots"
