@@ -2,10 +2,10 @@ package common.messages;
 
 import common.Constants;
 import common.Position;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+//import java.net.InetAddress;
+//import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

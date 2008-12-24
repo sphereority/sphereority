@@ -20,7 +20,7 @@ public class ClientRawMulticastConnection implements ClientConnection, ActionLis
 {
     private GameEngine engine;
     private Thread thread = null;
-    private boolean running;
+//    private boolean running;
 
     private MulticastSocket mSocket;
 
@@ -38,7 +38,7 @@ public class ClientRawMulticastConnection implements ClientConnection, ActionLis
      */
     public ClientRawMulticastConnection(GameEngine engine)
     {
-        running = false;
+//        running = false;
         try
         {
             this.engine = engine;

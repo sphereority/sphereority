@@ -10,7 +10,6 @@ import common.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

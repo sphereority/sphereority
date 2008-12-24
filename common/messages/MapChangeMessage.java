@@ -3,7 +3,6 @@ package common.messages;
 import common.Map;
 import common.Constants;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

@@ -9,8 +9,6 @@ import java.awt.Stroke;
 //import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JOptionPane;
-
 /**
  * This (presently) represents a player
  * @author dvanhumb

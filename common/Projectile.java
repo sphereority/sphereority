@@ -3,7 +3,6 @@ package	common;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

@@ -43,7 +43,7 @@ public class TCPListener
     private InetAddress fIPAddress;
     private int fPort;
     // Connections.
-    private Hashtable fConnectedClients;
+    private Hashtable<String, TCPClientConnection> fConnectedClients;
     final Object fAddRemoveUsersLock = new Object();
     private int fMaxConnections;
     private int fReadBufferSize;
@@ -104,7 +104,7 @@ public class TCPListener
 
     private void Initialize(String name, InetAddress ipAddress, int port, int maxConnections, int readBufferSize, int connectionTimeOut, int backLog, boolean useMessageCollector, String splitter)
     {
-        fConnectedClients = new Hashtable();
+        fConnectedClients = new Hashtable<String, TCPClientConnection>();
         fName = name;
         fIPAddress = ipAddress;
         fPort = port;
@@ -170,7 +170,7 @@ public class TCPListener
             {
                 try
                 {
-                    TCPClientConnection tmp = (TCPClientConnection) fConnectedClients.get(e.nextElement());
+                    TCPClientConnection tmp = fConnectedClients.get(e.nextElement());
                     tmp.DisconnectMe();
                 }
                 catch (Exception ex)
@@ -244,7 +244,7 @@ public class TCPListener
         {
             try
             {
-                ((TCPClientConnection) fConnectedClients.get(e.nextElement())).SendData(data);
+                fConnectedClients.get(e.nextElement()).SendData(data);
             }
             catch (Exception ex)
             {
@@ -264,7 +264,7 @@ public class TCPListener
         {
             try
             {
-                ((TCPClientConnection) fConnectedClients.get(e.nextElement())).SendData(bytes, offset, length);
+                fConnectedClients.get(e.nextElement()).SendData(bytes, offset, length);
             }
             catch (Exception ex)
             {
@@ -283,7 +283,7 @@ public class TCPListener
         {
             for (Enumeration e = fConnectedClients.keys(); e.hasMoreElements();)
             {
-                TCPClientConnection tmp = (TCPClientConnection) fConnectedClients.get(e.nextElement());
+                TCPClientConnection tmp = fConnectedClients.get(e.nextElement());
                 if (!tmp.getIPAddress().equals(sender.getIPAddress()))
                 {
                     try
@@ -312,7 +312,7 @@ public class TCPListener
         {
             for (Enumeration e = fConnectedClients.keys(); e.hasMoreElements();)
             {
-                tmp = (TCPClientConnection) fConnectedClients.get(e.nextElement());
+                tmp = fConnectedClients.get(e.nextElement());
                 if (!tmp.getIPAddress().equals(sender.getIPAddress()))
                 {
                     try
@@ -397,7 +397,7 @@ public class TCPListener
      * The Hashtable's value is a TCPClientConnection.
      * @return the connections hashtable of this listener.
      */
-    public Hashtable getConnectedClients()
+    public Hashtable<String, TCPClientConnection> getConnectedClients()
     {
         return fConnectedClients;
     }

@@ -19,7 +19,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 package Extasys.Network.TCP.Server.Listener;
 
-import Extasys.DataFrame;
+//import Extasys.DataFrame;
+import Extasys.*;
 import Extasys.Network.TCP.Server.ExtasysTCPServer;
 import Extasys.Network.TCP.Server.Listener.Exceptions.ClientIsDisconnectedException;
 import Extasys.Network.TCP.Server.Listener.Exceptions.OutgoingPacketFailedException;

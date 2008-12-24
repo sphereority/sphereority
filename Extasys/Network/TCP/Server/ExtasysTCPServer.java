@@ -39,7 +39,7 @@ public class ExtasysTCPServer
 
     private String fName;
     private String fDescription;
-    private ArrayList fListeners = new ArrayList();
+    private ArrayList<Object> fListeners = new ArrayList<Object>();
     private ArrayBlockingQueue fThreadPoolQueue = new ArrayBlockingQueue(100000);
     private ThreadPoolExecutor fMyThreadPool;
 

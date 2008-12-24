@@ -20,7 +20,7 @@ THE SOFTWARE.*/
 package Extasys.Network.UDP.Client.Connectors.Packets;
 
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
-import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
+//import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
 import Extasys.ManualResetEvent;
 import java.net.DatagramPacket;
 

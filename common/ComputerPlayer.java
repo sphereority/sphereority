@@ -80,6 +80,5 @@ public class ComputerPlayer extends LocalPlayer {
 		return result;
 	}
     
-    private void updateMousePosition(java.awt.event.MouseEvent e) {
-	}
+//    private void updateMousePosition(java.awt.event.MouseEvent e) { }
 }
