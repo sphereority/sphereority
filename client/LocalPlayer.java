@@ -6,14 +6,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class describes a human player who has local access to the keyboard and
- * mouse
+ * This class describes a local player, be it a computer or a human.
  * 
  */
 public class LocalPlayer extends Player {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
-	protected InputListener inputDevice;
 	protected Rectangle2D bounds = null;
 	protected float timeSinceLastShot;
 	protected Actor aimingTarget;
@@ -26,9 +24,8 @@ public class LocalPlayer extends Player {
 	 * 
 	 * @param input
 	 */
-	public LocalPlayer(InputListener input)
+	public LocalPlayer()
 	{
-		inputDevice = input;
 		width = height = PLAYER_SIZE;
 		
 		timeSinceLastShot = RELOAD_TIME; 
@@ -36,10 +33,9 @@ public class LocalPlayer extends Player {
 		System.out.printf("New player with ID %d\n", playerID);
 	}
 	
-	public LocalPlayer(InputListener input, byte playerID, String name)
+	public LocalPlayer(byte playerID, String name)
 	{
 		super(playerID, name);
-		inputDevice = input;
 		width = height = PLAYER_SIZE;
 		
 		System.out.printf("New player with ID %d\n", playerID);
@@ -61,15 +57,6 @@ public class LocalPlayer extends Player {
 	public boolean animate(float dTime, float currentTime)
 	{
 		timeSinceLastShot += dTime;
-		
-		if (inputDevice != null)
-		{
-			if (inputDevice.isLeftKeyPressed())  accelerate(-PLAYER_ACCELERATION*dTime, 0);
-			if (inputDevice.isRightKeyPressed()) accelerate(PLAYER_ACCELERATION*dTime, 0);
-			if (inputDevice.isUpKeyPressed())    accelerate(0, -PLAYER_ACCELERATION*dTime);
-			if (inputDevice.isDownKeyPressed())  accelerate(0, PLAYER_ACCELERATION*dTime);
-			if (inputDevice.isButtonFiring())    fire();
-		}
 		
 		if (aimingTarget != null)
 			aimAt(aimingTarget);

@@ -19,7 +19,7 @@ public class ClientTest implements ActionCallback
 		InputListener listener = new InputListener();
 		
 		cva = new ClientViewArea(null);
-		LocalPlayer player = new LocalPlayer(listener);
+		LocalPlayer player = new HumanPlayer(listener);
 		player.setPosition(0.5f, 0.5f);
 		cva.setLocalPlayer(player);
 		cva.setMap(new Map());

@@ -13,19 +13,17 @@ public class ComputerPlayer extends LocalPlayer {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);
 
 	// Key event-related variables
-//	private boolean[] keysPressed;
 	protected java.util.Random random;
     
     protected int direction;
     protected long lastTime;
     protected GameEngine engine;
 	protected Rectangle2D bounds = null;
-//	protected float timeSinceLastShot;
 	protected Actor aimingTarget;
 	
 	public ComputerPlayer(byte playerID, String name,GameEngine engine)
 	{
-		super(null,playerID, name);
+		super(playerID, name);
 		width = height = PLAYER_SIZE;
         random = new java.util.Random();
         lastTime = System.currentTimeMillis();
@@ -78,8 +76,5 @@ public class ComputerPlayer extends LocalPlayer {
 			bounds.setRect(position.getX() - 0.5f*width, position.getY() - 0.5f*height, width, height); 
 		}
 		return result;
-	}
-    
-    private void updateMousePosition(java.awt.event.MouseEvent e) {
 	}
 }

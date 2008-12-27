@@ -56,7 +56,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         preSetup(m);
 
         localPlayer = bot ? new ComputerPlayer(playerID, name, this)
-                          : new LocalPlayer(localInputListener, playerID, name);
+                          : new HumanPlayer(localInputListener, playerID, name);
 
         postSetup(true);
     }
@@ -65,7 +65,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     {
         preSetup(m);
 
-        localPlayer = new LocalPlayer(localInputListener);
+        localPlayer = new HumanPlayer(localInputListener);
 
         postSetup(false);
     } // end GameEngine() constructor
