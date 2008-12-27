@@ -18,7 +18,6 @@ import javax.swing.Timer;
  * This class describes the game loop for this game
  */
 
-//<<<<<<< HEAD:client/GameEngine.java
 public class GameEngine implements Constants, ActionListener, ActionCallback
 {
     // SINGLETONS
@@ -480,10 +479,9 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
         }
     }
 
-    /***************************************************************************
-     * ********************************************* These method(s) are for
-     * playing sound effects * *********************************************
-     */
+    /* ****************************************** *
+     * These method are for playing sound effects *
+     * ****************************************** */
     /**
      * Plays a bump sound effect at the specified volume. If the sound is
      * already playing at a lower volume, it is stopped and restarted at the
