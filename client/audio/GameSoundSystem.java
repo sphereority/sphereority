@@ -2,7 +2,6 @@ package client.audio;
 
 import common.Constants;
 import java.io.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.*;
 

@@ -5,8 +5,7 @@ import common.*;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.awt.Graphics2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class MapRadar extends Widget implements MapChangeListener, Constants {
 	public static Logger logger = Logger.getLogger(CLIENT_LOGGER_NAME);

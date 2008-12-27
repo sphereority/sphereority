@@ -19,10 +19,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 package Extasys.Network.UDP.Client.Connectors;
 
-import Extasys.Network.UDP.Client.Connectors.Packets.*;
+//import Extasys.Network.UDP.Client.Connectors.Packets.*;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
-import java.io.IOException;
-import java.net.DatagramPacket;
+//import java.io.IOException;
+//import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.net.InetAddress;
 import java.net.SocketException;

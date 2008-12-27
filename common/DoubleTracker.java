@@ -1,7 +1,6 @@
 package common;
 
 import java.awt.Graphics2D;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DoubleTracker extends Actor {

@@ -2,7 +2,6 @@ package common.messages;
 
 import common.Constants;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -47,7 +46,7 @@ public class ChatMessage extends Message implements MessageConstants, Constants 
         ByteBuffer buffer = ByteBuffer.wrap(data);
 		
 		// Process the information to create the object.
-        byte destId        = buffer.get();
+//        byte destId        = buffer.get();
         int messageLength = (int) buffer.get();
         
         char[] messageArray = new char[messageLength];

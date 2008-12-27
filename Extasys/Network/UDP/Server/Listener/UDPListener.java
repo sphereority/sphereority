@@ -21,7 +21,7 @@ THE SOFTWARE.*/
 package Extasys.Network.UDP.Server.Listener;
 
 import Extasys.Network.UDP.Server.ExtasysUDPServer;
-import Extasys.Network.UDP.Server.IUDPServer;
+//import Extasys.Network.UDP.Server.IUDPServer;
 import Extasys.Network.UDP.Server.Listener.Packets.IncomingUDPServerPacket;
 import Extasys.Network.UDP.Server.Listener.Packets.OutgoingUDPServerPacket;
 import java.io.IOException;

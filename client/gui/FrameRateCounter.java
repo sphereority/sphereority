@@ -34,7 +34,7 @@ public class FrameRateCounter extends Widget
         {
             ready = true;
             
-            GuiUtils.drawCenteredText(g, String.format("FPS: %.2f", getFrameRate()), x, y, width, height, 0.5f, 0.5f, 10);
+            GuiUtils.drawCenteredText(g, String.format("FPS: %.1f", getFrameRate()), x, y, width, height, 0.5f, 0.5f, 10);
         }
         else
         {

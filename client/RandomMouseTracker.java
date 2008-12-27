@@ -1,10 +1,10 @@
 package client;
 
 import common.*;
-import java.awt.Graphics2D;
+//import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Random;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

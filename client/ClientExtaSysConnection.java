@@ -9,18 +9,18 @@ import common.messages.PlayerJoinMessage;
 import common.messages.PlayerLeaveMessage;
 import common.messages.PlayerMotionMessage;
 import common.messages.ProjectileMessage;
-import common.messages.LoginMessage;
+//import common.messages.LoginMessage;
 
 import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 import Extasys.Network.UDP.Client.ExtasysUDPClient;
 import Extasys.Network.UDP.Client.IUDPClient;
-import Extasys.Network.UDP.Client.Connectors.UDPConnector;
+//import Extasys.Network.UDP.Client.Connectors.UDPConnector;
 import Extasys.Network.UDP.Client.Connectors.MulticastConnector;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
+//import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -361,10 +361,10 @@ class SendUpdateMessages extends Thread implements Constants
     //@Override
     public void run()
     {
-        int messageCount = 0;
+//        int messageCount = 0;
         int checkNames   = 0;
         
-        fMyClient.logger.log(Level.INFO,"Beginning to send game messages");
+        ClientExtaSysConnection.logger.log(Level.INFO,"Beginning to send game messages");
         
         while(fActive)
         {
@@ -395,7 +395,7 @@ class SendUpdateMessages extends Thread implements Constants
         
         // Send where the player is now
         fMyClient.sendMessage(localPlayer.getMotionPacket(currentTime),
-                              fMyClient.GAME_CONNECTOR);
+                              ClientExtaSysConnection.GAME_CONNECTOR);
         
         // Go through all the projectiles in the game
         synchronized(engine.bulletList) {
@@ -407,7 +407,7 @@ class SendUpdateMessages extends Thread implements Constants
                     fMyClient.sendMessage(new ProjectileMessage(playerId,
                                             p.getStartPosition(),
                                             p.getDirection()),
-                                            fMyClient.GAME_CONNECTOR);
+                                            ClientExtaSysConnection.GAME_CONNECTOR);
                     p.delivered();
                 }
             }
@@ -418,13 +418,13 @@ class SendUpdateMessages extends Thread implements Constants
             synchronized(engine.playerList) {
                 for(Player player : engine.playerList) {
                     if (player.getPlayerName().equals(RESOLVING_NAME)) {
-                        fMyClient.logger.log(Level.INFO,"WHOIS " + player.getPlayerID());
+                        ClientExtaSysConnection.logger.log(Level.INFO,"WHOIS " + player.getPlayerID());
                         fMyClient.sendMessage(new PlayerJoinMessage(
                             player.getPlayerID(),
                             RESOLVING_NAME,
                             new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT),
                             new SpawnPoint(player.getPosition())),
-                            fMyClient.SERVER_CONNECTOR);
+                            ClientExtaSysConnection.SERVER_CONNECTOR);
                     }
                 }
             }

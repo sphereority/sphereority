@@ -4,7 +4,6 @@ import common.Constants;
 import java.nio.ByteBuffer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LogoutMessage extends Message implements Constants {

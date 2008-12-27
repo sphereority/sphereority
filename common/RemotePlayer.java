@@ -1,8 +1,8 @@
 package	common;
 
 import common.messages.PlayerMotionMessage;
-import java.util.concurrent.*;
-import java.util.ConcurrentModificationException;
+//import java.util.concurrent.*;
+//import java.util.ConcurrentModificationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.LinkedList;
@@ -34,7 +34,7 @@ public class RemotePlayer extends Player {
 	protected Queue<PlayerMotionMessage> messageList;
 	protected Queue<PlayerMotionMessage> renderQueue;
 
-	private Semaphore lock = new Semaphore(1);
+//	private Semaphore lock = new Semaphore(1);
 	
 	/**
 	 * Creates a RemotePlayer with the specified id and name
@@ -111,7 +111,7 @@ public class RemotePlayer extends Player {
 		
         this.currentTime = currentTime;
 		
-		float timeD, totalWeight;
+		float totalWeight;
 		totalWeight = 1;
         
         // Do we have a starting position for this remote player yet?
