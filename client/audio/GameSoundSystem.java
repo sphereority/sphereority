@@ -29,7 +29,9 @@ public class GameSoundSystem implements Constants {
 	{
 		try
 		{
-			return new SoundEffect(new File(fileName));
+			SoundEffect result = new SoundEffect(new File(fileName));
+			logger.info(String.format("Successfully loaded sound from file '%s'.", fileName));
+			return result;
 		}
 		catch (UnsupportedAudioFileException e)
 		{

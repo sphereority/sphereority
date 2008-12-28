@@ -35,14 +35,13 @@ public class SoundEffect implements LineListener, Constants {
 			volumeControl = (FloatControl)soundClip.getControl(FloatControl.Type.VOLUME);
 		else
 		{
-			//System.out.println("Warning: No volume control available!");
 			volumeControl = null;
 		}
 		if (soundClip.isControlSupported(FloatControl.Type.MASTER_GAIN))
 			gainControl = (FloatControl)soundClip.getControl(FloatControl.Type.MASTER_GAIN);
 		else
 		{
-			System.out.println("Warning: No gain control available!");
+			logger.warning("No gain control available!");
 			gainControl = null;
 		}
 	}
@@ -112,17 +111,18 @@ public class SoundEffect implements LineListener, Constants {
 		}
 	}
 	
-	public void waitUntilDone()
-	{
-		synchronized (lock)
-		{
-			while (playing)
-			{
-				try { lock.wait(10); }
-				catch (InterruptedException er) { }
-			}
-		}
-	}
+	// I don't think this is a good idea in what is essentially an event-driven system -Daryl
+//	public void waitUntilDone()
+//	{
+//		synchronized (lock)
+//		{
+//			while (playing)
+//			{
+//				try { lock.wait(10); }
+//				catch (InterruptedException er) { }
+//			}
+//		}
+//	}
 	
 	/**
 	 * Get the current volume in the range of 0.0 to 1.0

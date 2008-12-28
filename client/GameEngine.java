@@ -35,8 +35,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
     public Vector<Stone> stoneList; // This only contains stones
     public Vector<Player> playerList; // This only contains players
     public Vector<Projectile> bulletList; // This only contains bullets
-    public Vector<Actor> miscList; // This contains stuff that doesn't fit in
-                                    // any of the other
+    public Vector<Actor> miscList; // Anything else not in the above lists
 
     public long lastTime;
     public float currentTime;
@@ -492,6 +491,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
      */
     public void playBump(float volume)
     {
+    	logger.info(String.format("Playing bump sound at a volume of %.2f.", volume));
         playSound(volume, soundBump);
     }
 
@@ -503,6 +503,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
      */
     public void playDeath(float volume)
     {
+    	logger.info(String.format("Playing death sound at a volume of %.2f.", volume));
         playSound(volume, soundDeath);
     }
 
@@ -514,6 +515,7 @@ public class GameEngine implements Constants, ActionListener, ActionCallback
      */
     public void playFire(float volume)
     {
+    	logger.info(String.format("Playing fire sound at a volume of %.2f.", volume));
         playSound(volume, soundFire);
     }
 
