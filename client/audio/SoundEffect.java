@@ -102,12 +102,24 @@ public class SoundEffect implements LineListener, Constants {
 		return playing;
 	}
 	
+	/**
+	 * Called when the sound clip this class wraps changes state
+	 */
 	public void update(LineEvent event)
 	{
 		if (event.getType().equals(LineEvent.Type.STOP))
 		{
+			logger.info("A sound effect stopped.");
 			playing = false;
 			lock.notifyAll();
+		}
+		else if (event.getType().equals(LineEvent.Type.START))
+		{
+			logger.info("A sound effect started playing.");
+		}
+		else if (event.getType().equals(LineEvent.Type.OPEN))
+		{
+			logger.info("A sound effect was loaded.");
 		}
 	}
 	

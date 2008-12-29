@@ -15,7 +15,12 @@ public class SoundTest
 		{
 			se.setVolume((float)(COUNT-i)/COUNT);
 			se.play();
-			se.waitUntilDone();
+			while (se.isPlaying())
+			{
+				try { Thread.sleep(50); }
+				catch (InterruptedException er) { }
+			}
+//			se.waitUntilDone();
 			try { Thread.sleep(500); }
 			catch (InterruptedException er) { }
 		}
